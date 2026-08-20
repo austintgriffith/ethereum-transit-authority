@@ -7,7 +7,7 @@
   --river:#C8DEEC; --river-edge:#5E9BC0; --blue:#1D50A2; --tunnel:#E8871E;
   --l-ip:#8D939C; --l-addr:#DD2A1B; --l-rcpt:#FF6319; --l-intent:#C79A00;
   --l-jwt:#B0369F; --l-hash:#7D5BC6; --l-hold:#00913A; --l-ens:#00969B;
-  --self:#00913A; --house:#EAF5EC;
+  --self:#00913A; --house:#EAF5EC; --crops:#62688F;
 }
 :root:not([data-theme="light"]){}
 @media (prefers-color-scheme: dark){
@@ -16,7 +16,7 @@
     --river:#1D3A4E; --river-edge:#4E88AC; --blue:#7FA9EA; --tunnel:#F09A3E;
     --l-ip:#9AA1AB; --l-addr:#FF5546; --l-rcpt:#FF7A2E; --l-intent:#E8BC1C;
     --l-jwt:#D554C4; --l-hash:#9E7DE8; --l-hold:#2FBF6B; --l-ens:#23B8BD;
-    --self:#2FBF6B; --house:#13251A;
+    --self:#2FBF6B; --house:#13251A; --crops:#8A92B2;
   }
 }
 :root[data-theme="dark"]{
@@ -24,7 +24,7 @@
   --river:#1D3A4E; --river-edge:#4E88AC; --blue:#7FA9EA; --tunnel:#F09A3E;
   --l-ip:#9AA1AB; --l-addr:#FF5546; --l-rcpt:#FF7A2E; --l-intent:#E8BC1C;
   --l-jwt:#D554C4; --l-hash:#9E7DE8; --l-hold:#2FBF6B; --l-ens:#23B8BD;
-  --self:#2FBF6B; --house:#13251A;
+  --self:#2FBF6B; --house:#13251A; --crops:#8A92B2;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;line-height:1.5}
@@ -157,7 +157,7 @@ h1 a{color:inherit;text-decoration:none}
   <div class="lg"><svg width="26" height="22" viewBox="0 0 26 22"><rect x="2" y="2" width="22" height="18" rx="5" fill="var(--house)" stroke="var(--self)" stroke-width="2"/></svg>Your machine</div>
   <div class="lg"><svg width="26" height="14" viewBox="0 0 26 14"><line x1="1" y1="7" x2="25" y2="7" stroke="currentColor" stroke-width="4" stroke-dasharray="6 5"/></svg>Not every trip</div>
   <div class="lgh">Where CROPS breaks</div>
-  <div class="lg"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="2" y1="7" x2="32" y2="7" stroke="var(--self)" stroke-width="8" stroke-linecap="round" opacity=".35"/></svg>🌾 CROPS line</div>
+  <div class="lg"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="2" y1="7" x2="32" y2="7" stroke="var(--crops)" stroke-width="8" stroke-linecap="round" opacity=".45"/></svg>🌾 CROPS line</div>
   <div class="lg"><span class="chip blk">✕ CAN BLOCK</span></div>
   <div class="lg"><span class="chip lie">≈ CAN LIE</span></div>
 </div>
@@ -325,7 +325,7 @@ const M0={
  lanes:LANES.map(l=>l.id==='ip'?Object.assign({},l,{opensAt:'P2P'}):l),
  riverAfter:3,
  eth:{slot:6.2, lane:'signed'},
- houses:[{from:1,to:3.1,label:'YOUR MACHINE — nothing here leaves'},{from:7.4,to:8.4,label:'HOME AGAIN'}],
+ houses:[{from:0.31,to:3.1,label:'NOTHING HERE LEAVES'},{from:7.4,to:8.4,label:'HOME AGAIN'}],
  zones:[[1,3,'DISCOVER · CONSTRUCT · SIGN — AT HOME'],[4.2,5.2,'BROADCAST'],[7.4,8.4,'CONFIRM — AT HOME']],
  noservice:['jwt'],
  calls:[
@@ -390,7 +390,7 @@ const EXAMPLE={
  ],
  riverAfter:1.35,
  eth:{slot:4.1, lane:'signed'},
- zones:[[1,1,'BEFORE YOU SIGN'],[2.4,3.2,'AFTER']],
+ zones:[],
  calls:[
   {slot:1,   code:'CO1', name:'Some company', host:'api.example.com', tunnel:1, carries:['ip','addr'], blocks:1, lies:1, tip:'Receives your IP and address before you signed anything'},
   {slot:2.4, code:'CO2', name:'Some company, again', host:'api.example.com', carries:['ip','addr'], tip:'Still receiving them after you signed'},
@@ -444,13 +444,18 @@ function render(id, J, caption){
    txt(svg,riverX,ry1-8,'SIGNATURE RIVER',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
  }
 
+ // your machine: box around the device terminal on maps without explicit houses
+ if(!(J.houses&&J.houses.length)){
+   el('rect',{x:PADL-46,y:Y(0)-40,width:60,height:laneBot+glyphPad-(Y(0)-40),rx:12,fill:'var(--house)',stroke:'var(--self)','stroke-width':2.5},svg);
+ }
+
  // device terminal
  const servedLanes=L.filter(l=>!(J.noservice||[]).includes(l.id));
  const devLanes=servedLanes.filter(l=>l.startsAt!=='river'&&!l.opensAt);
  if(devLanes.length){
    const y1=Y(laneIdx[devLanes[0].id])-10, y2=Y(laneIdx[devLanes[devLanes.length-1].id])+10;
    el('line',{x1:PADL-14,y1:y1,x2:PADL-14,y2:y2,stroke:'var(--ink)','stroke-width':7},svg);
-   txt(svg,PADL-14,Y(0)-24,'YOUR DEVICE',{'text-anchor':'middle','font-size':12,'font-weight':700,fill:'var(--ink)','letter-spacing':'.1em'});
+   txt(svg,PADL-16,Y(0)-50,'YOUR MACHINE',{'text-anchor':'middle','font-size':12,'font-weight':700,fill:'var(--ink)','letter-spacing':'.1em'});
  }
 
  // lanes
@@ -488,8 +493,8 @@ function render(id, J, caption){
  // CROPS throughline: green under the glyph row; block/lie glyphs land on top of it
  {
   const gy=laneBot+26, xEndMap=X(maxSlot)+(J.eth?20:40);
-  el('line',{x1:PADL-14,y1:gy,x2:xEndMap,y2:gy,stroke:'var(--self)','stroke-width':9,opacity:.32,'stroke-linecap':'round'},svg);
-  txt(svg,PADL-30,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--self)'});
+  el('line',{x1:PADL-14,y1:gy,x2:xEndMap,y2:gy,stroke:'var(--crops)','stroke-width':9,opacity:.45,'stroke-linecap':'round'},svg);
+  txt(svg,PADL-30,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--crops)'});
  }
 
  // station calls
