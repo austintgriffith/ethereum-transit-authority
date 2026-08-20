@@ -60,6 +60,7 @@ figcaption{font-size:13.5px;color:var(--muted);padding:10px 16px 8px;border-top:
 .lg{display:flex;align-items:center;gap:10px}
 .sw{width:34px;height:0;border-top:5px solid;flex:none;border-radius:3px}
 .lg svg{flex:none}
+.lgh{grid-column:1/-1;font-family:Jost;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding-top:10px;border-top:1px solid var(--rule)}
 
 /* station index */
 table{border-collapse:collapse;width:100%;font-size:13.5px;background:var(--panel)}
@@ -123,7 +124,7 @@ h1 a{color:inherit;text-decoration:none}
   <div><h1><a href="#/">Ethereum Transit Authority</a></h1></div>
 </header>
 
-<nav class="routes" aria-label="Cities">
+<nav class="routes" aria-label="Maps">
   <a class="pill" href="#/m1" data-r="m1"><span class="b" style="background:var(--l-addr)">M1</span>Normie send <small>· 12 stops</small></a>
   <a class="pill" href="#/m2" data-r="m2"><span class="b" style="background:var(--l-ens)">M2</span>ENS send <small>· 15 stops</small></a>
   <a class="pill" href="#/m0" data-r="m0"><span class="b" style="background:var(--self)">M0</span>Mountain Man <small>· 7 stops, 5 at home</small></a>
@@ -136,24 +137,29 @@ h1 a{color:inherit;text-decoration:none}
 <!-- ================= HOME ================= -->
 <section class="view" id="view-home">
   <template id="legend-tpl">
-<div class="legend" role="img" aria-label="Map legend">
+<div class="legend" role="img" aria-label="Legend">
   <h3>Legend</h3>
-  <div class="lg"><span class="sw" style="border-color:var(--l-ip)"></span>Your IP + device fingerprint</div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-addr)"></span>Your address</div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-rcpt)"></span>Recipient address</div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-intent)"></span>Tx intent (amount, calldata)</div>
-  <div class="lg"><span class="sw" style="border-color:var(--ink)"></span><strong>The signed transaction</strong></div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-jwt)"></span>Full account list + identity token</div>
+  <div class="lgh">Your data — one line each</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-ip)"></span>IP + device</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-addr)"></span>Address</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-rcpt)"></span>Recipient</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-intent)"></span>Intent (amount, calldata)</div>
+  <div class="lg"><span class="sw" style="border-color:var(--ink)"></span><strong>Signed tx</strong></div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-jwt)"></span>Account list + ID token</div>
   <div class="lg"><span class="sw" style="border-color:var(--l-hash)"></span>Tx hash</div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-hold)"></span>Your holdings</div>
-  <div class="lg"><span class="sw" style="border-color:var(--l-ens)"></span>The ENS name</div>
-  <div class="lg"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7" fill="var(--panel)" stroke="currentColor" stroke-width="3"/></svg>This company receives this line</div>
-  <div class="lg"><svg width="22" height="34" viewBox="0 0 22 34"><line x1="11" y1="8" x2="11" y2="26" stroke="currentColor" stroke-width="6"/><circle cx="11" cy="8" r="5.5" fill="var(--panel)" stroke="currentColor" stroke-width="3"/><circle cx="11" cy="26" r="5.5" fill="var(--panel)" stroke="currentColor" stroke-width="3"/></svg>Receives several — <strong>can join them</strong></div>
-  <div class="lg"><svg width="26" height="22" viewBox="0 0 26 22"><rect x="2" y="2" width="22" height="18" fill="none" stroke="var(--tunnel)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>Inside the Cloudflare tunnel (TLS ends there)</div>
-  <div class="lg"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="2" y1="7" x2="32" y2="7" stroke="var(--self)" stroke-width="8" stroke-linecap="round" opacity=".35"/></svg>🌾 CROPS throughline — ✕ and ≈ break it</div>
-  <div class="lg"><span class="chip blk">✕ CAN BLOCK</span> can close the gates</div>
-  <div class="lg"><span class="chip lie">≈ CAN LIE</span> wrong signage — you'd sign on it</div>
-  <div class="lg"><svg width="26" height="14" viewBox="0 0 26 14"><line x1="1" y1="7" x2="25" y2="7" stroke="currentColor" stroke-width="4" stroke-dasharray="6 5"/></svg>Dashed — not every trip</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-hold)"></span>Holdings</div>
+  <div class="lg"><span class="sw" style="border-color:var(--l-ens)"></span>ENS name</div>
+  <div class="lgh">Stations — who touches it</div>
+  <div class="lg"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7" fill="var(--panel)" stroke="currentColor" stroke-width="3"/></svg>Receives the line</div>
+  <div class="lg"><svg width="22" height="34" viewBox="0 0 22 34"><line x1="11" y1="8" x2="11" y2="26" stroke="currentColor" stroke-width="6"/><circle cx="11" cy="8" r="5.5" fill="var(--panel)" stroke="currentColor" stroke-width="3"/><circle cx="11" cy="26" r="5.5" fill="var(--panel)" stroke="currentColor" stroke-width="3"/></svg>Can join lines</div>
+  <div class="lg"><svg width="26" height="22" viewBox="0 0 26 22"><rect x="2" y="2" width="22" height="18" fill="none" stroke="var(--tunnel)" stroke-width="2.5" stroke-dasharray="4 3"/></svg>Cloudflare tunnel</div>
+  <div class="lg"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7" fill="var(--panel)" stroke="var(--self)" stroke-width="3"/></svg>You run it</div>
+  <div class="lg"><svg width="26" height="22" viewBox="0 0 26 22"><rect x="2" y="2" width="22" height="18" rx="5" fill="var(--house)" stroke="var(--self)" stroke-width="2"/></svg>Your machine</div>
+  <div class="lg"><svg width="26" height="14" viewBox="0 0 26 14"><line x1="1" y1="7" x2="25" y2="7" stroke="currentColor" stroke-width="4" stroke-dasharray="6 5"/></svg>Not every trip</div>
+  <div class="lgh">Where CROPS breaks</div>
+  <div class="lg"><svg width="34" height="14" viewBox="0 0 34 14"><line x1="2" y1="7" x2="32" y2="7" stroke="var(--self)" stroke-width="8" stroke-linecap="round" opacity=".35"/></svg>🌾 CROPS line</div>
+  <div class="lg"><span class="chip blk">✕ CAN BLOCK</span></div>
+  <div class="lg"><span class="chip lie">≈ CAN LIE</span></div>
 </div>
   </template>
   <div class="legend-slot"></div>
@@ -161,13 +167,13 @@ h1 a{color:inherit;text-decoration:none}
   <p class="sub-h">An example</p>
   <div class="mapbox"><figure id="map-example"></figure></div>
 
-  <p class="sub-h">Cities</p>
+  <p class="sub-h">Maps</p>
   <div class="cities">
     <a class="cityln" href="#/m1"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span>MetaMask defaults · 12 stops · 7 companies</span><span class="go">→</span></a>
     <a class="cityln" href="#/m2"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span>type a .eth name · 15 stops</span><span class="go">→</span></a>
     <a class="cityln" href="#/m0"><span class="b" style="background:var(--self)">M0</span><strong>The Mountain Man</strong><span>same actions, inside the house · 7 stops</span><span class="go">→</span></a>
     <a class="cityln" href="#/night"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span>runs while you sleep · 9 stops</span><span class="go">→</span></a>
-    <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all cities</span><span class="go">→</span></a>
+    <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all maps</span><span class="go">→</span></a>
     <a class="cityln" href="#/index"><span class="b" style="background:var(--muted)">i</span><strong>Station Index</strong><span>every station, what it gets, how to skip it</span><span class="go">→</span></a>
     <a class="cityln" href="#/m3"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span>first dApp &middot; 19 stops &middot; two RPC providers</span><span class="go">&rarr;</span></a>
     <span class="cityln dim"><span class="b" style="background:var(--muted)">M4</span><strong>Swap</strong><span>planned</span></span>
@@ -177,7 +183,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= M1 ================= -->
 <section class="view" id="view-m1">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-addr)">M1</span>The Normie Send</h2>
   <p class="section-sub">MetaMask extension · mainnet · defaults · address pasted in.</p>
   <div class="mapbox"><figure id="map-m1"></figure></div>
@@ -186,7 +192,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= M2 ================= -->
 <section class="view" id="view-m2">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-ens)">M2</span>The ENS Send</h2>
   <p class="section-sub">M1, but you type <code>tim.eth</code>.</p>
   <div class="mapbox"><figure id="map-m2"></figure></div>
@@ -195,7 +201,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= M0 ================= -->
 <section class="view" id="view-m0">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--self)">M0</span>The Mountain Man</h2>
   <p class="section-sub">M1's actions against his own node. Green rings: stations he runs.</p>
   <div class="mapbox"><figure id="map-m0"></figure></div>
@@ -204,7 +210,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= M3 ================= -->
 <section class="view" id="view-m3">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--blue)">M3</span>The Aave Deposit</h2>
   <p class="section-sub">app.aave.com + MetaMask · deposit ETH. 7 dApp stations, then the M1 track.</p>
   <div class="mapbox"><figure id="map-m3"></figure></div>
@@ -213,7 +219,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= NIGHT ================= -->
 <section class="view" id="view-night">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-hold)">N</span>Night Service</h2>
   <p class="section-sub">Runs whenever MetaMask is unlocked. No send required.</p>
   <div class="mapbox"><figure id="map-night"></figure></div>
@@ -222,7 +228,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= INTERCHANGES ================= -->
 <section class="view" id="view-center">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--blue)">★</span>Interchanges</h2>
   <p class="section-sub">Ranked by routes served × lines received.</p>
   <div class="citylist">
@@ -248,7 +254,7 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= INDEX ================= -->
 <section class="view" id="view-index">
-  <a class="back" href="#/">← ALL CITIES</a>
+  <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--muted)">i</span>Station Index</h2>
   <div class="tblwrap"><table>
     <thead><tr><th>Code</th><th>Station</th><th>Receives</th><th>Powers</th><th>Skip this station by…</th></tr></thead>
@@ -435,7 +441,7 @@ function render(id, J, caption){
    el('path',{d:bankDown(riverX-rw/2)+' '+bankUp(riverX+rw/2)+' Z',fill:'var(--river)',opacity:.9},svg);
    el('path',{d:bankDown(riverX-rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
    el('path',{d:bankDown(riverX+rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
-   txt(svg,riverX,ry1-8,'THE SIGNING',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
+   txt(svg,riverX,ry1-8,'SIGNATURE RIVER',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
    txt(svg,riverX,ry2+16,'point of no return',{'text-anchor':'middle','font-size':10.5,fill:'var(--river-edge)','font-style':'italic'});
  }
 
