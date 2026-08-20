@@ -433,7 +433,7 @@ function render(id, J, caption){
 
  // river
  if(riverX!=null){
-   const rw=30, ry1=40, ry2=laneBot+glyphPad;
+   const rw=30, ry1=62, ry2=laneBot+glyphPad;
    const amps=[7,5,8,6,7,6], seg=64;
    const segsOf=()=>{const s=[];let y=ry1,i=0;while(y<ry2){const h=Math.min(seg,ry2-y);s.push({h:h,a:amps[i%amps.length]*(i%2?1:-1)*(h/seg)});y+=h;i++;}return s;};
    const bankDown=(x0)=>{let d='M'+x0+' '+ry1;segsOf().forEach(s=>{d+=' q'+s.a+' '+(s.h/2)+' 0 '+s.h;});return d;};
@@ -442,7 +442,6 @@ function render(id, J, caption){
    el('path',{d:bankDown(riverX-rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
    el('path',{d:bankDown(riverX+rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
    txt(svg,riverX,ry1-8,'SIGNATURE RIVER',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
-   txt(svg,riverX,ry2+16,'point of no return',{'text-anchor':'middle','font-size':10.5,fill:'var(--river-edge)','font-style':'italic'});
  }
 
  // device terminal
@@ -476,9 +475,7 @@ function render(id, J, caption){
      ...(l.dashed?{'stroke-dasharray':'8 7'}:{})},svg);
    if(opened==='ring'){
      el('circle',{cx:x0,cy:y,r:5,fill:'var(--panel)',stroke:color,'stroke-width':3},svg);
-     txt(svg,x0,y+18,'line opens here',{'font-size':9.5,fill:'var(--muted)','text-anchor':'middle','font-style':'italic'});
    }else if(opened==='station'){
-     txt(svg,x0,y+19,'line opens here',{'font-size':9.5,fill:'var(--muted)','text-anchor':'middle','font-style':'italic'});
    }
    if(thru){ // through-service: line runs off-map east
      el('line',{x1:xEnd+6,y1:y,x2:xEnd+34,y2:y,stroke:color,'stroke-width':l.bold?6:5,'stroke-dasharray':'3 6','stroke-linecap':'round'},svg);
