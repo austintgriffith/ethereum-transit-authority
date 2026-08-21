@@ -1,6 +1,6 @@
 # For agents (and humans) editing this map
 
-Everything is `index.html`. The maps are **generated at page load** by the `render()` function from plain JS data objects. You never write SVG — you write data.
+Everything is `index.html` — but it is **generated**: a build script compiles per-request route data into the `CITIES` objects below, and `render()` draws them at page load. You never write SVG — you write data. Edits to this file are overwritten on the next build; propose changes as issues with receipts.
 
 ## The data model
 
@@ -10,7 +10,7 @@ A **city** (one map) is:
 const M9={
  lanes:[                       // horizontal lines, top to bottom = one data item each
   {id:'ip', name:'Your IP + device', v:'--l-ip'},          // v = CSS color token
-  {id:'signed', name:'THE SIGNED TX', v:'--ink', startsAt:'river', bold:true},
+  {id:'signed', name:'THE SIGNED TX', v:'--l-signed', startsAt:'river', bold:true},
   {id:'rcpt', name:'Recipient', v:'--l-rcpt', opensAt:'EN1'}, // line born at a station
  ],
  riverAfter:3,                 // river (the signing) after this slot; null = no river on this map
@@ -23,6 +23,7 @@ const M9={
    carries:['ip','rcpt'],      // which lanes get a ring here
    blocks:1,                   // ✕ chip: can censor (breaks the CROPS line)
    lies:1,                     // ≈ chip: can return wrong data you'd act on
+   txin:1,                     // ✎ chip: its answer becomes part of what you sign
    tunnel:1,                   // hatched collar: TLS terminates at Cloudflare
    self:1,                     // green rings: the user runs this station
    opt:1,                      // dashed: conditional / not every trip
