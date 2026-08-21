@@ -291,7 +291,7 @@ const EXAMPLE={
 function render(id, J, caption){
  const fig=document.getElementById(id);
  const L=J.lanes, laneIdx={}; L.forEach((l,i)=>laneIdx[l.id]=i);
- const PADL=200, SLOT=104, laneGap=36, topPad=252, glyphPad=46;
+ const PADL=216, SLOT=104, laneGap=36, topPad=252, glyphPad=46;
  const maxSlot=Math.max(J.eth?J.eth.slot:0, J.through?J.through.slot+0.9:0, ...J.calls.map(c=>c.slot));
  const W=PADL+(maxSlot+2.1)*SLOT, H=topPad+(L.length-1)*laneGap+glyphPad+34;
  const svg=el('svg',{viewBox:'0 0 '+W+' '+H, width:W, height:H, role:'img',
@@ -353,7 +353,7 @@ function render(id, J, caption){
  L.forEach((l,i)=>{
    const y=Y(i), color='var('+l.v+')';
    const isNo=(J.noservice||[]).includes(l.id);
-   txt(svg,PADL-30,y+4,l.name,{'text-anchor':'end','font-size':l.bold?12.5:12,'font-weight':l.bold?700:600,fill:color,'letter-spacing':l.bold?'.06em':'0'});
+   txt(svg,PADL-58,y+4,l.name,{'text-anchor':'end','font-size':l.bold?12.5:12,'font-weight':l.bold?700:600,fill:color,'letter-spacing':l.bold?'.06em':'0'});
    if(isNo){
      el('line',{x1:PADL-14,y1:y,x2:PADL+60,y2:y,stroke:color,'stroke-width':3,'stroke-dasharray':'3 6',opacity:.45},svg);
      txt(svg,PADL+72,y+4,'no service on this route — never leaves the house',{'font-size':11,fill:'var(--muted)','font-style':'italic'});
@@ -385,7 +385,7 @@ function render(id, J, caption){
  {
   const gy=laneBot+26, xEndMap=X(maxSlot)+(J.eth?20:40);
   el('line',{x1:PADL-14,y1:gy,x2:xEndMap,y2:gy,stroke:'var(--crops)','stroke-width':9,opacity:.45,'stroke-linecap':'round'},svg);
-  txt(svg,PADL-30,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--crops)'});
+  txt(svg,PADL-58,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--crops)'});
  }
 
  // station calls
