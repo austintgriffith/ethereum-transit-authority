@@ -48,3 +48,12 @@ The 🌾 CROPS throughline, glyph row, device terminal, lane terminus caps, stat
 ## Layout knobs
 
 `PADL` (left pad), `SLOT` (px per slot), `laneGap`, `topPad` (rotated-label headroom — full hostnames need ~250). Non-integer slots space stations; keep labels ~1 slot apart or they overlap.
+
+## Upstream of this file
+
+The `CITIES` objects are themselves compiled. The source (private repo) is split in two:
+
+- `data/routes/<id>.json` — the facts. One step per network request: `actor`, `carries` (what it receives), `need`, `can_block`, `on_failure`, `worst_lie`, `tx_input`, `fallback`, `removable_by`, `fixed_by`, `optional`, `provenance`. No layout. Schema-checked on every build.
+- `data/views/<id>.json` — how it draws: station codes, lanes, zones, tips, hidden steps. Keyed by step id.
+
+`build.py` joins them into a city, computes the chips, counts, CROPS scores, Interchanges and Fixes rankings, and writes this file. A capture tool that emits a valid route file gets a map for free; a person adds the view.
