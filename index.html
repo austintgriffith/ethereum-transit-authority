@@ -14,7 +14,7 @@
   --river:#A0C8E8; --river-edge:#4F86B8; --blue:#1D50A2; --tunnel:#6B6E73;
   --l-ip:#0068B0; --l-addr:#E83840; --l-rcpt:#F08020; --l-intent:#F8D020;
   --l-jwt:#009850; --l-hash:#983890; --l-hold:#A87008; --l-ens:#00ADD0;
-  --l-signed:#E0187F; --self:#78C040; --house:#E4EBCF; --crops:#7A7D82;
+  --l-signed:#E0187F; --self:#78C040; --house:#E4EBCF; --crops:#7A7D82; --cf:#C9C4B6;
 }
 :root:not([data-theme="light"]){}
 @media (prefers-color-scheme: dark){
@@ -23,7 +23,7 @@
     --river:#1D3A4E; --river-edge:#4E88AC; --blue:#7FA9EA; --tunnel:#9A9CA0;
     --l-ip:#3A8FDB; --l-addr:#FF5A60; --l-rcpt:#FF9340; --l-intent:#FFDD33;
     --l-jwt:#2BC070; --l-hash:#C057B8; --l-hold:#C99A3A; --l-ens:#27C3E0; --l-signed:#FF5CB0;
-    --self:#8FD65A; --house:#1E2A18; --crops:#9A9CA0;
+    --self:#8FD65A; --house:#1E2A18; --crops:#9A9CA0; --cf:#3A3F47;
   }
 }
 :root[data-theme="dark"]{
@@ -31,9 +31,24 @@
   --river:#1D3A4E; --river-edge:#4E88AC; --blue:#7FA9EA; --tunnel:#9A9CA0;
   --l-ip:#3A8FDB; --l-addr:#FF5A60; --l-rcpt:#FF9340; --l-intent:#FFDD33;
   --l-jwt:#2BC070; --l-hash:#C057B8; --l-hold:#C99A3A; --l-ens:#27C3E0; --l-signed:#FF5CB0;
-  --self:#8FD65A; --house:#1E2A18; --crops:#9A9CA0;
+  --self:#8FD65A; --house:#1E2A18; --crops:#9A9CA0; --cf:#3A3F47;
 }
 *{box-sizing:border-box}
+
+/* leak view */
+.leak .house{fill:var(--house);stroke:var(--self);stroke-width:3}
+.leak .housel{font-family:Jost;font-weight:700;font-size:13px;letter-spacing:.14em;fill:var(--self)}
+.leak .cf{fill:var(--cf);opacity:.6}
+.leak .cfl{font-family:Jost;font-weight:700;font-size:11px;letter-spacing:.12em;fill:var(--muted)}
+.leak .rib{opacity:.72} .leak .rib:hover{opacity:1} .leak .rib.opt{opacity:.3}
+.leak .dl{font-weight:600;font-size:13.5px;fill:var(--ink)} .leak .dl.big{font-weight:700;font-size:14.5px}
+.leak .co{fill:var(--paper);stroke:var(--rule);stroke-width:2}
+.leak .co.lie1{stroke:var(--muted)} .leak .co.lie2{stroke:var(--ink);stroke-width:3.5}
+.leak .co.blk{stroke:var(--l-addr);stroke-width:4}
+.leak .co.opt{stroke-dasharray:6 5}
+.leak .cn{font-family:Jost;font-weight:700;font-size:14.5px;fill:var(--ink)}
+.leak .ct{font-size:11.5px;font-weight:600}
+.leak .t-blk{fill:var(--l-addr)} .leak .t-lie2{fill:var(--ink)} .leak .t-lie1{fill:var(--muted)} .leak .t-txi{fill:var(--l-signed)} .leak .t-idle{fill:var(--muted);font-weight:400}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;line-height:1.5}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 
@@ -180,7 +195,106 @@ h1 a{color:inherit;text-decoration:none}
   </template>
   <div class="legend-slot"></div>
 
-  <p class="sub-h">An example</p>
+  <p class="sub-h">Where your data goes — one ETH send</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 884.5" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="640.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<rect x="780" y="68" width="388" height="329.0" rx="10" class="cf"/>
+<text x="792" y="85" class="cfl">CLOUDFLARE EDGE READS ALL OF THESE FIRST</text>
+<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · MM APIs</title></path>
+<path d="M345,86.5 C582.5,86.5 582.5,207.5 820,207.5 L820,224.0 C582.5,224.0 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · SERVO relay</title></path>
+<path d="M345,103.0 C582.5,103.0 582.5,325.5 820,325.5 L820,342.0 C582.5,342.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Blockaid</title></path>
+<path d="M345,119.5 C582.5,119.5 582.5,405.0 820,405.0 L820,421.5 C582.5,421.5 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · Infura</title></path>
+<path d="M345,136.0 C582.5,136.0 582.5,494.5 820,494.5 L820,511.0 C582.5,511.0 582.5,152.5 345,152.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Etherscan</title></path>
+<path d="M345,152.5 C582.5,152.5 582.5,567.0 820,567.0 L820,583.5 C582.5,583.5 582.5,169.0 345,169.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Segment</title></path>
+<path d="M345,169.0 C582.5,169.0 582.5,654.25 820,654.25 L820,670.75 C582.5,670.75 582.5,185.5 345,185.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google · Web Store</title></path>
+<path d="M345,185.5 C582.5,185.5 582.5,733.25 820,733.25 L820,749.75 C582.5,749.75 582.5,202.0 345,202.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Sentry</title></path>
+<path d="M345,216.0 C582.5,216.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,232.5 345,232.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · MM APIs</title></path>
+<path d="M345,232.5 C582.5,232.5 582.5,224.0 820,224.0 L820,240.5 C582.5,240.5 582.5,249.0 345,249.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · SERVO relay</title></path>
+<path d="M345,249.0 C582.5,249.0 582.5,342.0 820,342.0 L820,358.5 C582.5,358.5 582.5,265.5 345,265.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Blockaid</title></path>
+<path d="M345,265.5 C582.5,265.5 582.5,421.5 820,421.5 L820,438.0 C582.5,438.0 582.5,282.0 345,282.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · Infura</title></path>
+<path d="M345,296.0 C582.5,296.0 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,312.5 345,312.5 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · MM APIs</title></path>
+<path d="M345,312.5 C582.5,312.5 582.5,438.0 820,438.0 L820,454.5 C582.5,454.5 582.5,329.0 345,329.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · Infura</title></path>
+<path d="M345,343.0 C582.5,343.0 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,359.5 345,359.5 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · MM APIs</title></path>
+<path d="M345,359.5 C582.5,359.5 582.5,240.5 820,240.5 L820,257.0 C582.5,257.0 582.5,376.0 345,376.0 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · SERVO relay</title></path>
+<path d="M345,390.0 C582.5,390.0 582.5,583.5 820,583.5 L820,600.0 C582.5,600.0 582.5,406.5 345,406.5 Z" fill="var(--l-jwt)" class="rib opt"><title>Your tracking ID → Segment</title></path>
+<path d="M345,420.5 C582.5,420.5 582.5,511.0 820,511.0 L820,527.5 C582.5,527.5 582.5,437.0 345,437.0 Z" fill="var(--muted)" class="rib"><title>Cookies → Etherscan</title></path>
+<path d="M345,451.0 C582.5,451.0 582.5,162.0 820,162.0 L820,178.5 C582.5,178.5 582.5,467.5 345,467.5 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → Consensys · MM APIs</title></path>
+<path d="M345,481.5 C582.5,481.5 582.5,257.0 820,257.0 L820,268.0 C582.5,268.0 582.5,492.5 345,492.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Consensys · SERVO relay</title></path>
+<path d="M345,492.5 C582.5,492.5 582.5,358.5 820,358.5 L820,369.5 C582.5,369.5 582.5,503.5 345,503.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Blockaid</title></path>
+<path d="M345,517.5 C582.5,517.5 582.5,268.0 820,268.0 L820,279.0 C582.5,279.0 582.5,528.5 345,528.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Consensys · SERVO relay</title></path>
+<path d="M345,542.5 C582.5,542.5 582.5,178.5 820,178.5 L820,189.5 C582.5,189.5 582.5,553.5 345,553.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · MM APIs</title></path>
+<path d="M345,553.5 C582.5,553.5 582.5,369.5 820,369.5 L820,380.5 C582.5,380.5 582.5,564.5 345,564.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Blockaid</title></path>
+<path d="M345,564.5 C582.5,564.5 582.5,454.5 820,454.5 L820,465.5 C582.5,465.5 582.5,575.5 345,575.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · Infura</title></path>
+<path d="M345,589.5 C582.5,589.5 582.5,279.0 820,279.0 L820,290.0 C582.5,290.0 582.5,600.5 345,600.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Consensys · SERVO relay</title></path>
+<path d="M345,600.5 C582.5,600.5 582.5,801.0 820,801.0 L820,812.0 C582.5,812.0 582.5,611.5 345,611.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<path d="M345,625.5 C582.5,625.5 582.5,290.0 820,290.0 L820,301.0 C582.5,301.0 582.5,636.5 345,636.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · SERVO relay</title></path>
+<path d="M345,636.5 C582.5,636.5 582.5,465.5 820,465.5 L820,476.5 C582.5,476.5 582.5,647.5 345,647.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · Infura</title></path>
+<path d="M345,647.5 C582.5,647.5 582.5,527.5 820,527.5 L820,538.5 C582.5,538.5 582.5,658.5 345,658.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Etherscan</title></path>
+<rect x="215" y="70" width="130" height="132.0" fill="var(--l-ip)"/>
+<text x="207" y="140.0" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="216.0" width="130" height="66.0" fill="var(--l-addr)"/>
+<text x="207" y="253.0" text-anchor="end" class="dl">Your address</text>
+<rect x="215" y="296.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="316.5" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="215" y="343.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="363.5" text-anchor="end" class="dl">Your login token</text>
+<rect x="215" y="390.0" width="130" height="16.5" fill="var(--l-jwt)"/>
+<text x="207" y="402.25" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="215" y="420.5" width="130" height="16.5" fill="var(--muted)"/>
+<text x="207" y="432.75" text-anchor="end" class="dl">Cookies</text>
+<rect x="215" y="451.0" width="130" height="16.5" fill="var(--l-hold)"/>
+<text x="207" y="463.25" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="215" y="481.5" width="130" height="22.0" fill="var(--l-rcpt)"/>
+<text x="207" y="496.5" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="215" y="517.5" width="130" height="11.0" fill="var(--l-intent)"/>
+<text x="207" y="527.0" text-anchor="end" class="dl">How much</text>
+<rect x="215" y="542.5" width="130" height="33.0" fill="var(--l-addr)"/>
+<text x="207" y="563.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="215" y="589.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="604.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="215" y="625.5" width="130" height="33.0" fill="var(--l-hash)"/>
+<text x="207" y="646.0" text-anchor="end" class="dl">The tx hash</text>
+<rect x="820" y="96" width="330" height="93.5" rx="6" class="co blk lie2"/>
+<text x="832" y="113" class="cn">Consensys · MM APIs</text>
+<text x="832" y="129" class="ct t-blk">can stop you</text>
+<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="157" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="207.5" width="330" height="93.5" rx="6" class="co blk lie1"/>
+<text x="832" y="224.5" class="cn">Consensys · SERVO relay</text>
+<text x="832" y="240.5" class="ct t-blk">can stop you</text>
+<text x="832" y="254.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="319.0" width="330" height="68" rx="6" class="co blk lie1"/>
+<text x="832" y="336.0" class="cn">Blockaid</text>
+<text x="832" y="352.0" class="ct t-blk">can stop you</text>
+<text x="832" y="366.0" class="ct t-lie1">can show you wrong numbers</text>
+<text x="832" y="380.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="405.0" width="330" height="71.5" rx="6" class="co blk lie2"/>
+<text x="832" y="422.0" class="cn">Consensys · Infura</text>
+<text x="832" y="438.0" class="ct t-blk">can stop you</text>
+<text x="832" y="452.0" class="ct t-lie2">can get your funds stuck</text>
+<text x="832" y="466.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="494.5" width="330" height="44.0" rx="6" class="co lie1"/>
+<text x="832" y="511.5" class="cn">Etherscan</text>
+<text x="832" y="527.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="556.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="573.5" class="cn">Segment</text>
+<text x="832" y="589.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="603.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="628.5" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="645.5" class="cn">Google · Web Store</text>
+<text x="832" y="661.5" class="ct t-blk">can stop you</text>
+<text x="832" y="675.5" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="689.5" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="714.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="731.5" class="cn">Sentry</text>
+<text x="832" y="747.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="761.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="786.5" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="803.5" class="cn">Builders · relays</text>
+<text x="832" y="819.5" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">The same send as a transit map</p>
   <div class="mapbox"><figure id="map-example"></figure></div>
 
   <p class="sub-h">Maps</p>
@@ -203,6 +317,106 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-addr)">M1</span>The Normie Send</h2>
   <p class="section-sub">MetaMask extension · mainnet · defaults · address pasted in.</p>
+  <p class="sub-h">Where your data goes</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 884.5" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="640.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<rect x="780" y="68" width="388" height="329.0" rx="10" class="cf"/>
+<text x="792" y="85" class="cfl">CLOUDFLARE EDGE READS ALL OF THESE FIRST</text>
+<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · MM APIs</title></path>
+<path d="M345,86.5 C582.5,86.5 582.5,207.5 820,207.5 L820,224.0 C582.5,224.0 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · SERVO relay</title></path>
+<path d="M345,103.0 C582.5,103.0 582.5,325.5 820,325.5 L820,342.0 C582.5,342.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Blockaid</title></path>
+<path d="M345,119.5 C582.5,119.5 582.5,405.0 820,405.0 L820,421.5 C582.5,421.5 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · Infura</title></path>
+<path d="M345,136.0 C582.5,136.0 582.5,494.5 820,494.5 L820,511.0 C582.5,511.0 582.5,152.5 345,152.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Etherscan</title></path>
+<path d="M345,152.5 C582.5,152.5 582.5,567.0 820,567.0 L820,583.5 C582.5,583.5 582.5,169.0 345,169.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Segment</title></path>
+<path d="M345,169.0 C582.5,169.0 582.5,654.25 820,654.25 L820,670.75 C582.5,670.75 582.5,185.5 345,185.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google · Web Store</title></path>
+<path d="M345,185.5 C582.5,185.5 582.5,733.25 820,733.25 L820,749.75 C582.5,749.75 582.5,202.0 345,202.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Sentry</title></path>
+<path d="M345,216.0 C582.5,216.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,232.5 345,232.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · MM APIs</title></path>
+<path d="M345,232.5 C582.5,232.5 582.5,224.0 820,224.0 L820,240.5 C582.5,240.5 582.5,249.0 345,249.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · SERVO relay</title></path>
+<path d="M345,249.0 C582.5,249.0 582.5,342.0 820,342.0 L820,358.5 C582.5,358.5 582.5,265.5 345,265.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Blockaid</title></path>
+<path d="M345,265.5 C582.5,265.5 582.5,421.5 820,421.5 L820,438.0 C582.5,438.0 582.5,282.0 345,282.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · Infura</title></path>
+<path d="M345,296.0 C582.5,296.0 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,312.5 345,312.5 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · MM APIs</title></path>
+<path d="M345,312.5 C582.5,312.5 582.5,438.0 820,438.0 L820,454.5 C582.5,454.5 582.5,329.0 345,329.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · Infura</title></path>
+<path d="M345,343.0 C582.5,343.0 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,359.5 345,359.5 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · MM APIs</title></path>
+<path d="M345,359.5 C582.5,359.5 582.5,240.5 820,240.5 L820,257.0 C582.5,257.0 582.5,376.0 345,376.0 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · SERVO relay</title></path>
+<path d="M345,390.0 C582.5,390.0 582.5,583.5 820,583.5 L820,600.0 C582.5,600.0 582.5,406.5 345,406.5 Z" fill="var(--l-jwt)" class="rib opt"><title>Your tracking ID → Segment</title></path>
+<path d="M345,420.5 C582.5,420.5 582.5,511.0 820,511.0 L820,527.5 C582.5,527.5 582.5,437.0 345,437.0 Z" fill="var(--muted)" class="rib"><title>Cookies → Etherscan</title></path>
+<path d="M345,451.0 C582.5,451.0 582.5,162.0 820,162.0 L820,178.5 C582.5,178.5 582.5,467.5 345,467.5 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → Consensys · MM APIs</title></path>
+<path d="M345,481.5 C582.5,481.5 582.5,257.0 820,257.0 L820,268.0 C582.5,268.0 582.5,492.5 345,492.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Consensys · SERVO relay</title></path>
+<path d="M345,492.5 C582.5,492.5 582.5,358.5 820,358.5 L820,369.5 C582.5,369.5 582.5,503.5 345,503.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Blockaid</title></path>
+<path d="M345,517.5 C582.5,517.5 582.5,268.0 820,268.0 L820,279.0 C582.5,279.0 582.5,528.5 345,528.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Consensys · SERVO relay</title></path>
+<path d="M345,542.5 C582.5,542.5 582.5,178.5 820,178.5 L820,189.5 C582.5,189.5 582.5,553.5 345,553.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · MM APIs</title></path>
+<path d="M345,553.5 C582.5,553.5 582.5,369.5 820,369.5 L820,380.5 C582.5,380.5 582.5,564.5 345,564.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Blockaid</title></path>
+<path d="M345,564.5 C582.5,564.5 582.5,454.5 820,454.5 L820,465.5 C582.5,465.5 582.5,575.5 345,575.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · Infura</title></path>
+<path d="M345,589.5 C582.5,589.5 582.5,279.0 820,279.0 L820,290.0 C582.5,290.0 582.5,600.5 345,600.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Consensys · SERVO relay</title></path>
+<path d="M345,600.5 C582.5,600.5 582.5,801.0 820,801.0 L820,812.0 C582.5,812.0 582.5,611.5 345,611.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<path d="M345,625.5 C582.5,625.5 582.5,290.0 820,290.0 L820,301.0 C582.5,301.0 582.5,636.5 345,636.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · SERVO relay</title></path>
+<path d="M345,636.5 C582.5,636.5 582.5,465.5 820,465.5 L820,476.5 C582.5,476.5 582.5,647.5 345,647.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · Infura</title></path>
+<path d="M345,647.5 C582.5,647.5 582.5,527.5 820,527.5 L820,538.5 C582.5,538.5 582.5,658.5 345,658.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Etherscan</title></path>
+<rect x="215" y="70" width="130" height="132.0" fill="var(--l-ip)"/>
+<text x="207" y="140.0" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="216.0" width="130" height="66.0" fill="var(--l-addr)"/>
+<text x="207" y="253.0" text-anchor="end" class="dl">Your address</text>
+<rect x="215" y="296.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="316.5" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="215" y="343.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="363.5" text-anchor="end" class="dl">Your login token</text>
+<rect x="215" y="390.0" width="130" height="16.5" fill="var(--l-jwt)"/>
+<text x="207" y="402.25" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="215" y="420.5" width="130" height="16.5" fill="var(--muted)"/>
+<text x="207" y="432.75" text-anchor="end" class="dl">Cookies</text>
+<rect x="215" y="451.0" width="130" height="16.5" fill="var(--l-hold)"/>
+<text x="207" y="463.25" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="215" y="481.5" width="130" height="22.0" fill="var(--l-rcpt)"/>
+<text x="207" y="496.5" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="215" y="517.5" width="130" height="11.0" fill="var(--l-intent)"/>
+<text x="207" y="527.0" text-anchor="end" class="dl">How much</text>
+<rect x="215" y="542.5" width="130" height="33.0" fill="var(--l-addr)"/>
+<text x="207" y="563.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="215" y="589.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="604.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="215" y="625.5" width="130" height="33.0" fill="var(--l-hash)"/>
+<text x="207" y="646.0" text-anchor="end" class="dl">The tx hash</text>
+<rect x="820" y="96" width="330" height="93.5" rx="6" class="co blk lie2"/>
+<text x="832" y="113" class="cn">Consensys · MM APIs</text>
+<text x="832" y="129" class="ct t-blk">can stop you</text>
+<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="157" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="207.5" width="330" height="93.5" rx="6" class="co blk lie1"/>
+<text x="832" y="224.5" class="cn">Consensys · SERVO relay</text>
+<text x="832" y="240.5" class="ct t-blk">can stop you</text>
+<text x="832" y="254.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="319.0" width="330" height="68" rx="6" class="co blk lie1"/>
+<text x="832" y="336.0" class="cn">Blockaid</text>
+<text x="832" y="352.0" class="ct t-blk">can stop you</text>
+<text x="832" y="366.0" class="ct t-lie1">can show you wrong numbers</text>
+<text x="832" y="380.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="405.0" width="330" height="71.5" rx="6" class="co blk lie2"/>
+<text x="832" y="422.0" class="cn">Consensys · Infura</text>
+<text x="832" y="438.0" class="ct t-blk">can stop you</text>
+<text x="832" y="452.0" class="ct t-lie2">can get your funds stuck</text>
+<text x="832" y="466.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="494.5" width="330" height="44.0" rx="6" class="co lie1"/>
+<text x="832" y="511.5" class="cn">Etherscan</text>
+<text x="832" y="527.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="556.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="573.5" class="cn">Segment</text>
+<text x="832" y="589.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="603.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="628.5" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="645.5" class="cn">Google · Web Store</text>
+<text x="832" y="661.5" class="ct t-blk">can stop you</text>
+<text x="832" y="675.5" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="689.5" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="714.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="731.5" class="cn">Sentry</text>
+<text x="832" y="747.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="761.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="786.5" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="803.5" class="cn">Builders · relays</text>
+<text x="832" y="819.5" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">Stop by stop</p>
   <div class="mapbox"><figure id="map-m1"></figure></div>
   <div class="legend-slot"></div>
 </section>
@@ -211,6 +425,71 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-rcpt)">R1</span>The Rabby Send</h2>
   <p class="section-sub">Same send as M1, in Rabby (v0.94.3) · mainnet · defaults · address pasted in. The contrast route: one open-source client, one backend.</p>
+  <p class="sub-h">Where your data goes</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 532.0" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="428.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<rect x="780" y="68" width="388" height="170.0" rx="10" class="cf"/>
+<text x="792" y="85" class="cfl">AWS CLOUDFRONT READS ALL OF THESE FIRST</text>
+<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Rabby · DeBank API</title></path>
+<path d="M345,86.5 C582.5,86.5 582.5,251.0 820,251.0 L820,267.5 C582.5,267.5 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Etherscan</title></path>
+<path d="M345,103.0 C582.5,103.0 582.5,321.5 820,321.5 L820,338.0 C582.5,338.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google Analytics</title></path>
+<path d="M345,119.5 C582.5,119.5 582.5,387.75 820,387.75 L820,404.25 C582.5,404.25 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Sentry</title></path>
+<path d="M345,150.0 C582.5,150.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,166.5 345,166.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Rabby · DeBank API</title></path>
+<path d="M345,180.5 C582.5,180.5 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,197.0 345,197.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Rabby · DeBank API</title></path>
+<path d="M345,211.0 C582.5,211.0 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,227.5 345,227.5 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → Rabby · DeBank API</title></path>
+<path d="M345,227.5 C582.5,227.5 582.5,338.0 820,338.0 L820,354.5 C582.5,354.5 582.5,244.0 345,244.0 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → Google Analytics</title></path>
+<path d="M345,258.0 C582.5,258.0 582.5,267.5 820,267.5 L820,284.0 C582.5,284.0 582.5,274.5 345,274.5 Z" fill="var(--muted)" class="rib opt"><title>Cookies → Etherscan</title></path>
+<path d="M345,288.5 C582.5,288.5 582.5,162.0 820,162.0 L820,173.0 C582.5,173.0 582.5,299.5 345,299.5 Z" fill="var(--muted)" class="rib"><title>Which dapp you&#x27;re on → Rabby · DeBank API</title></path>
+<path d="M345,313.5 C582.5,313.5 582.5,173.0 820,173.0 L820,184.0 C582.5,184.0 582.5,324.5 345,324.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Rabby · DeBank API</title></path>
+<path d="M345,338.5 C582.5,338.5 582.5,184.0 820,184.0 L820,195.0 C582.5,195.0 582.5,349.5 345,349.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Rabby · DeBank API</title></path>
+<path d="M345,363.5 C582.5,363.5 582.5,195.0 820,195.0 L820,206.0 C582.5,206.0 582.5,374.5 345,374.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Rabby · DeBank API</title></path>
+<path d="M345,388.5 C582.5,388.5 582.5,206.0 820,206.0 L820,217.0 C582.5,217.0 582.5,399.5 345,399.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Rabby · DeBank API</title></path>
+<path d="M345,399.5 C582.5,399.5 582.5,448.5 820,448.5 L820,459.5 C582.5,459.5 582.5,410.5 345,410.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<path d="M345,424.5 C582.5,424.5 582.5,217.0 820,217.0 L820,228.0 C582.5,228.0 582.5,435.5 345,435.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Rabby · DeBank API</title></path>
+<path d="M345,435.5 C582.5,435.5 582.5,284.0 820,284.0 L820,295.0 C582.5,295.0 582.5,446.5 345,446.5 Z" fill="var(--l-hash)" class="rib opt"><title>The tx hash → Etherscan</title></path>
+<rect x="215" y="70" width="130" height="66.0" fill="var(--l-ip)"/>
+<text x="207" y="107.0" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="150.0" width="130" height="16.5" fill="var(--l-addr)"/>
+<text x="207" y="162.25" text-anchor="end" class="dl">Your address</text>
+<rect x="215" y="180.5" width="130" height="16.5" fill="var(--l-jwt)"/>
+<text x="207" y="192.75" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="215" y="211.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="231.5" text-anchor="end" class="dl">Your device ID</text>
+<rect x="215" y="258.0" width="130" height="16.5" fill="var(--muted)"/>
+<text x="207" y="270.25" text-anchor="end" class="dl">Cookies</text>
+<rect x="215" y="288.5" width="130" height="11.0" fill="var(--muted)"/>
+<text x="207" y="298.0" text-anchor="end" class="dl">Which dapp you&#x27;re on</text>
+<rect x="215" y="313.5" width="130" height="11.0" fill="var(--l-rcpt)"/>
+<text x="207" y="323.0" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="215" y="338.5" width="130" height="11.0" fill="var(--l-intent)"/>
+<text x="207" y="348.0" text-anchor="end" class="dl">How much</text>
+<rect x="215" y="363.5" width="130" height="11.0" fill="var(--l-addr)"/>
+<text x="207" y="373.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="215" y="388.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="403.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="215" y="424.5" width="130" height="22.0" fill="var(--l-hash)"/>
+<text x="207" y="439.5" text-anchor="end" class="dl">The tx hash</text>
+<rect x="820" y="96" width="330" height="132.0" rx="6" class="co blk lie2"/>
+<text x="832" y="113" class="cn">Rabby · DeBank API</text>
+<text x="832" y="129" class="ct t-blk">can stop you</text>
+<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="157" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="246.0" width="330" height="54" rx="6" class="co lie1 opt"/>
+<text x="832" y="263.0" class="cn">Etherscan</text>
+<text x="832" y="279.0" class="ct t-lie1">can show you wrong numbers</text>
+<text x="832" y="293.0" class="ct t-idle">only if you click</text>
+<rect x="820" y="318.0" width="330" height="40" rx="6" class="co"/>
+<text x="832" y="335.0" class="cn">Google Analytics</text>
+<text x="832" y="351.0" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="376.0" width="330" height="40" rx="6" class="co"/>
+<text x="832" y="393.0" class="cn">Sentry</text>
+<text x="832" y="409.0" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="434.0" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="451.0" class="cn">Builders · relays</text>
+<text x="832" y="467.0" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">Stop by stop</p>
   <div class="mapbox"><figure id="map-r1"></figure></div>
   <div class="legend-slot"></div>
 </section>
@@ -219,6 +498,121 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-ens)">M2</span>The ENS Send</h2>
   <p class="section-sub">M1, but you type tim.eth.</p>
+  <p class="sub-h">Where your data goes</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 1041.0" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="720.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<rect x="780" y="68" width="388" height="329.0" rx="10" class="cf"/>
+<text x="792" y="85" class="cfl">CLOUDFLARE EDGE READS ALL OF THESE FIRST</text>
+<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · MM APIs</title></path>
+<path d="M345,86.5 C582.5,86.5 582.5,207.5 820,207.5 L820,224.0 C582.5,224.0 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · SERVO relay</title></path>
+<path d="M345,103.0 C582.5,103.0 582.5,325.5 820,325.5 L820,342.0 C582.5,342.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Blockaid</title></path>
+<path d="M345,119.5 C582.5,119.5 582.5,405.0 820,405.0 L820,421.5 C582.5,421.5 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · Infura</title></path>
+<path d="M345,136.0 C582.5,136.0 582.5,505.5 820,505.5 L820,522.0 C582.5,522.0 582.5,152.5 345,152.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Etherscan</title></path>
+<path d="M345,152.5 C582.5,152.5 582.5,578.0 820,578.0 L820,594.5 C582.5,594.5 582.5,169.0 345,169.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Segment</title></path>
+<path d="M345,169.0 C582.5,169.0 582.5,639.5 820,639.5 L820,656.0 C582.5,656.0 582.5,185.5 345,185.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Avatar host</title></path>
+<path d="M345,185.5 C582.5,185.5 582.5,712.25 820,712.25 L820,728.75 C582.5,728.75 582.5,202.0 345,202.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → CCIP gateway</title></path>
+<path d="M345,202.0 C582.5,202.0 582.5,810.75 820,810.75 L820,827.25 C582.5,827.25 582.5,218.5 345,218.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google · Web Store</title></path>
+<path d="M345,218.5 C582.5,218.5 582.5,889.75 820,889.75 L820,906.25 C582.5,906.25 582.5,235.0 345,235.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Sentry</title></path>
+<path d="M345,249.0 C582.5,249.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,265.5 345,265.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · MM APIs</title></path>
+<path d="M345,265.5 C582.5,265.5 582.5,224.0 820,224.0 L820,240.5 C582.5,240.5 582.5,282.0 345,282.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · SERVO relay</title></path>
+<path d="M345,282.0 C582.5,282.0 582.5,342.0 820,342.0 L820,358.5 C582.5,358.5 582.5,298.5 345,298.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Blockaid</title></path>
+<path d="M345,298.5 C582.5,298.5 582.5,421.5 820,421.5 L820,438.0 C582.5,438.0 582.5,315.0 345,315.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · Infura</title></path>
+<path d="M345,329.0 C582.5,329.0 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,345.5 345,345.5 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · MM APIs</title></path>
+<path d="M345,345.5 C582.5,345.5 582.5,438.0 820,438.0 L820,454.5 C582.5,454.5 582.5,362.0 345,362.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · Infura</title></path>
+<path d="M345,376.0 C582.5,376.0 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,392.5 345,392.5 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · MM APIs</title></path>
+<path d="M345,392.5 C582.5,392.5 582.5,240.5 820,240.5 L820,257.0 C582.5,257.0 582.5,409.0 345,409.0 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · SERVO relay</title></path>
+<path d="M345,423.0 C582.5,423.0 582.5,594.5 820,594.5 L820,611.0 C582.5,611.0 582.5,439.5 345,439.5 Z" fill="var(--l-jwt)" class="rib opt"><title>Your tracking ID → Segment</title></path>
+<path d="M345,453.5 C582.5,453.5 582.5,522.0 820,522.0 L820,538.5 C582.5,538.5 582.5,470.0 345,470.0 Z" fill="var(--muted)" class="rib"><title>Cookies → Etherscan</title></path>
+<path d="M345,484.0 C582.5,484.0 582.5,162.0 820,162.0 L820,178.5 C582.5,178.5 582.5,500.5 345,500.5 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → Consensys · MM APIs</title></path>
+<path d="M345,514.5 C582.5,514.5 582.5,454.5 820,454.5 L820,465.5 C582.5,465.5 582.5,525.5 345,525.5 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → Consensys · Infura</title></path>
+<path d="M345,525.5 C582.5,525.5 582.5,656.0 820,656.0 L820,667.0 C582.5,667.0 582.5,536.5 345,536.5 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → Avatar host</title></path>
+<path d="M345,536.5 C582.5,536.5 582.5,728.75 820,728.75 L820,739.75 C582.5,739.75 582.5,547.5 345,547.5 Z" fill="var(--l-ens)" class="rib opt"><title>The name you typed → CCIP gateway</title></path>
+<path d="M345,561.5 C582.5,561.5 582.5,257.0 820,257.0 L820,268.0 C582.5,268.0 582.5,572.5 345,572.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Consensys · SERVO relay</title></path>
+<path d="M345,572.5 C582.5,572.5 582.5,358.5 820,358.5 L820,369.5 C582.5,369.5 582.5,583.5 345,583.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Blockaid</title></path>
+<path d="M345,597.5 C582.5,597.5 582.5,268.0 820,268.0 L820,279.0 C582.5,279.0 582.5,608.5 345,608.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Consensys · SERVO relay</title></path>
+<path d="M345,622.5 C582.5,622.5 582.5,178.5 820,178.5 L820,189.5 C582.5,189.5 582.5,633.5 345,633.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · MM APIs</title></path>
+<path d="M345,633.5 C582.5,633.5 582.5,369.5 820,369.5 L820,380.5 C582.5,380.5 582.5,644.5 345,644.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Blockaid</title></path>
+<path d="M345,644.5 C582.5,644.5 582.5,465.5 820,465.5 L820,476.5 C582.5,476.5 582.5,655.5 345,655.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · Infura</title></path>
+<path d="M345,669.5 C582.5,669.5 582.5,279.0 820,279.0 L820,290.0 C582.5,290.0 582.5,680.5 345,680.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Consensys · SERVO relay</title></path>
+<path d="M345,680.5 C582.5,680.5 582.5,957.5 820,957.5 L820,968.5 C582.5,968.5 582.5,691.5 345,691.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<path d="M345,705.5 C582.5,705.5 582.5,290.0 820,290.0 L820,301.0 C582.5,301.0 582.5,716.5 345,716.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · SERVO relay</title></path>
+<path d="M345,716.5 C582.5,716.5 582.5,476.5 820,476.5 L820,487.5 C582.5,487.5 582.5,727.5 345,727.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · Infura</title></path>
+<path d="M345,727.5 C582.5,727.5 582.5,538.5 820,538.5 L820,549.5 C582.5,549.5 582.5,738.5 345,738.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Etherscan</title></path>
+<rect x="215" y="70" width="130" height="165.0" fill="var(--l-ip)"/>
+<text x="207" y="156.5" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="249.0" width="130" height="66.0" fill="var(--l-addr)"/>
+<text x="207" y="286.0" text-anchor="end" class="dl">Your address</text>
+<rect x="215" y="329.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="349.5" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="215" y="376.0" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="396.5" text-anchor="end" class="dl">Your login token</text>
+<rect x="215" y="423.0" width="130" height="16.5" fill="var(--l-jwt)"/>
+<text x="207" y="435.25" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="215" y="453.5" width="130" height="16.5" fill="var(--muted)"/>
+<text x="207" y="465.75" text-anchor="end" class="dl">Cookies</text>
+<rect x="215" y="484.0" width="130" height="16.5" fill="var(--l-hold)"/>
+<text x="207" y="496.25" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="215" y="514.5" width="130" height="33.0" fill="var(--l-ens)"/>
+<text x="207" y="535.0" text-anchor="end" class="dl">The name you typed</text>
+<rect x="215" y="561.5" width="130" height="22.0" fill="var(--l-rcpt)"/>
+<text x="207" y="576.5" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="215" y="597.5" width="130" height="11.0" fill="var(--l-intent)"/>
+<text x="207" y="607.0" text-anchor="end" class="dl">How much</text>
+<rect x="215" y="622.5" width="130" height="33.0" fill="var(--l-addr)"/>
+<text x="207" y="643.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="215" y="669.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="684.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="215" y="705.5" width="130" height="33.0" fill="var(--l-hash)"/>
+<text x="207" y="726.0" text-anchor="end" class="dl">The tx hash</text>
+<rect x="820" y="96" width="330" height="93.5" rx="6" class="co blk lie2"/>
+<text x="832" y="113" class="cn">Consensys · MM APIs</text>
+<text x="832" y="129" class="ct t-blk">can stop you</text>
+<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="157" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="207.5" width="330" height="93.5" rx="6" class="co blk lie1"/>
+<text x="832" y="224.5" class="cn">Consensys · SERVO relay</text>
+<text x="832" y="240.5" class="ct t-blk">can stop you</text>
+<text x="832" y="254.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="319.0" width="330" height="68" rx="6" class="co blk lie1"/>
+<text x="832" y="336.0" class="cn">Blockaid</text>
+<text x="832" y="352.0" class="ct t-blk">can stop you</text>
+<text x="832" y="366.0" class="ct t-lie1">can show you wrong numbers</text>
+<text x="832" y="380.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="405.0" width="330" height="82.5" rx="6" class="co blk lie2"/>
+<text x="832" y="422.0" class="cn">Consensys · Infura</text>
+<text x="832" y="438.0" class="ct t-blk">can stop you</text>
+<text x="832" y="452.0" class="ct t-lie2">can make you lose funds</text>
+<text x="832" y="466.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="505.5" width="330" height="44.0" rx="6" class="co lie1"/>
+<text x="832" y="522.5" class="cn">Etherscan</text>
+<text x="832" y="538.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="567.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="584.5" class="cn">Segment</text>
+<text x="832" y="600.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="614.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="639.5" width="330" height="27.5" rx="6" class="co"/>
+<text x="832" y="656.5" class="cn">Avatar host</text>
+<rect x="820" y="685.0" width="330" height="82" rx="6" class="co blk lie2 opt"/>
+<text x="832" y="702.0" class="cn">CCIP gateway</text>
+<text x="832" y="718.0" class="ct t-blk">can stop you</text>
+<text x="832" y="732.0" class="ct t-lie2">can make you lose funds</text>
+<text x="832" y="746.0" class="ct t-txi">writes into your tx</text>
+<text x="832" y="760.0" class="ct t-idle">only if you click</text>
+<rect x="820" y="785.0" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="802.0" class="cn">Google · Web Store</text>
+<text x="832" y="818.0" class="ct t-blk">can stop you</text>
+<text x="832" y="832.0" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="846.0" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="871.0" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="888.0" class="cn">Sentry</text>
+<text x="832" y="904.0" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="918.0" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="943.0" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="960.0" class="cn">Builders · relays</text>
+<text x="832" y="976.0" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">Stop by stop</p>
   <div class="mapbox"><figure id="map-m2"></figure></div>
   <div class="legend-slot"></div>
 </section>
@@ -227,6 +621,24 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--self)">M0</span>The Mountain Man</h2>
   <p class="section-sub">M1&#x27;s actions against his own node. Green rings: stations he runs.</p>
+  <p class="sub-h">Where your data goes</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 213.5" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="104.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<path d="M345,70 C582.5,70 582.5,70.0 820,70.0 L820,86.5 C582.5,86.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Ethereum p2p</title></path>
+<path d="M345,100.5 C582.5,100.5 582.5,86.5 820,86.5 L820,97.5 C582.5,97.5 582.5,111.5 345,111.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Ethereum p2p</title></path>
+<path d="M345,111.5 C582.5,111.5 582.5,130.0 820,130.0 L820,141.0 C582.5,141.0 582.5,122.5 345,122.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<rect x="215" y="70" width="130" height="16.5" fill="var(--l-ip)"/>
+<text x="207" y="82.25" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="100.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="115.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="820" y="70" width="330" height="27.5" rx="6" class="co"/>
+<text x="832" y="87" class="cn">Ethereum p2p</text>
+<rect x="820" y="115.5" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="132.5" class="cn">Builders · relays</text>
+<text x="832" y="148.5" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">Stop by stop</p>
   <div class="mapbox"><figure id="map-m0"></figure></div>
   <div class="legend-slot"></div>
 </section>
@@ -235,6 +647,165 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--blue)">M3</span>The Aave Deposit</h2>
   <p class="section-sub">app.aave.com + MetaMask · deposit ETH. The dApp&#x27;s stations, then the M1 track.</p>
+  <p class="sub-h">Where your data goes</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 1601.5" width="100%" style="max-width:1180px;display:block">
+<rect x="24" y="36" width="331" height="984.5" rx="14" class="house"/>
+<text x="40" y="58" class="housel">YOUR MACHINE</text>
+<rect x="780" y="68" width="388" height="473.0" rx="10" class="cf"/>
+<text x="792" y="85" class="cfl">CLOUDFLARE EDGE READS ALL OF THESE FIRST</text>
+<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · MM APIs</title></path>
+<path d="M345,86.5 C582.5,86.5 582.5,207.5 820,207.5 L820,224.0 C582.5,224.0 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · SERVO relay</title></path>
+<path d="M345,103.0 C582.5,103.0 582.5,325.5 820,325.5 L820,342.0 C582.5,342.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Blockaid</title></path>
+<path d="M345,119.5 C582.5,119.5 582.5,430.75 820,430.75 L820,447.25 C582.5,447.25 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Avara · app.aave.com</title></path>
+<path d="M345,136.0 C582.5,136.0 582.5,502.75 820,502.75 L820,519.25 C582.5,519.25 582.5,152.5 345,152.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Merkl</title></path>
+<path d="M345,152.5 C582.5,152.5 582.5,549.0 820,549.0 L820,565.5 C582.5,565.5 582.5,169.0 345,169.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · Infura</title></path>
+<path d="M345,169.0 C582.5,169.0 582.5,640.75 820,640.75 L820,657.25 C582.5,657.25 582.5,185.5 345,185.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Alchemy</title></path>
+<path d="M345,185.5 C582.5,185.5 582.5,710.5 820,710.5 L820,727.0 C582.5,727.0 582.5,202.0 345,202.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Etherscan</title></path>
+<path d="M345,202.0 C582.5,202.0 582.5,776.0 820,776.0 L820,792.5 C582.5,792.5 582.5,218.5 345,218.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → ACI · aavechan</title></path>
+<path d="M345,218.5 C582.5,218.5 582.5,834.0 820,834.0 L820,850.5 C582.5,850.5 582.5,235.0 345,235.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Amplitude</title></path>
+<path d="M345,235.0 C582.5,235.0 582.5,906.0 820,906.0 L820,922.5 C582.5,922.5 582.5,251.5 345,251.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Compliance vendor</title></path>
+<path d="M345,251.5 C582.5,251.5 582.5,974.5 820,974.5 L820,991.0 C582.5,991.0 582.5,268.0 345,268.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → ENS metadata</title></path>
+<path d="M345,268.0 C582.5,268.0 582.5,1036.0 820,1036.0 L820,1052.5 C582.5,1052.5 582.5,284.5 345,284.5 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Segment</title></path>
+<path d="M345,284.5 C582.5,284.5 582.5,1101.0 820,1101.0 L820,1117.5 C582.5,1117.5 582.5,301.0 345,301.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → The Graph</title></path>
+<path d="M345,301.0 C582.5,301.0 582.5,1159.0 820,1159.0 L820,1175.5 C582.5,1175.5 582.5,317.5 345,317.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → WalletConnect</title></path>
+<path d="M345,317.5 C582.5,317.5 582.5,1218.25 820,1218.25 L820,1234.75 C582.5,1234.75 582.5,334.0 345,334.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → CoinGecko</title></path>
+<path d="M345,334.0 C582.5,334.0 582.5,1269.25 820,1269.25 L820,1285.75 C582.5,1285.75 582.5,350.5 345,350.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Family</title></path>
+<path d="M345,350.5 C582.5,350.5 582.5,1327.25 820,1327.25 L820,1343.75 C582.5,1343.75 582.5,367.0 345,367.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → GitHub</title></path>
+<path d="M345,367.0 C582.5,367.0 582.5,1399.25 820,1399.25 L820,1415.75 C582.5,1415.75 582.5,383.5 345,383.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google · Web Store</title></path>
+<path d="M345,383.5 C582.5,383.5 582.5,1464.25 820,1464.25 L820,1480.75 C582.5,1480.75 582.5,400.0 345,400.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Sentry</title></path>
+<path d="M345,414.0 C582.5,414.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,430.5 345,430.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · MM APIs</title></path>
+<path d="M345,430.5 C582.5,430.5 582.5,224.0 820,224.0 L820,240.5 C582.5,240.5 582.5,447.0 345,447.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · SERVO relay</title></path>
+<path d="M345,447.0 C582.5,447.0 582.5,342.0 820,342.0 L820,358.5 C582.5,358.5 582.5,463.5 345,463.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Blockaid</title></path>
+<path d="M345,463.5 C582.5,463.5 582.5,565.5 820,565.5 L820,582.0 C582.5,582.0 582.5,480.0 345,480.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · Infura</title></path>
+<path d="M345,480.0 C582.5,480.0 582.5,657.25 820,657.25 L820,673.75 C582.5,673.75 582.5,496.5 345,496.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Alchemy</title></path>
+<path d="M345,496.5 C582.5,496.5 582.5,792.5 820,792.5 L820,809.0 C582.5,809.0 582.5,513.0 345,513.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → ACI · aavechan</title></path>
+<path d="M345,513.0 C582.5,513.0 582.5,850.5 820,850.5 L820,867.0 C582.5,867.0 582.5,529.5 345,529.5 Z" fill="var(--l-addr)" class="rib opt"><title>Your address → Amplitude</title></path>
+<path d="M345,529.5 C582.5,529.5 582.5,922.5 820,922.5 L820,939.0 C582.5,939.0 582.5,546.0 345,546.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Compliance vendor</title></path>
+<path d="M345,546.0 C582.5,546.0 582.5,991.0 820,991.0 L820,1007.5 C582.5,1007.5 582.5,562.5 345,562.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → ENS metadata</title></path>
+<path d="M345,562.5 C582.5,562.5 582.5,1117.5 820,1117.5 L820,1134.0 C582.5,1134.0 582.5,579.0 345,579.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → The Graph</title></path>
+<path d="M345,579.0 C582.5,579.0 582.5,1175.5 820,1175.5 L820,1192.0 C582.5,1192.0 582.5,595.5 345,595.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → WalletConnect</title></path>
+<path d="M345,609.5 C582.5,609.5 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,626.0 345,626.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · MM APIs</title></path>
+<path d="M345,626.0 C582.5,626.0 582.5,582.0 820,582.0 L820,598.5 C582.5,598.5 582.5,642.5 345,642.5 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · Infura</title></path>
+<path d="M345,656.5 C582.5,656.5 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,673.0 345,673.0 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · MM APIs</title></path>
+<path d="M345,673.0 C582.5,673.0 582.5,240.5 820,240.5 L820,257.0 C582.5,257.0 582.5,689.5 345,689.5 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · SERVO relay</title></path>
+<path d="M345,703.5 C582.5,703.5 582.5,1052.5 820,1052.5 L820,1069.0 C582.5,1069.0 582.5,720.0 345,720.0 Z" fill="var(--l-jwt)" class="rib opt"><title>Your tracking ID → Segment</title></path>
+<path d="M345,734.0 C582.5,734.0 582.5,727.0 820,727.0 L820,743.5 C582.5,743.5 582.5,750.5 345,750.5 Z" fill="var(--muted)" class="rib"><title>Cookies → Etherscan</title></path>
+<path d="M345,764.5 C582.5,764.5 582.5,162.0 820,162.0 L820,178.5 C582.5,178.5 582.5,781.0 345,781.0 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → Consensys · MM APIs</title></path>
+<path d="M345,795.0 C582.5,795.0 582.5,673.75 820,673.75 L820,690.25 C582.5,690.25 582.5,811.5 345,811.5 Z" fill="var(--l-hold)" class="rib"><title>Your balances → Alchemy</title></path>
+<path d="M345,825.5 C582.5,825.5 582.5,257.0 820,257.0 L820,268.0 C582.5,268.0 582.5,836.5 345,836.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Consensys · SERVO relay</title></path>
+<path d="M345,836.5 C582.5,836.5 582.5,358.5 820,358.5 L820,369.5 C582.5,369.5 582.5,847.5 345,847.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Blockaid</title></path>
+<path d="M345,861.5 C582.5,861.5 582.5,268.0 820,268.0 L820,279.0 C582.5,279.0 582.5,872.5 345,872.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Consensys · SERVO relay</title></path>
+<path d="M345,886.5 C582.5,886.5 582.5,178.5 820,178.5 L820,189.5 C582.5,189.5 582.5,897.5 345,897.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · MM APIs</title></path>
+<path d="M345,897.5 C582.5,897.5 582.5,369.5 820,369.5 L820,380.5 C582.5,380.5 582.5,908.5 345,908.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Blockaid</title></path>
+<path d="M345,908.5 C582.5,908.5 582.5,598.5 820,598.5 L820,609.5 C582.5,609.5 582.5,919.5 345,919.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · Infura</title></path>
+<path d="M345,933.5 C582.5,933.5 582.5,279.0 820,279.0 L820,290.0 C582.5,290.0 582.5,944.5 345,944.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Consensys · SERVO relay</title></path>
+<path d="M345,944.5 C582.5,944.5 582.5,1518.0 820,1518.0 L820,1529.0 C582.5,1529.0 582.5,955.5 345,955.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
+<path d="M345,969.5 C582.5,969.5 582.5,290.0 820,290.0 L820,301.0 C582.5,301.0 582.5,980.5 345,980.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · SERVO relay</title></path>
+<path d="M345,980.5 C582.5,980.5 582.5,609.5 820,609.5 L820,620.5 C582.5,620.5 582.5,991.5 345,991.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · Infura</title></path>
+<path d="M345,991.5 C582.5,991.5 582.5,743.5 820,743.5 L820,754.5 C582.5,754.5 582.5,1002.5 345,1002.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Etherscan</title></path>
+<rect x="215" y="70" width="130" height="330.0" fill="var(--l-ip)"/>
+<text x="207" y="239.0" text-anchor="end" class="dl">Your IP address</text>
+<rect x="215" y="414.0" width="130" height="181.5" fill="var(--l-addr)"/>
+<text x="207" y="508.75" text-anchor="end" class="dl">Your address</text>
+<rect x="215" y="609.5" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="630.0" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="215" y="656.5" width="130" height="33.0" fill="var(--l-jwt)"/>
+<text x="207" y="677.0" text-anchor="end" class="dl">Your login token</text>
+<rect x="215" y="703.5" width="130" height="16.5" fill="var(--l-jwt)"/>
+<text x="207" y="715.75" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="215" y="734.0" width="130" height="16.5" fill="var(--muted)"/>
+<text x="207" y="746.25" text-anchor="end" class="dl">Cookies</text>
+<rect x="215" y="764.5" width="130" height="16.5" fill="var(--l-hold)"/>
+<text x="207" y="776.75" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="215" y="795.0" width="130" height="16.5" fill="var(--l-hold)"/>
+<text x="207" y="807.25" text-anchor="end" class="dl">Your balances</text>
+<rect x="215" y="825.5" width="130" height="22.0" fill="var(--l-rcpt)"/>
+<text x="207" y="840.5" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="215" y="861.5" width="130" height="11.0" fill="var(--l-intent)"/>
+<text x="207" y="871.0" text-anchor="end" class="dl">How much</text>
+<rect x="215" y="886.5" width="130" height="33.0" fill="var(--l-addr)"/>
+<text x="207" y="907.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="215" y="933.5" width="130" height="22.0" fill="var(--l-signed)"/>
+<text x="207" y="948.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
+<rect x="215" y="969.5" width="130" height="33.0" fill="var(--l-hash)"/>
+<text x="207" y="990.0" text-anchor="end" class="dl">The tx hash</text>
+<rect x="820" y="96" width="330" height="93.5" rx="6" class="co blk lie2"/>
+<text x="832" y="113" class="cn">Consensys · MM APIs</text>
+<text x="832" y="129" class="ct t-blk">can stop you</text>
+<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="157" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="207.5" width="330" height="93.5" rx="6" class="co blk lie1"/>
+<text x="832" y="224.5" class="cn">Consensys · SERVO relay</text>
+<text x="832" y="240.5" class="ct t-blk">can stop you</text>
+<text x="832" y="254.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="319.0" width="330" height="68" rx="6" class="co blk lie1"/>
+<text x="832" y="336.0" class="cn">Blockaid</text>
+<text x="832" y="352.0" class="ct t-blk">can stop you</text>
+<text x="832" y="366.0" class="ct t-lie1">can show you wrong numbers</text>
+<text x="832" y="380.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="405.0" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="422.0" class="cn">Avara · app.aave.com</text>
+<text x="832" y="438.0" class="ct t-blk">can stop you</text>
+<text x="832" y="452.0" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="466.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="491.0" width="330" height="40" rx="6" class="co lie1"/>
+<text x="832" y="508.0" class="cn">Merkl</text>
+<text x="832" y="524.0" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="549.0" width="330" height="71.5" rx="6" class="co blk lie2"/>
+<text x="832" y="566.0" class="cn">Consensys · Infura</text>
+<text x="832" y="582.0" class="ct t-blk">can stop you</text>
+<text x="832" y="596.0" class="ct t-lie2">can get your funds stuck</text>
+<text x="832" y="610.0" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="638.5" width="330" height="54" rx="6" class="co blk lie1"/>
+<text x="832" y="655.5" class="cn">Alchemy</text>
+<text x="832" y="671.5" class="ct t-blk">can stop you</text>
+<text x="832" y="685.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="710.5" width="330" height="44.0" rx="6" class="co lie1"/>
+<text x="832" y="727.5" class="cn">Etherscan</text>
+<text x="832" y="743.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="772.5" width="330" height="40" rx="6" class="co lie1"/>
+<text x="832" y="789.5" class="cn">ACI · aavechan</text>
+<text x="832" y="805.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="830.5" width="330" height="40" rx="6" class="co opt"/>
+<text x="832" y="847.5" class="cn">Amplitude</text>
+<text x="832" y="863.5" class="ct t-idle">only if you click</text>
+<rect x="820" y="888.5" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="905.5" class="cn">Compliance vendor</text>
+<text x="832" y="921.5" class="ct t-blk">can stop you</text>
+<text x="832" y="935.5" class="ct t-lie2">can get your funds stuck</text>
+<text x="832" y="949.5" class="ct t-txi">writes into your tx</text>
+<rect x="820" y="974.5" width="330" height="33.0" rx="6" class="co"/>
+<text x="832" y="991.5" class="cn">ENS metadata</text>
+<rect x="820" y="1025.5" width="330" height="54" rx="6" class="co opt"/>
+<text x="832" y="1042.5" class="cn">Segment</text>
+<text x="832" y="1058.5" class="ct t-idle">even when you do nothing</text>
+<text x="832" y="1072.5" class="ct t-idle">only if you opted in</text>
+<rect x="820" y="1097.5" width="330" height="40" rx="6" class="co lie1"/>
+<text x="832" y="1114.5" class="cn">The Graph</text>
+<text x="832" y="1130.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="1155.5" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="1172.5" class="cn">WalletConnect</text>
+<text x="832" y="1188.5" class="ct t-blk">can stop you</text>
+<rect x="820" y="1213.5" width="330" height="26" rx="6" class="co"/>
+<text x="832" y="1230.5" class="cn">CoinGecko</text>
+<rect x="820" y="1257.5" width="330" height="40" rx="6" class="co lie1"/>
+<text x="832" y="1274.5" class="cn">Family</text>
+<text x="832" y="1290.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="1315.5" width="330" height="40" rx="6" class="co lie1"/>
+<text x="832" y="1332.5" class="cn">GitHub</text>
+<text x="832" y="1348.5" class="ct t-lie1">can show you wrong numbers</text>
+<rect x="820" y="1373.5" width="330" height="68" rx="6" class="co blk lie2"/>
+<text x="832" y="1390.5" class="cn">Google · Web Store</text>
+<text x="832" y="1406.5" class="ct t-blk">can stop you</text>
+<text x="832" y="1420.5" class="ct t-lie2">can swap the code you run</text>
+<text x="832" y="1434.5" class="ct t-idle">even when you do nothing</text>
+<rect x="820" y="1459.5" width="330" height="26" rx="6" class="co"/>
+<text x="832" y="1476.5" class="cn">Sentry</text>
+<rect x="820" y="1503.5" width="330" height="40" rx="6" class="co blk"/>
+<text x="832" y="1520.5" class="cn">Builders · relays</text>
+<text x="832" y="1536.5" class="ct t-blk">can stop you</text>
+</svg></div>
+  <p class="sub-h">Stop by stop</p>
   <div class="mapbox"><figure id="map-m3"></figure></div>
   <div class="legend-slot"></div>
 </section>
@@ -243,6 +814,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-hold)">N</span>Night Service</h2>
   <p class="section-sub">Runs whenever MetaMask is unlocked. No send required.</p>
+
   <div class="mapbox"><figure id="map-night"></figure></div>
   <div class="legend-slot"></div>
 </section>
