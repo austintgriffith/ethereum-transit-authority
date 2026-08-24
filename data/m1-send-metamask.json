@@ -1,0 +1,835 @@
+{
+  "id": "m1-send-metamask",
+  "title": "The Normie Send",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "desktop Chrome",
+    "network": "mainnet",
+    "settings": "defaults",
+    "captures": [
+      {
+        "run": "20260821-193024-send-eth",
+        "tx": "0xf6bd63559134c01b43e2a84ac9a740e84ceab7009f418500b77c9fa02a4692c1"
+      }
+    ]
+  },
+  "toggles": [
+    "custom_rpc",
+    "stx_off",
+    "basic_functionality_off",
+    "metametrics_off",
+    "security_alerts_off",
+    "profile_sync_off"
+  ],
+  "_comment": "phase=background steps render as the Night Service map, not on this route's track. Steps sharing a `station` code merge into one transit station. `transit.hide` keeps a step out of the subway view (still counted, still in the ledger view).",
+  "steps": [
+    {
+      "id": "ext-update",
+      "phase": "background",
+      "name": "Google · extension update",
+      "host": "clients2.google.com",
+      "actor": "google",
+      "purpose": "Ship and silently update the extension bundle",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "the code that runs",
+      "can_block": true,
+      "on_failure": "silent",
+      "failure_note": "stale version keeps running",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "a malicious update lies about everything below, including the toggles"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · chrome runtime"
+      },
+      "notes": "Distribution chokepoint: Google decides which version, or whether, you get.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "feature-flags",
+      "phase": "background",
+      "name": "Feature flags / kill-switches",
+      "host": "client-config.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Fetch kill-switches / rollout flags (incl. STX, accounts-API chains)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "gates almost every path below",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "last-session flags persist",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "remote flags silently change which paths the wallet takes"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/remote-feature-flag-controller/src/constants.ts:4"
+      },
+      "notes": "15-min cache; refetches on every UI open. MetaMetrics id is NOT sent (used only locally for bucketing).",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "phishing-list",
+      "phase": "background",
+      "name": "Phishing + C2 lists",
+      "host": "phishing-detection.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Download allow/blocklist for dapp-origin checks",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "local testOrigin trie",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "keeps last lists",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "an unflagged phishing site loads without warning"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/phishing-controller/src/PhishingController.ts:79"
+      },
+      "notes": "No user data — only the client's last-updated timestamp. Pref usePhishDetect (default on); not in the Basic-functionality bundle.",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "c2-list",
+      "phase": "background",
+      "name": "C2 domain blocklist",
+      "host": "client-side-detection.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Malware C2-domain blocklist (hashed hostnames)",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "local isBlockedRequest check",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/phishing-controller/src/PhishingController.ts:84"
+      },
+      "notes": "Timestamp is minute-rounded on purpose to resist fingerprinting. Hostnames hashed locally, never sent.",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "token-list",
+      "phase": "background",
+      "name": "Token list",
+      "host": "token.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Canonical ERC-20 metadata for the chain",
+      "need": "T",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "token detection + display",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "cached list",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong list can mislabel what a token is"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/token-service.ts:11"
+      },
+      "notes": "Chain id only; no address.",
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "spot-prices",
+      "phase": "background",
+      "name": "Price API",
+      "host": "price.api.cx.metamask.io/v3/spot-prices",
+      "actor": "consensys-apis",
+      "purpose": "USD/fiat value of holdings",
+      "need": "R",
+      "carries": [
+        "ip",
+        "token_list"
+      ],
+      "returns": "fiat display",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "stale rates",
+      "repeat": "↻ 3 min",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "wrong fiat values on everything you hold"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/token-prices-service/codefi-v2.ts:366"
+      },
+      "notes": "LEAKS HOLDINGS: sends every tracked token contract address as CAIP-19 ids every 3 min, tied to your IP. Self-host: ethprices."
+    },
+    {
+      "id": "fiat-rates",
+      "phase": "background",
+      "name": "Fiat exchange rates",
+      "host": "price.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Native→fiat conversion",
+      "need": "R",
+      "carries": [
+        "ip"
+      ],
+      "returns": "fiat display",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "fallback then null",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "code",
+        "ref": "core/assets-controllers/src/token-prices-service/codefi-v2.ts:411"
+      },
+      "notes": "Currency codes only."
+    },
+    {
+      "id": "accounts-balances",
+      "phase": "background",
+      "name": "Accounts API",
+      "host": "accounts.api.cx.metamask.io/v4/multiaccount/balances",
+      "actor": "consensys-apis",
+      "purpose": "Indexed native + ERC-20 balances across chains",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses",
+        "auth_token"
+      ],
+      "returns": "balance display",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "falls back to RPC multicall",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "shows balances that aren't yours to spend"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/multi-chain-accounts-service/api-balance-fetcher.ts:105"
+      },
+      "notes": "BIGGEST IDENTITY LEAK: default useMultiAccountBalanceChecker sends ALL your account addresses (cartesian × chains) PLUS a profile-sync JWT that ties them to one identity. Gated by remote flag assetsAccountApiBalances.",
+      "fallback": {
+        "desc": "Multicall3 balanceOf via mainnet.infura.io",
+        "independent": false,
+        "note": "Infura and the accounts API are both Consensys"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "balance-fallback",
+      "phase": "background",
+      "name": "Balance fallback (multicall)",
+      "host": "mainnet.infura.io (eth_call Multicall3)",
+      "actor": "infura",
+      "purpose": "balanceOf via Multicall3 when accounts-API not used",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "balance display",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/multicall.ts:358"
+      },
+      "notes": "Default path when the remote flag list is empty. Same addresses, now to the RPC provider instead.",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "nft-detection",
+      "phase": "background",
+      "name": "NFT detection",
+      "host": "nft.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Auto-detect owned NFTs",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "NFT display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "code",
+        "ref": "core/assets-controllers/src/NftDetectionController.ts:505"
+      },
+      "notes": "Your address is in the URL path. Pref useNftDetection default ON on fresh install.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "defi-positions",
+      "phase": "background",
+      "name": "DeFi positions",
+      "host": "defiadapters.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Aave/Lido/etc. positions for the account",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "positions display",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "stores null",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/DeFiPositionsController/fetch-positions.ts:61"
+      },
+      "notes": "Also fires in the background on every confirmed tx, not just on a timer. Address in URL path.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "icons",
+      "phase": "background",
+      "name": "Token / DeFi icons",
+      "host": "static.cx.metamask.io",
+      "actor": "consensys-apis",
+      "via": [
+        "aws"
+      ],
+      "purpose": "PNG icons by token address",
+      "need": "T",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "display",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "broken image",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/assets-controllers/src/assetsUtil.ts:138"
+      },
+      "notes": "Served from AWS CloudFront + S3, a different edge than the Cloudflare APIs. Self-host: ethicons."
+    },
+    {
+      "id": "block-poll",
+      "phase": "background",
+      "name": "Infura · block poll",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "eth_blockNumber every ~20s while unlocked",
+      "need": "R",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "head block",
+      "can_block": true,
+      "on_failure": "degrade",
+      "repeat": "↻ 20 s",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a frozen head hides everything that happens next"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/network-controller"
+      },
+      "notes": "A constant IP↔session beacon to the RPC independent of any transaction.",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "segment",
+      "phase": "background",
+      "name": "Segment analytics",
+      "host": "api.segment.io",
+      "actor": "segment",
+      "purpose": "MetaMetrics behavioural events (if opted in)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "metametrics_id"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "metametrics_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · ext/development/README.md:38"
+      },
+      "notes": "Opt-in at onboarding. A stable id ties events together.",
+      "optional": true
+    },
+    {
+      "id": "sentry",
+      "phase": "background",
+      "name": "Sentry crash reports",
+      "host": "o4508132327620608.ingest.de.sentry.io",
+      "actor": "sentry",
+      "purpose": "Error/crash reports (if opted in)",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "crash triage",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "metametrics_off",
+      "provenance": {
+        "status": "code",
+        "ref": "ext/app/scripts/lib/setupSentry.js"
+      },
+      "notes": "On Google Cloud (EU). Opt-in.",
+      "optional": true
+    },
+    {
+      "id": "screen-recipient",
+      "phase": "discover",
+      "name": "Blockaid · screen recipient",
+      "host": "security-alerts.api.cx.metamask.io/address/evm/scan",
+      "actor": "blockaid",
+      "purpose": "Address trust + known-contract labels",
+      "need": "T",
+      "carries": [
+        "ip",
+        "recipient",
+        "selected_address"
+      ],
+      "returns": "warning banner",
+      "can_block": true,
+      "on_failure": "silent",
+      "failure_note": "no recommendation",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "blesses a malicious recipient, or flags a good one"
+      },
+      "removable_by": "security_alerts_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/phishing-controller/src/PhishingController.ts:1400"
+      },
+      "notes": "Blockaid (via Cloudflare) sees sender+recipient before you sign; 60s in-memory cache.",
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "nonce",
+      "phase": "construct",
+      "name": "Infura · nonce",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "eth_getTransactionCount",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "nonce to sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong nonce leaves the tx stuck or replaced"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/transaction-controller"
+      },
+      "notes": "Wallets sometimes cache+increment locally under rapid-fire txs.",
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "gas-fees",
+      "phase": "construct",
+      "name": "Gas oracle",
+      "host": "gas.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "suggestedGasFees (priority-fee oracle)",
+      "need": "C",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "fee to sign",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "falls back to eth_feeHistory on RPC",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "an inflated tip is money gone — small, silent, every tx"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · ext/wallet-init/instance-options/gas-fee-controller.ts:39"
+      },
+      "notes": "Base fee is free from the chain; only the tip estimate needs this. Self-host: eth_feeHistory.",
+      "tx_input": "field",
+      "fallback": {
+        "desc": "eth_feeHistory on the default RPC (mainnet.infura.io)",
+        "independent": false,
+        "note": "Infura and the gas oracle are both Consensys"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "estimate-gas",
+      "phase": "construct",
+      "name": "Infura · estimate gas",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "eth_estimateGas (21000 for a plain send)",
+      "need": "C",
+      "carries": [
+        "ip",
+        "unsigned_tx"
+      ],
+      "returns": "gas limit",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "constant for a plain send",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a too-low limit reverts the tx; gas is still burned"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/transaction-controller"
+      },
+      "notes": "Carries the full unsigned tx to the RPC.",
+      "tx_input": "field",
+      "fixed_by": [
+        "open-simulation",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "simulation",
+      "phase": "construct",
+      "name": "Simulation (tx-sentinel)",
+      "host": "tx-sentinel-ethereum-mainnet.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "infura_simulateTransactions balance-change preview",
+      "need": "C",
+      "carries": [
+        "ip",
+        "unsigned_tx"
+      ],
+      "returns": "you-will-send preview",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "no preview",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the preview you approve differs from what the chain will do"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/transaction-controller/src/api/simulation-api.ts:19"
+      },
+      "notes": "Full unsigned tx (from/to/value/data) sent before you sign.",
+      "tx_input": "gate",
+      "fixed_by": [
+        "open-simulation"
+      ]
+    },
+    {
+      "id": "security-alert",
+      "phase": "construct",
+      "name": "Blockaid · tx verdict",
+      "host": "security-alerts.api.cx.metamask.io/validate",
+      "actor": "blockaid",
+      "purpose": "Malicious-tx verdict",
+      "need": "T",
+      "carries": [
+        "ip",
+        "unsigned_tx"
+      ],
+      "returns": "warning banner",
+      "can_block": true,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "no warning on a draining tx"
+      },
+      "removable_by": "security_alerts_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · ext/builds.yml:349"
+      },
+      "notes": "Full unsigned tx to Blockaid. PPOM data files also pulled from static.cx (AWS).",
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "stx-broadcast",
+      "phase": "broadcast",
+      "name": "Smart Tx relay (SERVO)",
+      "host": "transaction.api.cx.metamask.io (submitTransactions)",
+      "actor": "servo",
+      "purpose": "POST signed raw tx for private builder auction",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount",
+        "auth_token"
+      ],
+      "returns": "inclusion",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "fails the tx unless the earlier getFees call failed",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx — can only delay, drop, or front-run its contents"
+      },
+      "removable_by": "stx_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/smart-transactions-controller/src/constants.ts:1"
+      },
+      "notes": "DEFAULT PATH. Skips the public mempool AND your RPC. With STX off or a custom RPC this becomes eth_sendRawTransaction → Infura → public mempool instead; builders are downstream either way.",
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "OFAC filtering possible",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "consensus checks the block; they can only exclude or reorder"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MEV-Boost relays"
+      },
+      "notes": "Titan + Beaverbuild build most blocks. The one dependency the summit can't shed.",
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "stx-status",
+      "phase": "confirm",
+      "name": "STX status poll",
+      "host": "transaction.api.cx.metamask.io (batchStatus)",
+      "actor": "servo",
+      "purpose": "batchStatus until mined",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash"
+      ],
+      "returns": "pending/confirmed UI",
+      "can_block": false,
+      "on_failure": "degrade",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "reports confirmed before it is, or pending forever"
+      },
+      "removable_by": "stx_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/smart-transactions-controller"
+      },
+      "notes": "Ties your IP to the tx hash.",
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "receipt-poll",
+      "phase": "confirm",
+      "name": "Infura · receipt",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "eth_getTransactionReceipt",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash"
+      ],
+      "returns": "confirmed state",
+      "can_block": false,
+      "on_failure": "degrade",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake receipt is a fake confirmation"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-193024-send-eth · core/transaction-controller"
+      },
+      "notes": "Ties IP ↔ hash ↔ address at the RPC.",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "etherscan-check",
+      "phase": "confirm",
+      "name": "Etherscan · “did it work?”",
+      "host": "etherscan.io",
+      "actor": "etherscan",
+      "purpose": "User opens the explorer to believe it worked",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "cookies"
+      ],
+      "returns": "human confirmation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "“what if Etherscan lies?” — “then I'm screwed”"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "user action"
+      },
+      "notes": "Cookies enable cross-site correlation. Self-host: Otterscan.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "balance-refresh",
+      "phase": "confirm",
+      "name": "Accounts API · balance refresh",
+      "host": "accounts.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "Re-read balances after confirmation",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses",
+        "auth_token"
+      ],
+      "returns": "updated balance",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "code",
+        "ref": "core/assets-controllers/src/TokenBalancesController.ts:880"
+      },
+      "notes": "Same all-addresses + JWT leak as the unlock-time read.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}

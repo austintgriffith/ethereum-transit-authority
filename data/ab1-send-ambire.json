@@ -1,0 +1,571 @@
+{
+  "id": "ab1-send-ambire",
+  "title": "The Ambire Send",
+  "context": {
+    "wallet": "Ambire Web3 Wallet 6.18.7",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "AmbireTech/extension tag v6.18.7; logic in AmbireTech/ambire-common @ c5b1b83; built bundle at ~/ef/crops-lab/wallet/ambire",
+    "observed": "2026-08-23"
+  },
+  "toggles": [
+    "ambire_custom_rpc",
+    "ambire_crash_reporting_off"
+  ],
+  "_comment": "SMART ACCOUNT. Default account from a seed import is an Ambire v2 smart account (contract). A plain ETH send is NOT an EOA transaction: it is an ERC-4337 UserOperation. On the first send the account is undeployed, so the userOp carries deployAndExecute factory data (deploy + transfer in one op). Broadcast option is decided in ambire-common/src/libs/account/V2.ts:107-121: fee paid by the account itself, not transitioning -> byBundler. Bundler = Pimlico (services/bundlers/pimlico.ts:17, api.pimlico.io) with EntryPoint 0x0000000071727De22E5E9d8BAf0edAc6f37da032 (consts/deploy.ts:5). The Ambire relayer PAYMASTER (relayer.ambire.com /v2/paymaster/{chainId}/request, libs/paymaster/paymaster.ts:157,333) co-signs every mainnet userOp (network.erc4337.hasPaymaster true, consts/networks.ts:15) and can block it. Default RPC is invictus.ambire.com (consts/networks.ts:10). Prices via cena.ambire.com; token discovery via relayer velcro-v3. No per-recipient screening: the scamchecker list (cena.ambire.com/api/v3/scamchecker) is a downloaded dapp-domain blacklist checked locally (controllers/phishing/phishing.ts:20). TLS edge for EVERY ambire.com host AND api.pimlico.io is Cloudflare (dig/curl Aug 23 2026, shared 104.26.8.104 / 172.67.74.156). The relayer 'submit' path (/identity/{addr}/{chainId}/submit, signAccountOp.ts:3743) is used only for legacy v1 / 4337-transition accounts, NOT this default send."
+  ,
+  "steps": [
+    {
+      "id": "ext-update",
+      "phase": "background",
+      "name": "Google · extension update",
+      "host": "clients2.google.com",
+      "actor": "google",
+      "purpose": "Ship and silently update the extension bundle (manifest update_url)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "the code that runs",
+      "can_block": true,
+      "on_failure": "silent",
+      "failure_note": "stale version keeps running",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "a malicious update lies about everything below"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "~/ef/crops-lab/wallet/ambire/manifest.json update_url https://clients2.google.com/service/update2/crx"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "relayer-config-networks",
+      "phase": "background",
+      "name": "Ambire relayer · chain list + RPC URLs",
+      "host": "relayer.ambire.com",
+      "actor": "ambire-relayer",
+      "purpose": "GET /v2/config/networks — every chain, its default RPC URL, and its erc4337 (hasBundlerSupport / hasPaymaster) config",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "which node answers every read and whether the send uses a bundler/paymaster",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "build-time consts/networks.ts is used (invictus RPC, 4337 on)",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the answer decides which RPC, bundler and paymaster config the wallet trusts; nothing verifies it"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 8 h",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/controllers/networks/networks.ts:317 · consts/intervals.ts NETWORKS_UPDATE_INTERVAL"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "relayer-linked-accounts",
+      "phase": "background",
+      "name": "Ambire relayer · linked smart accounts",
+      "host": "relayer.ambire.com",
+      "actor": "ambire-relayer",
+      "purpose": "GET /v2/account-by-key/linked/accounts?keys[]=… — discover Ambire smart accounts controlled by the imported key",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "the smart-account list to import/show",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 5 min retry",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/accountPicker/accountPicker.ts:49-54 · controllers/accountPicker/accountPicker.ts:1362"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "velcro-hints",
+      "phase": "background",
+      "name": "Ambire relayer · token discovery (velcro)",
+      "host": "relayer.ambire.com",
+      "actor": "ambire-relayer",
+      "purpose": "GET /velcro-v3/multi-hints?networks&accounts&baseCurrency — which tokens each account holds; seeds the asset list the Send screen offers",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "the token hint list",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "falls back to stored hints + native balance",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 2 min",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/portfolio/portfolio.ts:108 · .env-sample VELCRO_URL=https://relayer.ambire.com/velcro-v3"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "rpc-portfolio",
+      "phase": "background",
+      "name": "Ambire RPC · balances (deployless multicall)",
+      "host": "invictus.ambire.com",
+      "actor": "ambire-rpc",
+      "purpose": "eth_call to the BalanceGetter contract for native + token balances of the account",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "what you hold, to show and to send from",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "portfolio shows stale/empty; send can still be typed",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the balance you act on is its answer"
+      },
+      "removable_by": "ambire_custom_rpc",
+      "repeat": "↻ 2 min",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/portfolio/portfolio.ts (deploylessTokens BalanceGetter) · consts/networks.ts:10 invictus"
+      },
+      "fixed_by": [
+        "local-indexing",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "rpc-account-state",
+      "phase": "background",
+      "name": "Ambire RPC · account onchain state",
+      "host": "invictus.ambire.com",
+      "actor": "ambire-rpc",
+      "purpose": "Deployless read of nonce, isDeployed, entry-point privilege and 4337 nonce — decides deploy-in-userOp and the broadcast path",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "whether the account is deployed and how to broadcast",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no account state → cannot build the op",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong nonce/deployed flag yields an unexecutable or duplicate userOp"
+      },
+      "removable_by": "ambire_custom_rpc",
+      "repeat": "↻ 5 min",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/accountState (getOrFetchAccountOnChainState) · consts/intervals.ts ACCOUNT_STATE_STAND_BY_INTERVAL"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "cena-prices",
+      "phase": "background",
+      "name": "Ambire cena · token + native prices",
+      "host": "cena.ambire.com",
+      "actor": "ambire-cena",
+      "purpose": "GET /api/v3/simple/price + /simple/token_price/{platform} — fiat value of holdings",
+      "need": "R",
+      "carries": [
+        "ip",
+        "token_list"
+      ],
+      "returns": "USD value shown next to the amount",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong price misprices the amount you send"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 2 min",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/portfolio/gecko.ts:45 · libs/defiPositions/defiPrices.ts:37"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "cena-scamchecker",
+      "phase": "background",
+      "name": "Ambire cena · phishing-domain list",
+      "host": "cena.ambire.com",
+      "actor": "ambire-cena",
+      "purpose": "GET /api/v3/scamchecker/get_update?version — delta of the dapp-domain blacklist, checked locally",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the local phishing list (no recipient sent)",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "keeps last snapshot",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a poisoned list mislabels a dapp domain; the send recipient is never screened remotely"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 15 min",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/controllers/phishing/phishing.ts:20,332-335"
+      },
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "monitor-sentry",
+      "phase": "background",
+      "name": "Ambire monitor · crash reports",
+      "host": "monitor.ambire.com",
+      "actor": "ambire-monitor",
+      "purpose": "Self-hosted Sentry ingest: errors + RPC failures, tagged with the RPC URL and wallet version; sendDefaultPii false, secrets scrubbed",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "crash triage",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "ambire_crash_reporting_off",
+      "repeat": "on error",
+      "provenance": {
+        "status": "code",
+        "ref": "monitor.ambire.com DSN in background.js/main.js · extension src/web/extension-services/background/CrashAnalytics.ts · common/config/analytics/CrashAnalytics.web.ts:38"
+      }
+    },
+    {
+      "id": "rpc-ens-recipient",
+      "phase": "discover",
+      "name": "Ambire RPC · reverse-resolve the recipient",
+      "host": "invictus.ambire.com",
+      "actor": "ambire-rpc",
+      "purpose": "eth_call ENS reverse lookup on the pasted address — the name shown in the To field",
+      "need": "R",
+      "carries": [
+        "ip",
+        "recipient",
+        "chain_id"
+      ],
+      "returns": "a name to trust the address by",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake name on the recipient is a label you might trust"
+      },
+      "removable_by": "ambire_custom_rpc",
+      "tx_input": "gate",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/controllers/domains/domains.ts:316 (#reverseLookup via #providers = invictus)"
+      },
+      "fixed_by": [
+        "private-rpc",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "rpc-ambire-estimate",
+      "phase": "construct",
+      "name": "Ambire RPC · Ambire estimation (deployless)",
+      "host": "invictus.ambire.com",
+      "actor": "ambire-rpc",
+      "purpose": "eth_call to the Estimation contract + eth_estimateGas: gasUsed, deployment gas, fee-token balances for the whole op",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx",
+        "chain_id"
+      ],
+      "returns": "gas used and fee options shown on review",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no estimation → no fee → cannot proceed",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the fee and simulation you approve are its answer"
+      },
+      "removable_by": "ambire_custom_rpc",
+      "tx_input": "gate",
+      "repeat": "↻ 30 s on review",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/estimate/estimate.ts:35,69 · libs/estimate/ambireEstimation.ts:77-97"
+      },
+      "fixed_by": [
+        "open-simulation",
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "bundler-gasprice",
+      "phase": "construct",
+      "name": "Pimlico bundler · userOp gas price",
+      "host": "api.pimlico.io",
+      "actor": "pimlico",
+      "purpose": "pimlico_getUserOperationGasPrice — maxFeePerGas / maxPriorityFeePerGas tiers written into the userOp",
+      "need": "C",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "the fee tier signed into the userOp",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no bundler gas price → no fee → cannot sign the 4337 op",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "an inflated tier is money gone, every send"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "repeat": "↻ 12 s",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/services/bundlers/pimlico.ts:36-53 · libs/estimate/estimateBundler.ts fetchBundlerGasPrice"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "bundler-estimate",
+      "phase": "construct",
+      "name": "Pimlico bundler · eth_estimateUserOperationGas",
+      "host": "api.pimlico.io",
+      "actor": "pimlico",
+      "purpose": "Estimate callGasLimit / verificationGasLimit / preVerificationGas for the userOp against the EntryPoint",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx",
+        "chain_id"
+      ],
+      "returns": "the gas limits written into the userOp",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "bundler down → switch bundler or cannot broadcast the 4337 way",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a bad limit makes the op revert or get rejected by the EntryPoint"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "repeat": "↻ 30 s on review",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/services/bundlers/bundler.ts:61-111 (eth_estimateUserOperationGas, ERC_4337_ENTRYPOINT)"
+      },
+      "fixed_by": [
+        "open-simulation",
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "paymaster-request",
+      "phase": "sign",
+      "name": "Ambire relayer · paymaster co-sign",
+      "host": "relayer.ambire.com",
+      "actor": "ambire-relayer",
+      "purpose": "POST /v2/paymaster/{chainId}/request with the userOp, account bytecode/salt/key, RPC URL and bundler — returns the paymaster + signed paymasterData written into the userOp",
+      "need": "CW",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx",
+        "chain_id"
+      ],
+      "returns": "paymasterAndData; without it the userOp cannot pay gas",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "paymaster declines/times out → send returns to ReadyToSign, no fallback for a self-paying smart account",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "the relayer sees the full op and gates it; refusing to sign blocks the send outright"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/paymaster/paymaster.ts:157,321-350 · controllers/signAccountOp/signAccountOp.ts:2904,3342 (paymaster required when isUsable) · consts/networks.ts:15 hasPaymaster"
+      },
+      "fixed_by": [
+        "cr-broadcast",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "bundler-send",
+      "phase": "broadcast",
+      "name": "Pimlico bundler · eth_sendUserOperation",
+      "host": "api.pimlico.io",
+      "actor": "pimlico",
+      "purpose": "Submit the signed userOp to the bundler for the EntryPoint 0x0000000071727De22E5E9d8BAf0edAc6f37da032",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_userop",
+        "selected_address",
+        "recipient",
+        "amount",
+        "chain_id"
+      ],
+      "returns": "userOp hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "bundler down → BundlerSwitcher tries another; else error",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed userOp — can drop, delay or reorder it, or withhold inclusion"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/services/bundlers/bundler.ts:133-139 · pimlico.ts:17 · controllers/signAccountOp/signAccountOp.ts:3675-3725"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "EntryPoint + builders",
+      "host": "(4337 EntryPoint · builder network)",
+      "actor": "builders",
+      "purpose": "The bundler's own tx calls EntryPoint.handleOps; builders build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_userop"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "the bundler is the sole submitter of your op; OFAC filtering possible downstream",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "ERC-4337 v0.7 EntryPoint 0x0000000071727De22E5E9d8BAf0edAc6f37da032 (consts/deploy.ts:5); bundler chooses how the handleOps tx reaches the mempool/builders"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "bundler-receipt",
+      "phase": "confirm",
+      "name": "Pimlico bundler · userOp status + receipt",
+      "host": "api.pimlico.io",
+      "actor": "pimlico",
+      "purpose": "Poll pimlico_getUserOperationStatus + eth_getUserOperationReceipt until the op is mined; yields the real tx hash",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "chain_id"
+      ],
+      "returns": "confirmed / failed + tx hash",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "keeps polling; op stays pending",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake status is a fake confirmation"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 1.5 s",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/accountOp/submittedAccountOp.ts:178,234,262 · services/bundlers/bundler.ts:119-125"
+      },
+      "fixed_by": [
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "confirm-refresh",
+      "phase": "confirm",
+      "name": "Ambire relayer + cena · balance refresh",
+      "host": "relayer.ambire.com",
+      "actor": "ambire-relayer",
+      "purpose": "After the op mines, refetch velcro hints + balances + prices so the dashboard updates",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "updated balance + activity row",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "ambire-common/src/libs/portfolio/portfolio.ts (velcro re-fetch on activity update) · controllers/portfolio"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}

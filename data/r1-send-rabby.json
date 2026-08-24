@@ -1,0 +1,730 @@
+{
+  "id": "r1-send-rabby",
+  "title": "The Rabby Send",
+  "context": {
+    "wallet": "Rabby extension v0.94.3 (b00d77e)",
+    "platform": "desktop Chrome",
+    "network": "mainnet",
+    "settings": "defaults (tracking on, no custom RPC)"
+  },
+  "toggles": [
+    "rabby_custom_rpc",
+    "rabby_tracking_off",
+    "rabby_whitelist_off"
+  ],
+  "_comment": "Source: wallets/rabby-trace.md. Every api.rabby.io request carries the X-API-Key per-install UUID + X-Version headers (rabby-api/dist/index.js:1996-2010) — modelled as device_id + wallet_version on each such row. OBSERVED Aug 20 2026: /v1/chainrpc returns no `eth` entry, so on mainnet every JSON-RPC call and the broadcast itself go through api.rabby.io (rpc.ts:263 fallback). TLS for api.rabby.io terminates at AWS CloudFront.",
+  "steps": [
+    {
+      "id": "static-config",
+      "phase": "background",
+      "name": "DeBank static · chain lists",
+      "host": "static.debank.com",
+      "actor": "rabby",
+      "purpose": "supported_chains.json, fake_mm_dapps.json, testnet chains, rabby/config.json (server-busy level)",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "chain list + remote config",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong chain list points reads at the wrong network"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "service/syncChain.ts:45,70-90 · metamaskModeService.ts:43-60 · customTestnet.ts:759-767 · wallet.ts:6285-6316"
+      },
+      "notes": "Boot + unlock, 55-min throttle, hourly alarm. CloudFront + S3 (Tokyo), observed.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "chainrpc",
+      "phase": "background",
+      "name": "Rabby · chainrpc list",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "GET /v1/chainrpc — which public RPCs (if any) to use per chain, and whether to push txs to them",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "where every RPC call goes",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "empty list → everything falls back to the backend",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the list decides which node answers every read — an attacker-controlled entry lies about everything downstream"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "rpc.ts:130-150 · background/index.ts:206-209 · rabby-api:1026; live response Aug 20 2026: 103 chains, no `eth` entry"
+      },
+      "repeat": "↻ 1 h",
+      "notes": "Re-fetched right before sign too (SignTx.tsx:2318).",
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "feature-switches",
+      "phase": "background",
+      "name": "Rabby · feature switches",
+      "host": "download.rabby.io",
+      "actor": "rabby",
+      "purpose": "wallet-config/rabby-extension.json remote flags",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "which features are on",
+      "can_block": true,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "remote flags change wallet behaviour"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "wallet.ts:7504-7514 · Connect/ConnectContent.tsx:592"
+      },
+      "notes": "Not on the send path itself.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "currency-rates",
+      "phase": "background",
+      "name": "Rabby · fiat rates",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/currency/exchange_list",
+      "need": "R",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "fiat display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "service/currency.ts:73,80,99 · rabby-api:1864"
+      },
+      "notes": "9-min cache, periodic."
+    },
+    {
+      "id": "whitelist-lookup",
+      "phase": "background",
+      "name": "Rabby · whitelist CEX lookup",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/addr/desc for up to 10 whitelisted addresses on unlock",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "recipient"
+      ],
+      "returns": "CEX labels for contacts",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "rabby_whitelist_off",
+      "provenance": {
+        "status": "code",
+        "ref": "service/contactBook.ts:141-171 · background/index.ts:299"
+      },
+      "notes": "Your saved recipients, tied to your install id. Skips own accounts; cached per contact."
+    },
+    {
+      "id": "matomo-daily",
+      "phase": "background",
+      "name": "Matomo (DeBank-hosted)",
+      "host": "matomo.debank.com",
+      "actor": "rabby",
+      "purpose": "Daily User/enable, pinnedChains, UserAddress counts per keyring brand",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rabby_tracking_off",
+      "provenance": {
+        "status": "code",
+        "ref": "utils/matomo-request.ts:5,18-52 · background/index.ts:305-362,624-640"
+      },
+      "notes": "Once per UTC day. AWS ALB (ap-northeast-1), not CloudFront — the one Rabby host outside the CloudFront edge."
+    },
+    {
+      "id": "ga4-daily",
+      "phase": "background",
+      "name": "Google Analytics 4",
+      "host": "www.google-analytics.com",
+      "actor": "google-analytics",
+      "purpose": "Same events as Matomo via Measurement Protocol",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rabby_tracking_off",
+      "provenance": {
+        "status": "code",
+        "ref": "utils/ga4.ts:5-10,28-36,95-115"
+      },
+      "notes": "Measurement id G-XDNGZ67KEW; api_secret hard-coded in source."
+    },
+    {
+      "id": "sentry-rabby",
+      "phase": "background",
+      "name": "Sentry crash reports",
+      "host": "o4507018303438848.ingest.us.sentry.io",
+      "actor": "sentry",
+      "purpose": "Crash reports (sendDefaultPii: true)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "crash triage",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rabby_tracking_off",
+      "provenance": {
+        "status": "code",
+        "ref": "utils/sentry-config.ts:13-46 · background/index.ts:111; DSN observed in the v0.94.3 release bundle (CI secret)"
+      },
+      "notes": "Sentry SaaS on GCP (US). URLs sanitized, breadcrumbs dropped."
+    },
+    {
+      "id": "balances-tokens",
+      "phase": "discover",
+      "name": "Rabby · balances, tokens, prices",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/user/total_balance, complex_app_list, token_list, token/price_change",
+      "need": "R",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "selected_address"
+      ],
+      "returns": "everything the dashboard shows",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "balances and prices you act on are its answer; nothing verifies them"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "wallet.ts:2375-2390 · ui/utils/portfolio/tokenUtils.ts:28,50,62 · rabby-api:174-182,351-367,446"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "sanctions-recipient",
+      "phase": "discover",
+      "name": "Rabby · sanctions check",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/addr/is_blocked on the recipient",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "recipient"
+      ],
+      "returns": "allowed / hard-blocked",
+      "can_block": true,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong verdict either blocks a legitimate send or lets a flagged one through"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "SendToken/index.tsx:1749-1752 · rabby-api:1779"
+      },
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "recipient-risk",
+      "phase": "discover",
+      "name": "Rabby · recipient risk (every address you own)",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/addr/desc + /v2/engine/addr/has_transfer for each own address against the recipient; eth_getCode via eth_rpc",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "recipient",
+        "all_addresses"
+      ],
+      "returns": "labels, scam flags, 'you've never sent here'",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "no warning on a scam recipient"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "useAddressRisk.ts:208,340-360 · useAddressInfo.ts:88 · SendToken/index.tsx:1112 · rabby-api:835-841,856"
+      },
+      "notes": "all_addresses here = one address per request, same set. Stops at the first hit.",
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "gas-market",
+      "phase": "construct",
+      "name": "Rabby · gas market",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v2/wallet/gas_market price tiers",
+      "need": "C",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "chain_id"
+      ],
+      "returns": "fee to sign",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "an inflated tier is money gone, every tx"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "wallet.ts:6780-6835 · SendToken/index.tsx:885 · SignTx.tsx:2039 · rabby-api:292-298"
+      },
+      "notes": "No eth_feeHistory path; the backend is the only gas oracle.",
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-proxy-construct",
+      "phase": "construct",
+      "name": "Rabby RPC proxy · estimateGas, nonce, latest block",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "eth_estimateGas, eth_getTransactionCount, eth_getBlockByNumber — all via POST /v1/wallet/eth_rpc on mainnet",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "unsigned_tx",
+        "chain_id",
+        "dapp_origin"
+      ],
+      "returns": "gas limit, nonce, base fee",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "default gas; nonce falls back to 0x0",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong nonce or limit leaves the tx stuck or reverted"
+      },
+      "removable_by": "rabby_custom_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "rpc.ts:20-28,234-273 · SendToken/index.tsx:2019-2025 · walletUtils/sign.ts:79-161 · SignTx.tsx:1167-1169,1192,2347"
+      },
+      "notes": "origin=chrome-extension://<id> is sent as a query param. Non-backend methods would go to the chainrpc list first — empty for eth.",
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "parse-tx",
+      "phase": "sign",
+      "name": "Rabby · classify tx",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/action/parse_tx",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "unsigned_tx",
+        "selected_address",
+        "dapp_origin"
+      ],
+      "returns": "what the sign screen says you're doing",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "labels a draining tx as a plain send"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "SignTx.tsx:1220-1243 · rabby-api:744"
+      },
+      "notes": "Returns a log_id reused by the rule log and submit_tx — ties pre-sign analysis to the broadcast.",
+      "tx_input": "gate",
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "pre-exec",
+      "phase": "sign",
+      "name": "Rabby · simulation (pre_exec_tx)",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/wallet/pre_exec_tx balance-change preview + gas",
+      "need": "C",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "unsigned_tx",
+        "selected_address",
+        "signed_tx",
+        "dapp_origin"
+      ],
+      "returns": "you-will-send preview",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the preview you approve differs from what the chain will do"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "SignTx.tsx:1275-1289 · utils/transaction.ts:379-413 · rabby-api:235-245"
+      },
+      "notes": "signed_tx here = your other pending raw txs, not this one. festats 'preExecTransaction' event follows (no address).",
+      "tx_input": "gate",
+      "fixed_by": [
+        "open-simulation"
+      ]
+    },
+    {
+      "id": "sanctions-both",
+      "phase": "sign",
+      "name": "Rabby · sanctions check (sender + recipient)",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/addr/is_blocked ×2, plus security-engine input fetches",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "selected_address",
+        "recipient"
+      ],
+      "returns": "allowed / blocked; rule inputs",
+      "can_block": true,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "SignTx.tsx:2271-2272,1309-1330 (fetchActionRequiredData via @rabby-wallet/rabby-action — exact endpoints not inspected)"
+      },
+      "notes": "The security engine itself runs locally (securityEngine.ts:111-119); its inputs come from here.",
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "rule-log",
+      "phase": "sign",
+      "name": "Rabby · rule log",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/engine/action/log — which security rules fired",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "nothing (telemetry)",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "SignTx.tsx:2258-2266 · rabby-api:1281"
+      }
+    },
+    {
+      "id": "gasless-check",
+      "phase": "sign",
+      "name": "Rabby · gasless eligibility",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "/v1/wallet/tx_is_gasless",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "unsigned_tx"
+      ],
+      "returns": "gasless offer",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rabby_custom_rpc",
+      "provenance": {
+        "status": "inferred",
+        "ref": "SignTx.tsx:2107 · rabby-api:731 — trigger conditions not traced"
+      }
+    },
+    {
+      "id": "submit-tx",
+      "phase": "broadcast",
+      "name": "Rabby · submit_tx (backend broadcasts)",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "POST /v2/wallet/submit_tx — the signed tx goes to Rabby, Rabby pushes it to the chain",
+      "need": "W",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount",
+        "dapp_origin"
+      ],
+      "returns": "tx_id",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "onTransactionSubmitFailed — no fallback",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx — can delay, drop, or extract from it"
+      },
+      "removable_by": "rabby_custom_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "provider/controller.ts:1252-1273,1363-1371 · rabby-api:1019-1024 · types.d.ts:1225-1238; eth-has-no-chainrpc-entry observed Aug 20 2026"
+      },
+      "notes": "Tx fields + r,s,v (not RLP). The per-tx picker offers 'instant' (default) and 'MEV guarded'; 'low_gas' exists in code but isn't selectable. Frontend-first push to public RPCs exists (controller.ts:1297-1361) but only for chains flagged txPushToRPC — not eth.",
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "festats",
+      "phase": "broadcast",
+      "name": "festats funnel",
+      "host": "festats.debank.com",
+      "actor": "rabby",
+      "purpose": "submitTransaction / signedTransaction events",
+      "need": "T",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "funnel stats",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rabby_tracking_off",
+      "provenance": {
+        "status": "code",
+        "ref": "controller.ts:1133-1147 · ui/utils/sendTransaction.ts:609-612 · festats/dist/index.js:15,34-45"
+      }
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "OFAC filtering possible",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MEV-Boost relays; how Rabby's backend reaches them is server-side (unknown)"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "receipt-poll",
+      "phase": "confirm",
+      "name": "Rabby RPC proxy · receipt",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "eth_getTransactionReceipt via eth_rpc every 2–5 s",
+      "need": "R",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "tx_hash",
+        "chain_id"
+      ],
+      "returns": "mined?",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "keeps polling",
+      "repeat": "↻ 2–5 s",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake receipt is a fake confirmation"
+      },
+      "removable_by": "rabby_custom_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "service/transactionWatcher.ts:17-19,72-97,183-205 · rpc.ts:234-273"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "etherscan-check",
+      "phase": "confirm",
+      "name": "Etherscan · notification link",
+      "host": "etherscan.io",
+      "actor": "etherscan",
+      "purpose": "OS notification 'Transaction completed' opens the explorer",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "cookies"
+      ],
+      "returns": "human confirmation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "transactionWatcher.ts:117,148 · webapi/notification.ts:4-8"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ],
+      "optional": true
+    },
+    {
+      "id": "balance-refresh",
+      "phase": "confirm",
+      "name": "Rabby · balance refresh",
+      "host": "api.rabby.io",
+      "actor": "rabby",
+      "purpose": "Balance cache expired on ON_TX_COMPLETED; dashboard re-reads total_balance + token_list",
+      "need": "R",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version",
+        "selected_address"
+      ],
+      "returns": "updated balance",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "background/index.ts:220-226 · wallet.ts:2451-2461"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}

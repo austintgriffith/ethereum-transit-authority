@@ -141,6 +141,10 @@ h1 a{color:inherit;text-decoration:none}
 .mapcard .sign .stat{font-family:Barlow,sans-serif;font-size:13px;opacity:.75;white-space:nowrap}
 .mapcard .prev{border:2px solid var(--ink);background:var(--panel);padding:8px 12px}
 .mapcard .prev svg{max-width:100%;height:auto;display:block}
+.mapcard .sign .labtag{background:var(--self);color:#fff;font-family:Barlow,sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 9px;border-radius:999px;flex:none}
+.labline{font-size:12.5px;color:var(--muted);margin:-2px 0 16px;font-family:"IBM Plex Mono",monospace}
+.labline a{color:var(--ink)}
+.labline .labnote{color:var(--muted)}
 .mapcard:hover .sign{background:var(--blue)}
 .mapcard:hover .prev{border-color:var(--blue)}
 @media (max-width:640px){ .mapcard .sign{flex-wrap:wrap;gap:6px 12px} .mapcard .sign strong,.mapcard .sign .stat{white-space:normal} }
@@ -185,7 +189,7 @@ h1 a{color:inherit;text-decoration:none}
 <!-- ================= HOME ================= -->
 <section class="view" id="view-home">
   <a class="mapcard" href="#/m1">
-    <span class="sign"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span class="stat">7 lines · 12 stations · 12 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span class="stat">7 lines · 12 stations · 12 requests</span><span class="labtag">⚗ mainnet tx</span></span>
     <div class="prev" data-city="m1"></div>
   </a>
   <a class="mapcard" href="#/r1">
@@ -193,7 +197,7 @@ h1 a{color:inherit;text-decoration:none}
     <div class="prev" data-city="r1"></div>
   </a>
   <a class="mapcard" href="#/m2">
-    <span class="sign"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span class="stat">8 lines · 15 stations · 15 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span class="stat">8 lines · 15 stations · 15 requests</span><span class="labtag">⚗ lab-tested</span></span>
     <div class="prev" data-city="m2"></div>
   </a>
   <a class="mapcard" href="#/m0">
@@ -201,11 +205,11 @@ h1 a{color:inherit;text-decoration:none}
     <div class="prev" data-city="m0"></div>
   </a>
   <a class="mapcard" href="#/m3">
-    <span class="sign"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span class="stat">8 lines · 19 stations · 26 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span class="stat">8 lines · 19 stations · 26 requests</span><span class="labtag">⚗ lab-tested</span></span>
     <div class="prev" data-city="m3"></div>
   </a>
   <a class="mapcard" href="#/rb1">
-    <span class="sign"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span class="stat">7 lines · 11 stations · 14 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span class="stat">7 lines · 11 stations · 14 requests</span><span class="labtag">⚗ lab-tested</span></span>
     <div class="prev" data-city="rb1"></div>
   </a>
   <a class="mapcard" href="#/ab1">
@@ -213,11 +217,11 @@ h1 a{color:inherit;text-decoration:none}
     <div class="prev" data-city="ab1"></div>
   </a>
   <a class="mapcard" href="#/u1">
-    <span class="sign"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span class="stat">7 lines · 22 stations · 26 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span class="stat">7 lines · 22 stations · 26 requests</span><span class="labtag">⚗ lab-tested</span></span>
     <div class="prev" data-city="u1"></div>
   </a>
   <a class="mapcard" href="#/night">
-    <span class="sign"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span class="stat">4 lines · 9 stations · 15 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span class="stat">4 lines · 9 stations · 15 requests</span><span class="labtag">⚗ lab-tested</span></span>
     <div class="prev" data-city="night"></div>
   </a>
   <div class="cities">
@@ -270,6 +274,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-addr)">M1</span>The Normie Send</h2>
   <p class="section-sub">MetaMask extension · mainnet · defaults · address pasted in.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260821-193024-send-eth/">20260821-193024-send-eth</a> · <a href="https://etherscan.io/tx/0xf6bd63559134c01b43e2a84ac9a740e84ceab7009f418500b77c9fa02a4692c1">mainnet tx 0xf6bd6355…92c1 ↗</a> · <a href="data/m1-send-metamask.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-m1"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -377,6 +382,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-rcpt)">R1</span>The Rabby Send</h2>
   <p class="section-sub">Same send as M1, in Rabby (v0.94.3) · mainnet · defaults · address pasted in. The contrast route: one open-source client, one backend.</p>
+  <p class="labline"><a href="data/r1-send-rabby.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-r1"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -449,6 +455,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-ens)">M2</span>The ENS Send</h2>
   <p class="section-sub">M1, but you type tim.eth.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260821-214213-send-ens/">20260821-214213-send-ens</a> <span class="labnote">— dry — driven to the confirm screen, not broadcast</span> · <a href="data/m2-send-ens.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-m2"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -571,6 +578,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--self)">M0</span>The Mountain Man</h2>
   <p class="section-sub">M1&#x27;s actions against his own node. Green rings: stations he runs.</p>
+  <p class="labline"><a href="data/m0-mountain-man.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-m0"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -596,6 +604,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--blue)">M3</span>The Aave Deposit</h2>
   <p class="section-sub">app.aave.com + MetaMask · deposit ETH. The dApp&#x27;s stations, then the M1 track.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260821-220208-deposit-aave/">20260821-220208-deposit-aave</a> <span class="labnote">— dry — driven to the supply confirm, not broadcast</span> · <a href="data/m3-aave-deposit.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-m3"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -762,6 +771,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-ens)">RB1</span>The Rainbow Send</h2>
   <p class="section-sub">Same send as M1, in Rainbow (1.6.11) · mainnet · defaults · address pasted in. One vendor owns the RPC, the balances and the confirmation; nothing is simulated or screened.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260823-094753-send-eth-rainbow/">20260823-094753-send-eth-rainbow</a> <span class="labnote">— dry — driven to review, not broadcast</span> · <a href="data/rb1-send-rainbow.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-rb1"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -848,6 +858,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-hold)">AB1</span>The Ambire Send</h2>
   <p class="section-sub">The same send, in Ambire (6.18.7) · mainnet · defaults · address pasted in. Not an EOA tx — a 4337 UserOperation: Ambire&#x27;s relayer co-signs it as paymaster, Pimlico bundles it, and every hop terminates at Cloudflare.</p>
+  <p class="labline"><a href="data/ab1-send-ambire.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-ab1"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -930,6 +941,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-intent)">U1</span>The Uniswap Swap</h2>
   <p class="section-sub">app.uniswap.org + MetaMask · swap ETH→USDC. One company computes the route AND the calldata you sign; then the M1 wallet track.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260824-095240-swap-uniswap/">20260824-095240-swap-uniswap</a> <span class="labnote">— dry — reached the swap confirm; wallet connect click failed silently, portfolio legs missing</span> · <a href="data/u1-swap-uniswap.json">route JSON</a></p>
   <div class="mapbox"><figure id="map-u1"></figure></div>
   <div class="legend-slot"></div>
   <p class="sub-h">Where your data goes</p>
@@ -1059,6 +1071,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="back" href="#/">← ALL MAPS</a>
   <h2><span class="bullet" style="background:var(--l-hold)">N</span>Night Service</h2>
   <p class="section-sub">Runs whenever MetaMask is unlocked. No send required.</p>
+  <p class="labline">⚗ lab run <a href="lab/20260821-193024-send-eth/">20260821-193024-send-eth</a> <span class="labnote">— the background traffic recorded during the M1 capture</span></p>
   <div class="mapbox"><figure id="map-night"></figure></div>
   <div class="legend-slot"></div>
 

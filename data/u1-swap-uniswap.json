@@ -1,0 +1,439 @@
+{
+  "id": "u1-swap-uniswap",
+  "title": "The Uniswap Swap",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-24",
+    "captures": [
+      {
+        "run": "20260824-095240-swap-uniswap",
+        "note": "dry — reached the swap confirm; wallet connect click failed silently, portfolio legs missing"
+      }
+    ]
+  },
+  "toggles": [
+    "uniswap_analytics_off",
+    "custom_rpc",
+    "stx_off",
+    "basic_functionality_off",
+    "metametrics_off",
+    "security_alerts_off",
+    "profile_sync_off"
+  ],
+  "_comment": "Trace: wallets/uniswap-swap-trace.md, from Uniswap/interface web/5.157.3 + dig/curl of every host (Aug 24 2026). The novel thing vs a plain send: the ROUTE + Universal Router execute() CALLDATA the user signs come from a closed Trading API (/quote then /swap). ETH->USDC on a plain MetaMask EOA falls back to CLASSIC Universal Router (native-ETH UniswapX needs EIP-7914 + a smart wallet) so no /order, no ERC-20 approval, no Permit2 sig. These dapp steps prepend; MetaMask's own backbone (m1: nonce, gas, tx-sentinel, Blockaid, STX broadcast, receipt) then wraps and signs the calldata. Permit2 0x000000000022D473030F116dDEE9F6B43aC78BA3 applies only to ERC-20 inputs. Capture 20260824-095240: trading API served from entry-gateway.backend-prod.api.uniswap.org (not interface.gateway); a compliancev2Service (FeatureGatedTokens/GatedFeatures) runs on it — candidate step, not yet authored. Dry run stopped before /check_approval and /swap fired.",
+  "prepend_steps": [
+    {
+      "id": "frontend",
+      "phase": "dapp",
+      "name": "app.uniswap.org (Cloudflare)",
+      "host": "app.uniswap.org",
+      "actor": "uniswap-labs",
+      "purpose": "Serve the swap app code + edge geo-gate",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the code that runs",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "the served frontend decides the route it asks for, what it shows, and what calldata it hands the wallet to sign"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "observed",
+        "ref": "dig+curl Aug 24 2026: server: cloudflare, cf-ray, IPs 162.159.140.227/172.66.0.225"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ],
+      "notes": "Cloudflare Workers/Pages edge. Geo-restriction is enforced here (help article geoRestriction 46373846019981). No official IPFS mirror like Aave."
+    },
+    {
+      "id": "statsig",
+      "phase": "dapp",
+      "name": "Feature flags / experiments (Statsig proxy)",
+      "host": "app.uniswap.org/config → gating.interface.gateway.uniswap.org",
+      "actor": "uniswap-labs",
+      "via": [
+        "statsig"
+      ],
+      "purpose": "Fetch flags + A/B buckets that gate routing paths and the swap UI",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "gates which paths the client takes",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "last-known flags persist",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "a flag flip can change routing (UniRPC, UR version), disable the swap, or swap the UI"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · constants/urls.ts:295 (isWebApp ? '/config' ...); functions/app.ts:65 STATSIG_PROXY_TARGET; edge observed cloudflare→CloudFront Aug 24 2026"
+      },
+      "notes": "Web proxies same-origin /config; a Hono BFF rewrites to gating.interface.gateway.uniswap.org/v1/statsig-proxy. x-experiments also rides every Trading API request."
+    },
+    {
+      "id": "datadog",
+      "phase": "dapp",
+      "name": "Datadog RUM + logs",
+      "host": "browser-intake-datadoghq.com",
+      "actor": "datadog",
+      "purpose": "Real-user monitoring / performance / error logs",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "telemetry",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · packages/uniswap/src/utils/datadog.web.ts:120,163 (clientToken, site datadoghq.com)"
+      },
+      "notes": "Persisted unique id as RUM user id. Not gated by the Amplitude analytics toggle; prod sample ~10%, replay off. Adds datadog/tracecontext headers to gateway.uniswap.org + api.uniswap.org calls."
+    },
+    {
+      "id": "amplitude",
+      "phase": "dapp",
+      "name": "Amplitude analytics (first-party proxied)",
+      "host": "metrics.interface.gateway.uniswap.org/v1/amplitude-proxy",
+      "actor": "uniswap-labs",
+      "via": [
+        "amplitude"
+      ],
+      "purpose": "Product analytics; swap funnel events",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "device_id"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "uniswap_analytics_off",
+      "optional": true,
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · constants/urls.ts:247 (TrafficFlows.Metrics, v1/amplitude-proxy); apps/web/src/tracing/amplitude.ts:22 allowAnalytics; edge observed cloudflare→CloudFront Aug 24 2026"
+      },
+      "notes": "Beacon goes to Uniswap's own metrics subdomain first (unlike Aave's direct api2.amplitude.com), then forwards to Amplitude. Default on; account-drawer toggle turns it off."
+    },
+    {
+      "id": "graphql-data",
+      "phase": "dapp",
+      "name": "GraphQL data API (token list / prices / logos)",
+      "host": "interface.gateway.uniswap.org/v1/graphql",
+      "actor": "uniswap-labs",
+      "purpose": "Token metadata, token search, spot prices, logos, token-safety",
+      "need": "RT",
+      "carries": [
+        "ip"
+      ],
+      "returns": "token/price display + safety warnings",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "cached tokens",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "wrong token address/decimals or a false 'safe' label steers the pair you pick"
+      },
+      "removable_by": "none",
+      "tx_input": "gate",
+      "provenance": {
+        "status": "code",
+        "ref": "apps/web/index.html:19 preconnect; functions/client.ts:8; edge observed cloudflare→CloudFront Aug 24 2026"
+      },
+      "notes": "Uniswap's own indexer, not The Graph. The USDC address you swap into is resolved from this list."
+    },
+    {
+      "id": "token-logos",
+      "phase": "dapp",
+      "name": "Token logos (GitHub raw)",
+      "host": "raw.githubusercontent.com",
+      "actor": "github",
+      "purpose": "Uniswap/assets token images",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · constants/urls.ts uniswapAssetsBlockchainsBaseUrl"
+      }
+    },
+    {
+      "id": "session",
+      "phase": "discover",
+      "name": "Session cookie mint",
+      "host": "entry-gateway.backend-prod.api.uniswap.org (SessionService)",
+      "actor": "uniswap-labs",
+      "purpose": "Mint the session cookie that authenticates UniRPC + Trading API",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "session cookie",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "trading/RPC fall back or fail",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · TradingApiClient.ts provideSessionService(getBaseUrl: apiBaseUrlV2); resolveRpcConfig.web.ts credentials:'include'"
+      },
+      "notes": "Web is cookie-based: the same session rides UniRPC (credentials:'include') and every Trading API call. · code-traced base URL was interface.gateway.uniswap.org/v2 (sessions); live traffic Aug 24 2026 goes to entry-gateway.backend-prod.api.uniswap.org"
+    },
+    {
+      "id": "portfolio",
+      "phase": "discover",
+      "name": "GraphQL portfolio (balances / activity)",
+      "host": "interface.gateway.uniswap.org/v1/graphql",
+      "actor": "uniswap-labs",
+      "purpose": "Balances + activity for the connected address",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "holdings"
+      ],
+      "returns": "balance + history display",
+      "can_block": false,
+      "on_failure": "degrade",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the balances/portfolio you act on are their answer"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "apps/web GraphQL portfolio queries; address keyed"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ],
+      "notes": "Fires on connect and refreshes; your address is the key."
+    },
+    {
+      "id": "unirpc",
+      "phase": "discover",
+      "name": "UniRPC reads (dapp's own eth_call)",
+      "host": "entry-gateway.backend-prod.api.uniswap.org/rpc",
+      "actor": "uniswap-labs",
+      "purpose": "eth_call / balances / allowance / block for the swap UI",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "chain reads the UI trusts",
+      "can_block": true,
+      "on_failure": "degrade",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the dapp reads chain state through Uniswap, not your MetaMask RPC"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · resolveRpcConfig.web.ts webResolveUniRpcConfig (web always routes through UniRPC), FeatureFlags.UniRpcEnabled"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "The web app's reads go to Uniswap's gateway with the session cookie — the wallet's configured RPC is not used for the dapp's reads (it is still used by MetaMask's own backbone below). · code-traced base URL was interface.gateway.uniswap.org (rpc); live traffic Aug 24 2026 goes to entry-gateway.backend-prod.api.uniswap.org"
+    },
+    {
+      "id": "swappable-tokens",
+      "phase": "discover",
+      "name": "Trading API /swappable_tokens",
+      "host": "entry-gateway.backend-prod.api.uniswap.org/swappable_tokens",
+      "actor": "uniswap-labs",
+      "purpose": "Validate the ETH→USDC pair / detect bridge",
+      "need": "C",
+      "carries": [
+        "ip",
+        "token_pair",
+        "chain_id"
+      ],
+      "returns": "pair validity",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "tx_input": "gate",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · TradingApiClient.ts TRADING_API_PATHS.swappableTokens; Swap.anvil.e2e swappable_tokens"
+      },
+      "notes": "code-traced base URL was interface.gateway.uniswap.org/v1/swappable_tokens; live traffic Aug 24 2026 goes to entry-gateway.backend-prod.api.uniswap.org"
+    },
+    {
+      "id": "quote",
+      "phase": "discover",
+      "name": "Trading API /quote — route + minOut",
+      "host": "entry-gateway.backend-prod.api.uniswap.org/quote",
+      "actor": "uniswap-labs",
+      "purpose": "Compute the route (v2/v3/v4), amountOut, minOut, price impact, gas; server-side simulation",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "births": [
+        "swap_route"
+      ],
+      "returns": "the route + quoted output the user believes and approves",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no quote = no swap",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or a low minOut is carried into the /swap calldata → sandwich / drain within tolerance; a false quote is a false belief about output"
+      },
+      "removable_by": "none",
+      "tx_input": "gate",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-095240-swap-uniswap · createTradingApiClient.ts TRADING_API_PATHS.quote; api.json /quote; Swap.anvil.e2e quote_eth_usdt"
+      },
+      "notes": "CORE BLACK BOX. A faster indicative /quote (routingPreference FASTEST) fires first for instant UI; the primary quote is BEST_PRICE. For a native-ETH EOA on mainnet the response is CLASSIC (Universal Router), not UniswapX. If the pool route needs a Permit2 sig the response embeds the EIP-712 message here. · code-traced base URL was interface.gateway.uniswap.org/v1/quote; live traffic Aug 24 2026 goes to entry-gateway.backend-prod.api.uniswap.org"
+    },
+    {
+      "id": "check-approval",
+      "phase": "discover",
+      "name": "Trading API /check_approval",
+      "host": "interface.gateway.uniswap.org/v1/check_approval",
+      "actor": "uniswap-labs",
+      "purpose": "Does the input token need an ERC-20 approval / Permit2?",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "returns": "approval tx or none",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "for ERC-20 inputs this returns the approval/Permit2 target the user signs; a bad spender is an unlimited allowance to an attacker"
+      },
+      "removable_by": "none",
+      "tx_input": "gate",
+      "optional": true,
+      "provenance": {
+        "status": "code",
+        "ref": "TRADING_API_PATHS.approval; useCheckApprovalQuery.ts; Swap.anvil.e2e check_approval_none"
+      },
+      "notes": "For ETH→USDC the input is native ETH → returns NONE (no approval, no Permit2 sig, no on-chain approve tx). Permit2 0x000000000022D473030F116dDEE9F6B43aC78BA3 + a signed EIP-712 permit only appear when the input is an ERC-20."
+    },
+    {
+      "id": "swap-calldata",
+      "phase": "construct",
+      "name": "Trading API /swap — the calldata you sign",
+      "host": "interface.gateway.uniswap.org/v1/swap",
+      "actor": "uniswap-labs",
+      "purpose": "Build the Universal Router execute() calldata + value from the chosen quote",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "swap_route",
+        "amount"
+      ],
+      "births": [
+        "unsigned_tx"
+      ],
+      "returns": "the unsigned tx (to=Universal Router, value=ETH, data=execute() bytes) the wallet signs",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "the user signs calldata a closed API produced; Universal Router commands are custom-encoded, not plain ABI, so the wallet cannot say locally what it does. A malicious execute() drains within the signed value"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "code",
+        "ref": "createTradingApiClient.ts TRADING_API_PATHS.swap; api.json /swap; Swap.anvil.e2e swap_eth_usdt"
+      },
+      "fixed_by": [
+        "clear-signing"
+      ],
+      "notes": "THE SIGNATURE OBJECT. to = Universal Router (from getChainInfo, URv2.x); an optional Uniswap interface fee is baked into the bytes. From here the inherited MetaMask backbone (nonce, gas oracle, tx-sentinel simulation, Blockaid verdict, sign, STX broadcast, receipt) wraps and signs THIS calldata — its simulation/Blockaid now see the router call, not a plain send."
+    },
+    {
+      "id": "activity-status",
+      "phase": "confirm",
+      "name": "GraphQL activity (swap confirmation)",
+      "host": "interface.gateway.uniswap.org/v1/graphql",
+      "actor": "uniswap-labs",
+      "purpose": "Report the swap as pending/confirmed in the UI",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "tx_hash"
+      ],
+      "returns": "pending/confirmed UI",
+      "can_block": false,
+      "on_failure": "degrade",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "reports confirmed before it is, or hides a failure"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "apps/web GraphQL activity feed; ties IP+address+hash"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}

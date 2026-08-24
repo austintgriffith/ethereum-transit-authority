@@ -1,0 +1,111 @@
+{
+  "id": "m2-send-ens",
+  "title": "The ENS Send",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "desktop Chrome",
+    "network": "mainnet",
+    "settings": "defaults",
+    "captures": [
+      {
+        "run": "20260821-214213-send-ens",
+        "note": "dry — driven to the confirm screen, not broadcast"
+      }
+    ]
+  },
+  "_comment": "Prepends the resolve phase, then runs the whole M1 track. The recipient lane opens at EN1 — the resolver's answer IS the destination.",
+  "prepend_steps": [
+    {
+      "id": "resolve-ens",
+      "phase": "resolve",
+      "name": "Infura · resolve name",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "eth_call to ENS registry + resolver",
+      "need": "RT",
+      "carries": [
+        "ip",
+        "ens_name"
+      ],
+      "births": [
+        "recipient"
+      ],
+      "returns": "the address you send to",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a lying answer sends the money to the wrong address"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-214213-send-ens · core/ens-controller"
+      },
+      "notes": "Direct eth_call, no MetaMask name API in front by default; local name cache.",
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "ccip-gateway",
+      "phase": "resolve",
+      "name": "CCIP gateway (offchain names)",
+      "host": "(gateway URL chosen by the name issuer)",
+      "actor": "ccip-issuer",
+      "purpose": "CCIP-Read resolution for offchain subnames",
+      "need": "RT",
+      "carries": [
+        "ip",
+        "ens_name"
+      ],
+      "births": [
+        "recipient"
+      ],
+      "returns": "the address you send to",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "the issuer's answer is the destination"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "CCIP-Read spec; not yet traced in MetaMask source"
+      },
+      "notes": "Only fires for offchain subnames. The issuer learns who is paying this name.",
+      "tx_input": "field",
+      "optional": true
+    },
+    {
+      "id": "avatar-fetch",
+      "phase": "resolve",
+      "name": "Avatar fetch — the trap",
+      "host": "(any URL the name owner set)",
+      "actor": "avatar-host",
+      "purpose": "Fetch the name's avatar record",
+      "need": "T",
+      "carries": [
+        "ip",
+        "ens_name"
+      ],
+      "returns": "a profile picture",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "pure surveillance: whoever set the record harvests your IP"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "ENS avatar text record mechanics; wallet fetch path not yet traced"
+      },
+      "notes": "The avatar record can point at any server."
+    }
+  ]
+}

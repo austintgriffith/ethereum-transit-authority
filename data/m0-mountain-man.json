@@ -1,0 +1,188 @@
+{
+  "id": "m0-mountain-man",
+  "title": "The Mountain Man",
+  "context": {
+    "wallet": "own tooling + air-gapped signer",
+    "platform": "own hardware",
+    "network": "mainnet",
+    "settings": "own archive node, self-hosted Otterscan"
+  },
+  "toggles": [],
+  "_comment": "The platonic ideal from the call — the reference footprint every other route is measured against. provenance=reference: a constructed flow, not a traced product.",
+  "steps": [
+    {
+      "id": "check-recipient",
+      "phase": "home",
+      "name": "Own node · check recipient",
+      "host": "localhost:8545",
+      "actor": "self",
+      "purpose": "Fat-finger check: nonce, history, balance",
+      "need": "R",
+      "carries": [
+        "recipient"
+      ],
+      "returns": "confidence the address is right",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "his own archive node"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "call 2026-08-20, ~52:30"
+      },
+      "tx_input": "gate"
+    },
+    {
+      "id": "construct-local",
+      "phase": "home",
+      "name": "Own node · nonce · fees · gas",
+      "host": "localhost:8545",
+      "actor": "self",
+      "purpose": "eth_getTransactionCount, eth_feeHistory, eth_estimateGas",
+      "need": "RC",
+      "carries": [
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "everything needed to sign",
+      "can_block": false,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "same reads as M1, served locally"
+      },
+      "tx_input": "field"
+    },
+    {
+      "id": "sign-airgap",
+      "phase": "home",
+      "name": "Air-gapped signer",
+      "host": "no network",
+      "actor": "self",
+      "purpose": "Sign on an isolated machine",
+      "need": "C",
+      "carries": [
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "the signed tx",
+      "can_block": false,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "call 2026-08-20, ~53:59"
+      }
+    },
+    {
+      "id": "p2p-broadcast",
+      "phase": "broadcast",
+      "name": "Public p2p mempool",
+      "host": "devp2p gossip",
+      "actor": "ethereum-p2p",
+      "purpose": "Gossip the signed tx",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx"
+      ],
+      "returns": "propagation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "rebroadcast to other peers",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "devp2p"
+      }
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "OFAC filtering possible",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MEV-Boost relays"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "receipt-local",
+      "phase": "confirm",
+      "name": "Own node · receipt",
+      "host": "localhost:8545",
+      "actor": "self",
+      "purpose": "eth_getTransactionReceipt",
+      "need": "R",
+      "carries": [
+        "tx_hash"
+      ],
+      "returns": "confirmed state",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "local RPC"
+      }
+    },
+    {
+      "id": "otterscan",
+      "phase": "confirm",
+      "name": "Otterscan (self-hosted)",
+      "host": "localhost:5100",
+      "actor": "self",
+      "purpose": "Browse the confirmation",
+      "need": "R",
+      "carries": [
+        "tx_hash"
+      ],
+      "returns": "human confirmation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "call 2026-08-20, ~50:52"
+      }
+    }
+  ]
+}

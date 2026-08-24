@@ -1,0 +1,406 @@
+{
+  "id": "m3-aave-deposit",
+  "title": "The Aave Deposit",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "desktop Chrome",
+    "network": "mainnet",
+    "settings": "app.aave.com prod defaults",
+    "captures": [
+      {
+        "run": "20260821-220208-deposit-aave",
+        "note": "dry — driven to the supply confirm, not broadcast"
+      }
+    ]
+  },
+  "toggles": [
+    "aave_self_host",
+    "custom_rpc",
+    "stx_off",
+    "basic_functionality_off",
+    "metametrics_off",
+    "security_alerts_off",
+    "profile_sync_off"
+  ],
+  "_comment": "Survey: aave-survey.md (aave/interface @ 7e1c978 + header fingerprinting; live capture pending). Hidden steps are in the ledger but not drawn.",
+  "prepend_steps": [
+    {
+      "id": "frontend",
+      "phase": "dapp",
+      "name": "app.aave.com (Cloudflare)",
+      "host": "app.aave.com",
+      "actor": "avara",
+      "purpose": "Serve the dApp code",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the code that runs",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "the served frontend decides everything the user sees and signs"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "server: cloudflare (header fingerprint, Aug 20)"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "indie-frontends"
+      ],
+      "notes": "An official escape exists: CI pins a static export to IPFS on every main push (.github/workflows/build-test-deploy.yml). But see the compliance step — the static build fails closed there."
+    },
+    {
+      "id": "compliance",
+      "phase": "dapp",
+      "name": "Compliance check",
+      "host": "app.aave.com/api/preflight-compliance → vendor unknown",
+      "actor": "compliance-vendor",
+      "via": [
+        "avara"
+      ],
+      "purpose": "Screen the connecting address",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "allowed / AddressBlockedModal",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a false positive locks you out of the UI (funds still movable elsewhere)"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface pages/api/preflight-compliance.ts"
+      },
+      "tx_input": "gate",
+      "notes": "FAILS CLOSED IF YOU SELF-HOST: the check needs Aave's COMPLIANCE_SECRET (pages/api/preflight-compliance.ts); without it a production build 500s and the client renders the same blocking AddressBlockedModal on connect (compliance.tsx maps any error to blocked). Skipped only in dev mode, read-only mode, or with testnets toggled. Result cached per-address in localStorage until nextCheck."
+    },
+    {
+      "id": "amplitude",
+      "phase": "dapp",
+      "name": "Amplitude analytics",
+      "host": "api2.amplitude.com",
+      "actor": "amplitude",
+      "purpose": "Product analytics keyed to the wallet",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "aave_self_host",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface ConnectWalletButton.tsx:51"
+      },
+      "notes": "Opt-in: init returns early without NEXT_PUBLIC_AMPLITUDE_API_KEY and tracking is consent-gated, default off (analyticsSlice.ts:22,81). Fires only after the consent banner is accepted.",
+      "optional": true
+    },
+    {
+      "id": "rpc-proxy",
+      "phase": "dapp",
+      "name": "Aave RPC proxy → Alchemy",
+      "host": "app.aave.com/api/rpc-proxy → eth-mainnet.g.alchemy.com",
+      "actor": "alchemy",
+      "via": [
+        "avara"
+      ],
+      "purpose": "Every read the dApp makes: balances, reserves, positions",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "holdings"
+      ],
+      "returns": "everything the UI shows",
+      "can_block": true,
+      "on_failure": "blocks",
+      "repeat": "↻",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the UI state you act on — reserves, health factor, balances — is their answer"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface ServerJsonRpcProvider.ts + rpc-proxy.ts"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "The Alchemy proxy is used only when the build sets NEXT_PUBLIC_PRIVATE_RPC_ENABLED (marketsAndNetworksConfig.ts:163); otherwise the browser hits the hardcoded public RPC list (Tenderly gateway, Flashbots) directly. No user RPC setting in the UI."
+    },
+    {
+      "id": "ens-reverse",
+      "phase": "dapp",
+      "name": "ENS reverse + avatar",
+      "host": "metadata.ens.domains",
+      "actor": "ens-metadata",
+      "purpose": "Reverse-resolve + avatar for the connected wallet",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "display name + avatar",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface use-get-ens.tsx"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "merit",
+      "phase": "dapp",
+      "name": "Merit incentives (ACI)",
+      "host": "apps.aavechan.com",
+      "actor": "aci",
+      "purpose": "Merit-incentive APRs for the account",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "APR display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface useUserMeritIncentives.ts"
+      }
+    },
+    {
+      "id": "prices-family",
+      "phase": "dapp",
+      "name": "Prices → Family",
+      "host": "app.aave.com/api/prices-proxy → Family API",
+      "actor": "family",
+      "via": [
+        "avara"
+      ],
+      "purpose": "Fiat prices for the UI",
+      "need": "R",
+      "carries": [
+        "ip"
+      ],
+      "returns": "fiat display",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "aave_self_host",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface FamilyPricesService.ts"
+      },
+      "notes": "Self-host: no FAMILY_API_KEY → 500; the client catches it and shows no fiat rate (FamilyPricesService.ts)."
+    },
+    {
+      "id": "walletconnect",
+      "phase": "dapp",
+      "name": "WalletConnect relay",
+      "host": "relay.walletconnect.org",
+      "actor": "walletconnect",
+      "purpose": "Session relay (mobile / WC connections only)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "wallet session",
+      "can_block": true,
+      "on_failure": "degrade",
+      "failure_note": "extension connections don't use the relay",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface wagmiConfig.ts"
+      }
+    },
+    {
+      "id": "subgraph",
+      "phase": "dapp",
+      "name": "Subgraph proxy → The Graph",
+      "host": "app.aave.com/api/subgraph-proxy",
+      "actor": "thegraph",
+      "via": [
+        "avara"
+      ],
+      "purpose": "User transaction history",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "history display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "aave_self_host",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface /api/subgraph-proxy"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ],
+      "notes": "Needs Aave's SUBGRAPH_API_KEY to gateway.thegraph.com. The static self-host build has no /api routes at all — the request dies locally, nothing leaves."
+    },
+    {
+      "id": "coingecko-categories",
+      "phase": "dapp",
+      "name": "CoinGecko categories (proxied)",
+      "host": "app.aave.com/api/coingecko-categories",
+      "actor": "coingecko",
+      "via": [
+        "avara"
+      ],
+      "purpose": "Token categories",
+      "need": "R",
+      "carries": [
+        "ip"
+      ],
+      "returns": "category display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "aave_self_host",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface /api/coingecko-categories"
+      }
+    },
+    {
+      "id": "coingecko-icons",
+      "phase": "dapp",
+      "name": "CoinGecko asset icons",
+      "host": "assets.coingecko.com",
+      "actor": "coingecko",
+      "purpose": "Token logos, straight from the browser",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface — 680 references"
+      }
+    },
+    {
+      "id": "github-metadata",
+      "phase": "dapp",
+      "name": "GitHub raw metadata",
+      "host": "raw.githubusercontent.com",
+      "actor": "github",
+      "purpose": "Token/network metadata",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "aave/interface raw.githubusercontent references"
+      },
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "merkl",
+      "phase": "dapp",
+      "name": "Merkl incentives",
+      "host": "api.merkl.xyz",
+      "actor": "merkl",
+      "purpose": "Incentive APRs",
+      "need": "R",
+      "carries": [
+        "ip"
+      ],
+      "returns": "APR display",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface useMerklIncentives.ts"
+      }
+    },
+    {
+      "id": "sentry-aave",
+      "phase": "dapp",
+      "name": "Sentry (Aave)",
+      "host": "o4508407151525888.ingest.de.sentry.io",
+      "actor": "sentry",
+      "purpose": "Error reports for the dApp",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "crash triage",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260821-220208-deposit-aave · aave/interface sentry.client.config.ts"
+      },
+      "notes": "DSN HARDCODED in sentry.client.config.ts — no env gate, no opt-out in the UI. A self-hosted build still fires Sentry unless stripped from source. (On a static IPFS host the /monitoring tunnel rewrite is missing, so delivery likely fails silently — unverified.)"
+    }
+  ]
+}

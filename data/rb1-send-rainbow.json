@@ -1,0 +1,667 @@
+{
+  "id": "rb1-send-rainbow",
+  "title": "The Rainbow Send",
+  "context": {
+    "wallet": "Rainbow extension 1.6.11",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "rainbow-me/browser-extension tag v1.6.11 (GPL-3); built bundle at ~/ef/crops-lab/wallet/rainbow",
+    "observed": "2026-08-23",
+    "captures": [
+      {
+        "run": "20260823-094753-send-eth-rainbow",
+        "note": "dry — driven to review, not broadcast"
+      }
+    ]
+  },
+  "toggles": [
+    "rainbow_analytics_off",
+    "rainbow_lan_rpc"
+  ],
+  "_comment": "Source: wallets/rainbow-ext-trace.md. All JSON-RPC goes to https://rpc.rainbow.me/v1/1/{RPC_PROXY_API_KEY} (static/data/networks.json mainnet defaultRPC; src/core/providers/proxy.ts re-proxies any non-LAN custom RPC). Balances, history and the mined check come from platform.p.rainbow.me with a build-time Bearer key shared by every install. The wallet-native send is neither simulated nor screened: simulateTransactions is only called for dApp-originated requests (pages/messages/useSimulateTransaction.tsx). Edges from dig/curl Aug 23 2026: rpc.rainbow.me + aha.rainbow.me = Cloudflare; *.p.rainbow.me = AWS CloudFront.",
+  "steps": [
+    {
+      "id": "ext-update",
+      "phase": "background",
+      "name": "Google · extension update",
+      "host": "clients2.google.com",
+      "actor": "google",
+      "purpose": "Ship and silently update the extension bundle",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "the code that runs",
+      "can_block": true,
+      "on_failure": "silent",
+      "failure_note": "stale version keeps running",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "a malicious update lies about everything below"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · manifest.json:2 update_url"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "networks",
+      "phase": "background",
+      "name": "Rainbow metadata · chain list + RPC URLs",
+      "host": "metadata.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "POST /v1/graph getNetworks + getCustomNetworks (device BX): every chain, its defaultRPC.url, gas units, which chains meteorology/platform cover",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "where every RPC call goes; default gas limits",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "build-time static/data/networks.json is used",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the answer decides which node answers every read and takes the broadcast; nothing verifies it"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 10 min stale",
+      "provenance": {
+        "status": "code",
+        "ref": "src/core/resources/networks/networks.ts:7-33 · src/core/state/networks/networks.ts:279,309"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "firebase-install",
+      "phase": "background",
+      "name": "Firebase · installation id",
+      "host": "firebaseinstallations.googleapis.com",
+      "actor": "firebase",
+      "purpose": "POST /v1/projects/rainbow-me/installations — mints and refreshes a per-install Firebase id (FID) before every remote-config fetch",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "FID + auth token for the config fetch",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "src/core/firebase/remoteConfig.ts:17-22,137 (projectId rainbow-me, appId 1:498863290995:web:… in bundle)"
+      },
+      "notes": "device_id here is the FID, a separate persistent id from Rainbow's own deviceId."
+    },
+    {
+      "id": "firebase-config",
+      "phase": "background",
+      "name": "Firebase · remote config (feature flags)",
+      "host": "firebaseremoteconfig.googleapis.com",
+      "actor": "firebase",
+      "purpose": "POST /v1/projects/rainbow-me/namespaces/firebase:fetch — BX_send_enabled, BX_rpc_proxy_enabled, BX_custom_rpc_enabled, BX_delegation_enabled, BX_atomic_swaps_enabled, slippage…",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "whether Send exists at all (handleSend returns if !send_enabled)",
+      "can_block": true,
+      "on_failure": "silent",
+      "failure_note": "defaults apply (send on, proxy on)",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "remote flags switch features and routing on or off with no update"
+      },
+      "removable_by": "none",
+      "repeat": "↻ per popup open, ≥ 2 min apart",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/core/firebase/remoteConfig.ts:126-195 (minimumFetchIntervalMillis 120000 :141) · send/index.tsx:363 · bundle body {sdk_version, app_instance_id, app_instance_id_token, app_id, language_code}"
+      },
+      "notes": "Runs in both popup (App.tsx:12) and background (keychain/index.ts → delegations/featureStatus.ts:7).",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "sentry",
+      "phase": "background",
+      "name": "Sentry · errors, traces, session replay",
+      "host": "o331974.ingest.sentry.io",
+      "actor": "sentry",
+      "purpose": "/api/4504012577112064/envelope/ — errors 100 %, traces 10 %, session replay 10 % (inputs masked); user = {id: deviceId, walletAddressHash, walletType}",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "crash triage",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "repeat": "on error · 10 % of sessions",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/core/sentry/index.ts:238-279,300-314 · src/core/telemetry/index.ts:21 · DSN in bundle"
+      },
+      "notes": "walletAddressHash = HMAC-SHA256(build-time key, address) — Rainbow holds the key, so it can map the hash back to the address (src/analytics/util.ts:19-46). The Settings › Analytics switch does not touch Sentry (privacy.tsx:44 only flips RudderStack)."
+    },
+    {
+      "id": "rudderstack",
+      "phase": "background",
+      "name": "RudderStack · identify, popup opened, every screen",
+      "host": "rainbowjiumask.dataplane.rudderstack.com",
+      "actor": "rudderstack",
+      "purpose": "POST /v1/batch, flushAt 1: identify {userId: deviceId, traits: walletAddressHash, walletType}, track popup.opened, screen home/send/unlock… on every route",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "wallet_version"
+      ],
+      "returns": "product analytics",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rainbow_analytics_off",
+      "repeat": "per popup open · per screen",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/analytics/index.ts:18-32,58-64,80-88 · src/core/telemetry/index.ts:16-32 · App.tsx:76 · Routes.tsx:1029 · write key + data plane in bundle"
+      },
+      "notes": "context.direct = true is commented 'collect ip address for geoip'; also sends userAgent, userAgentData, locale, timezone, screen size."
+    },
+    {
+      "id": "platform-tx-list",
+      "phase": "background",
+      "name": "Rainbow platform · transaction history",
+      "host": "platform.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "GET /v1/transactions/ListTransactions?address&currency&chainIds&limit — prefetched on the Tokens tab so Activity opens fast",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "activity list",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/core/resources/transactions/consolidatedTransactions.ts:24,85-98 · home/Tokens.tsx:173-178"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "ens-avatar",
+      "phase": "background",
+      "name": "Rainbow metadata · ENS avatar",
+      "host": "metadata.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "GET /v1/graph reverseResolveENSProfile(chainId 1, address, [avatar]) for the header",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "avatar URL",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 1 min stale",
+      "provenance": {
+        "status": "code",
+        "ref": "src/core/resources/metadata/ensAvatar.ts:31-35 · hooks/useAvatar.ts:48-56 · home/index.tsx:142"
+      }
+    },
+    {
+      "id": "platform-assets",
+      "phase": "discover",
+      "name": "Rainbow platform · balances + prices",
+      "host": "platform.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "GET /v1/assets/GetAssetUpdates?address&chainIds&currency (Bearer PLATFORM_API_KEY, one key for every install) — every token on every supported chain; the only source of the asset list the Send screen offers",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "what you hold, what it's worth",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "empty asset list → nothing to pick in Send; no eth_getBalance fallback on mainnet",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "balances and prices you act on are its answer"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 60 s",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/core/resources/assets/userAssets.ts:4,32-34,107-137,273 · src/core/network/platform.ts:3-10"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "rpc-ens-self",
+      "phase": "discover",
+      "name": "Rainbow RPC proxy · reverse-resolve your address",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "eth_call to the ENS universal resolver (viem getEnsName) for the header name",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "your ENS name or nothing",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "repeat": "↻ 20 s stale",
+      "provenance": {
+        "status": "code",
+        "ref": "hooks/useEnsName.ts:22 · hooks/useWalletName.ts:10 · components/AccountName/AccountName.tsx:40"
+      },
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-ens-recipient",
+      "phase": "discover",
+      "name": "Rainbow RPC proxy · reverse-resolve the recipient",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "eth_call (viem getEnsName) on the pasted address — the name shown in the To field and on the review sheet",
+      "need": "R",
+      "carries": [
+        "ip",
+        "recipient",
+        "chain_id"
+      ],
+      "returns": "a name to trust the address by",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake name on the review sheet is the only label you see"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "send/ToAddressInput.tsx:124,350 → hooks/useWalletInfo.ts:17 → hooks/useEnsName.ts:22 · send/ReviewSheet.tsx:94"
+      },
+      "tx_input": "gate",
+      "fixed_by": [
+        "private-rpc",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "meteorology",
+      "phase": "construct",
+      "name": "Rainbow metadata · gas oracle",
+      "host": "metadata.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "GET /meteorology/v1/gas/mainnet — base fee, priority-fee tiers, confirmation estimates",
+      "need": "C",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "maxFeePerGas + maxPriorityFeePerGas written into the tx",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "ethers falls back to getFeeData via the same proxy",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "an inflated tier is money gone, every tx"
+      },
+      "removable_by": "none",
+      "repeat": "↻ 5 s on the Send screen",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · src/core/network/meteorology.ts:4 · src/core/resources/gas/meteorology.ts:94 · gasData.ts:14-21 · state/networks/utils.ts:410-415 · send/index.tsx:767 → hooks/useGas.ts:52"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-estimate-gas",
+      "phase": "construct",
+      "name": "Rainbow RPC proxy · estimateGas preview",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "eth_estimateGas {from, to, value, chainId, data} as you type, debounced 500 ms — feeds the fee shown",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx",
+        "chain_id"
+      ],
+      "returns": "fee preview",
+      "can_block": false,
+      "on_failure": "degrade",
+      "failure_note": "backend gas units (21000) used",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the fee you approve is shown wrong; the limit actually signed for an EOA transfer is the backend default"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260823-094753-send-eth-rainbow · send/index.tsx:212-236 · hooks/useGas.ts:384-390 · resources/gas/estimateGasLimit.ts:50-54 · utils/gas.ts:486"
+      },
+      "tx_input": "gate",
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-block-code",
+      "phase": "construct",
+      "name": "Rainbow RPC proxy · latest block + recipient code",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "On Confirm: eth_getBlockByNumber(latest) + eth_getCode(to); EOA and no data → gas limit = backend eoaTransfer units, no estimateGas",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "recipient",
+        "chain_id"
+      ],
+      "returns": "gas limit decision",
+      "can_block": false,
+      "on_failure": "blocks",
+      "failure_note": "estimateGasWithPadding returns null → gasLimit 0x0 → tx rejected",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "claim the EOA is a contract, then return a low estimate: the tx runs out of gas and burns its fee"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "handlers/wallet.ts:92-102 · src/core/utils/gas.ts:513,518,520-527"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-nonce",
+      "phase": "construct",
+      "name": "Rainbow RPC proxy · nonce",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "eth_getTransactionCount pending + latest in one batch; compared with the local nonce store (private-mempool logic)",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "nonce written into the tx",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "throws; no fallback",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong nonce leaves the tx unminable or replaces a pending one"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "handlers/wallet.ts:104-109 · src/core/utils/transactions.ts:498-530"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-blocknumber",
+      "phase": "broadcast",
+      "name": "Rainbow RPC proxy · block number (ethers)",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "eth_blockNumber — ethers v5 BaseProvider.sendTransaction stamps the start block right before broadcasting",
+      "need": "R",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "start block for the pending record",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "src/core/keychain/index.ts:263-266 (ethers Wallet.sendTransaction) · `_getInternalBlockNumber(100+2*this.pollingInterval)` present in background.js"
+      }
+    },
+    {
+      "id": "rpc-send-raw",
+      "phase": "broadcast",
+      "name": "Rainbow RPC proxy · eth_sendRawTransaction",
+      "host": "rpc.rainbow.me",
+      "actor": "rainbow-rpc",
+      "purpose": "POST /v1/1/{RPC_PROXY_API_KEY} eth_sendRawTransaction — signed locally (RainbowSigner), broadcast by Rainbow's closed proxy",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount",
+        "chain_id"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no second RPC; error alert",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx — can drop, delay or front-run it. Proxy decodes the raw tx server-side (viem) before forwarding (probe Aug 20)."
+      },
+      "removable_by": "rainbow_lan_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "send/index.tsx:373-379 · handlers/wallet.ts:165 · background/procedures/popup/wallet/sendTransaction.ts:10-15 · src/core/keychain/index.ts:255-268 · src/core/viem/clientRpc.ts:21-35 · src/core/providers/proxy.ts:21-38 · static/data/networks.json mainnet defaultRPC https://rpc.rainbow.me/v1/1/"
+      },
+      "notes": "The only broadcast path. A custom RPC with a public URL is rewritten to rpc.rainbow.me/…?custom_rpc=<url> and fetched by Rainbow's server; only localhost / 10.x / 192.168.x / 172.16-31.x URLs escape.",
+      "fixed_by": [
+        "cr-broadcast",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "OFAC filtering possible",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "probe Aug 20 2026: plain transfer forwarded to an ordinary node (reth/v2.4.0), public mempool; whether the proxy ever routes privately is server-side"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "rudderstack-send",
+      "phase": "broadcast",
+      "name": "RudderStack · send.submitted",
+      "host": "rainbowjiumask.dataplane.rudderstack.com",
+      "actor": "rudderstack",
+      "purpose": "track send.submitted {assetSymbol, assetName, assetAddress, assetAmount, chainId, hardwareWallet} + walletAddressHash + deviceId",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id",
+        "amount",
+        "chain_id"
+      ],
+      "returns": "funnel stats",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "rainbow_analytics_off",
+      "provenance": {
+        "status": "code",
+        "ref": "send/index.tsx:391-399 · src/analytics/event.ts:206,932-960"
+      }
+    },
+    {
+      "id": "platform-tx-by-hash",
+      "phase": "confirm",
+      "name": "Rainbow platform · mined?",
+      "host": "platform.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "GET /v1/transactions/GetTransactionByHash?address&chainIds=1&hash&currency — the pending watcher; mainnet never uses eth_getTransactionReceipt",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "tx_hash",
+        "chain_id"
+      ],
+      "returns": "confirmed / failed",
+      "can_block": false,
+      "on_failure": "silent",
+      "failure_note": "keeps polling; tx stays 'pending'",
+      "repeat": "↻ 5 s (0–5 min) · 15 s · 30 s · stop at 1 h",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake status is a fake confirmation"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "state/transactions/pendingTransactions/watchPendingTransactions.ts:73-91 · resources/transactions/transaction.ts:33,66-78 · state/networks/timing.ts:37-42,72 · background/handlers/handleWatchPendingTransactions.ts:30-50"
+      },
+      "notes": "With the popup closed only EIP-5792 batch txs keep polling; a plain send is re-checked when the popup reopens.",
+      "fixed_by": [
+        "local-indexing",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "platform-refresh",
+      "phase": "confirm",
+      "name": "Rainbow platform · balances + history refresh",
+      "host": "platform.p.rainbow.me",
+      "actor": "rainbow-apis",
+      "purpose": "Activity tab opens after send (ListTransactions); once mined, GetAssetUpdates + ListTransactions are refetched",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "updated balance + activity row",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "send/index.tsx:388-390 · popup/pendingTransactionCleanup.ts:70-80,129"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "etherscan-link",
+      "phase": "confirm",
+      "name": "Etherscan · view on explorer",
+      "host": "etherscan.io",
+      "actor": "etherscan",
+      "purpose": "Activity detail → 'View on Etherscan' opens etherscan.io/tx/<hash> in a tab",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "cookies"
+      ],
+      "returns": "human confirmation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "optional": true,
+      "provenance": {
+        "status": "code",
+        "ref": "src/core/utils/tabs.ts getExplorerUrl · static/data/networks.json mainnet defaultExplorer.transactionURL"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}
