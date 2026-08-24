@@ -130,6 +130,21 @@ td .host{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--mute
 a.pill{cursor:pointer}
 h1 a{color:inherit;text-decoration:none}
 
+/* home: map cards — a signpost over a preview, the whole thing is the link */
+.mapcard{display:block;margin:34px 0 0;color:inherit;text-decoration:none}
+.mapcard .sign{position:relative;display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:var(--paper);padding:9px 20px;border-radius:6px;margin:0 0 15px 26px;font-family:Jost;max-width:calc(100% - 26px)}
+.mapcard .sign::before,.mapcard .sign::after{content:"";position:absolute;top:100%;width:7px;height:15px;background:var(--ink)}
+.mapcard .sign::before{left:24px}
+.mapcard .sign::after{right:24px}
+.mapcard .sign .b{width:30px;height:30px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;font-family:Jost;flex:none}
+.mapcard .sign strong{font-size:17px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
+.mapcard .sign .stat{font-family:Barlow,sans-serif;font-size:13px;opacity:.75;white-space:nowrap}
+.mapcard .prev{border:2px solid var(--ink);background:var(--panel);padding:8px 12px}
+.mapcard .prev svg{width:100%;height:auto;display:block}
+.mapcard:hover .sign{background:var(--blue)}
+.mapcard:hover .prev{border-color:var(--blue)}
+@media (max-width:640px){ .mapcard .sign{flex-wrap:wrap;gap:6px 12px} .mapcard .sign strong,.mapcard .sign .stat{white-space:normal} }
+
 /* home: cities list */
 .cities{border:2px solid var(--ink);background:var(--panel);margin-top:16px}
 .cityln{display:flex;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--rule);color:inherit;text-decoration:none}
@@ -169,6 +184,58 @@ h1 a{color:inherit;text-decoration:none}
 
 <!-- ================= HOME ================= -->
 <section class="view" id="view-home">
+  <a class="mapcard" href="#/m1">
+    <span class="sign"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span class="stat">12 stations · 12 requests · 7 operators</span></span>
+    <div class="prev" data-city="m1"></div>
+  </a>
+  <a class="mapcard" href="#/r1">
+    <span class="sign"><span class="b" style="background:var(--l-rcpt)">R1</span><strong>The Rabby Send</strong><span class="stat">13 stations · 16 requests · 4 operators</span></span>
+    <div class="prev" data-city="r1"></div>
+  </a>
+  <a class="mapcard" href="#/m2">
+    <span class="sign"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span class="stat">15 stations · 15 requests · 9 operators</span></span>
+    <div class="prev" data-city="m2"></div>
+  </a>
+  <a class="mapcard" href="#/m0">
+    <span class="sign"><span class="b" style="background:var(--self)">M0</span><strong>The Mountain Man</strong><span class="stat">7 stations · 7 requests · 1 operators</span></span>
+    <div class="prev" data-city="m0"></div>
+  </a>
+  <a class="mapcard" href="#/m3">
+    <span class="sign"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span class="stat">19 stations · 26 requests · 20 operators</span></span>
+    <div class="prev" data-city="m3"></div>
+  </a>
+  <a class="mapcard" href="#/rb1">
+    <span class="sign"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span class="stat">11 stations · 14 requests · 7 operators</span></span>
+    <div class="prev" data-city="rb1"></div>
+  </a>
+  <a class="mapcard" href="#/ab1">
+    <span class="sign"><span class="b" style="background:var(--l-hold)">AB1</span><strong>The Ambire Send</strong><span class="stat">7 stations · 9 requests · 5 operators</span></span>
+    <div class="prev" data-city="ab1"></div>
+  </a>
+  <a class="mapcard" href="#/u1">
+    <span class="sign"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span class="stat">22 stations · 26 requests · 12 operators</span></span>
+    <div class="prev" data-city="u1"></div>
+  </a>
+  <a class="mapcard" href="#/night">
+    <span class="sign"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span class="stat">9 stations · 15 requests</span></span>
+    <div class="prev" data-city="night"></div>
+  </a>
+  <div class="cities">
+    <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all maps</span><span class="go">→</span></a>
+    <a class="cityln" href="#/fixes"><span class="b" style="background:var(--self)">▲</span><strong>Fixes</strong><span>what to build, ranked by the risk it removes</span><span class="go">→</span></a>
+    <a class="cityln" href="#/index"><span class="b" style="background:var(--muted)">i</span><strong>Station Index</strong><span>every station, what it gets, how to skip it</span><span class="go">→</span></a>
+    <a class="cityln" href="#/how"><span class="b" style="background:var(--muted)">?</span><strong>How to read a map</strong><span>legend and a worked example</span><span class="go">→</span></a>
+    <span class="cityln dim"><span class="b" style="background:var(--muted)">M4</span><strong>Swap</strong><span>planned</span></span>
+    <span class="cityln dim"><span class="b" style="background:var(--muted)">M5</span><strong>LP Rebalance</strong><span>planned</span></span>
+  </div>
+</section>
+
+<!-- ================= HOW TO READ ================= -->
+<section class="view" id="view-how">
+  <a class="back" href="#/">← ALL MAPS</a>
+  <h2><span class="bullet" style="background:var(--muted)">?</span>How to read a map</h2>
+  <p class="sub-h">An example</p>
+  <div class="mapbox"><figure id="map-example"></figure></div>
   <template id="legend-tpl">
 <div class="legend" role="img" aria-label="Legend">
   <h3>Legend</h3>
@@ -197,127 +264,6 @@ h1 a{color:inherit;text-decoration:none}
 </div>
   </template>
   <div class="legend-slot"></div>
-
-  <p class="sub-h">An example</p>
-  <div class="mapbox"><figure id="map-example"></figure></div>
-
-  <p class="sub-h">Maps</p>
-  <div class="cities">
-    <a class="cityln" href="#/m1"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span>12 stations · 12 requests · 7 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/r1"><span class="b" style="background:var(--l-rcpt)">R1</span><strong>The Rabby Send</strong><span>13 stations · 16 requests · 4 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/m2"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span>15 stations · 15 requests · 9 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/m0"><span class="b" style="background:var(--self)">M0</span><strong>The Mountain Man</strong><span>7 stations · 7 requests · 1 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/m3"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span>19 stations · 26 requests · 20 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/rb1"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span>11 stations · 14 requests · 7 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/ab1"><span class="b" style="background:var(--l-hold)">AB1</span><strong>The Ambire Send</strong><span>7 stations · 9 requests · 5 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/u1"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span>22 stations · 26 requests · 12 operators</span><span class="go">→</span></a>
-    <a class="cityln" href="#/night"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span>9 stations · 15 requests</span><span class="go">→</span></a>
-    <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all maps</span><span class="go">→</span></a>
-    <a class="cityln" href="#/fixes"><span class="b" style="background:var(--self)">▲</span><strong>Fixes</strong><span>what to build, ranked by the risk it removes</span><span class="go">→</span></a>
-    <a class="cityln" href="#/index"><span class="b" style="background:var(--muted)">i</span><strong>Station Index</strong><span>every station, what it gets, how to skip it</span><span class="go">→</span></a>
-    <span class="cityln dim"><span class="b" style="background:var(--muted)">M4</span><strong>Swap</strong><span>planned</span></span>
-    <span class="cityln dim"><span class="b" style="background:var(--muted)">M5</span><strong>LP Rebalance</strong><span>planned</span></span>
-  </div>
-
-  <p class="sub-h">Where your data goes — one ETH send</p>
-  <div class="mapbox leak"><svg viewBox="0 0 1180 884.5" width="100%" style="max-width:1180px;display:block">
-<rect x="24" y="36" width="331" height="640.5" rx="14" class="house"/>
-<text x="40" y="58" class="housel">YOUR MACHINE</text>
-<rect x="780" y="68" width="388" height="329.0" rx="10" class="cf"/>
-<text x="792" y="85" class="cfl">CLOUDFLARE EDGE READS ALL OF THESE FIRST</text>
-<path d="M345,70 C582.5,70 582.5,96.0 820,96.0 L820,112.5 C582.5,112.5 582.5,86.5 345,86.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · MM APIs</title></path>
-<path d="M345,86.5 C582.5,86.5 582.5,207.5 820,207.5 L820,224.0 C582.5,224.0 582.5,103.0 345,103.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · SERVO relay</title></path>
-<path d="M345,103.0 C582.5,103.0 582.5,325.5 820,325.5 L820,342.0 C582.5,342.0 582.5,119.5 345,119.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Blockaid</title></path>
-<path d="M345,119.5 C582.5,119.5 582.5,405.0 820,405.0 L820,421.5 C582.5,421.5 582.5,136.0 345,136.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Consensys · Infura</title></path>
-<path d="M345,136.0 C582.5,136.0 582.5,494.5 820,494.5 L820,511.0 C582.5,511.0 582.5,152.5 345,152.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Etherscan</title></path>
-<path d="M345,152.5 C582.5,152.5 582.5,567.0 820,567.0 L820,583.5 C582.5,583.5 582.5,169.0 345,169.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Segment</title></path>
-<path d="M345,169.0 C582.5,169.0 582.5,654.25 820,654.25 L820,670.75 C582.5,670.75 582.5,185.5 345,185.5 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → Google · Web Store</title></path>
-<path d="M345,185.5 C582.5,185.5 582.5,733.25 820,733.25 L820,749.75 C582.5,749.75 582.5,202.0 345,202.0 Z" fill="var(--l-ip)" class="rib opt"><title>Your IP address → Sentry</title></path>
-<path d="M345,216.0 C582.5,216.0 582.5,112.5 820,112.5 L820,129.0 C582.5,129.0 582.5,232.5 345,232.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · MM APIs</title></path>
-<path d="M345,232.5 C582.5,232.5 582.5,224.0 820,224.0 L820,240.5 C582.5,240.5 582.5,249.0 345,249.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · SERVO relay</title></path>
-<path d="M345,249.0 C582.5,249.0 582.5,342.0 820,342.0 L820,358.5 C582.5,358.5 582.5,265.5 345,265.5 Z" fill="var(--l-addr)" class="rib"><title>Your address → Blockaid</title></path>
-<path d="M345,265.5 C582.5,265.5 582.5,421.5 820,421.5 L820,438.0 C582.5,438.0 582.5,282.0 345,282.0 Z" fill="var(--l-addr)" class="rib"><title>Your address → Consensys · Infura</title></path>
-<path d="M345,296.0 C582.5,296.0 582.5,129.0 820,129.0 L820,145.5 C582.5,145.5 582.5,312.5 345,312.5 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · MM APIs</title></path>
-<path d="M345,312.5 C582.5,312.5 582.5,438.0 820,438.0 L820,454.5 C582.5,454.5 582.5,329.0 345,329.0 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → Consensys · Infura</title></path>
-<path d="M345,343.0 C582.5,343.0 582.5,145.5 820,145.5 L820,162.0 C582.5,162.0 582.5,359.5 345,359.5 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · MM APIs</title></path>
-<path d="M345,359.5 C582.5,359.5 582.5,240.5 820,240.5 L820,257.0 C582.5,257.0 582.5,376.0 345,376.0 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → Consensys · SERVO relay</title></path>
-<path d="M345,390.0 C582.5,390.0 582.5,583.5 820,583.5 L820,600.0 C582.5,600.0 582.5,406.5 345,406.5 Z" fill="var(--l-jwt)" class="rib opt"><title>Your tracking ID → Segment</title></path>
-<path d="M345,420.5 C582.5,420.5 582.5,511.0 820,511.0 L820,527.5 C582.5,527.5 582.5,437.0 345,437.0 Z" fill="var(--muted)" class="rib"><title>Cookies → Etherscan</title></path>
-<path d="M345,451.0 C582.5,451.0 582.5,162.0 820,162.0 L820,178.5 C582.5,178.5 582.5,467.5 345,467.5 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → Consensys · MM APIs</title></path>
-<path d="M345,481.5 C582.5,481.5 582.5,257.0 820,257.0 L820,268.0 C582.5,268.0 582.5,492.5 345,492.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Consensys · SERVO relay</title></path>
-<path d="M345,492.5 C582.5,492.5 582.5,358.5 820,358.5 L820,369.5 C582.5,369.5 582.5,503.5 345,503.5 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → Blockaid</title></path>
-<path d="M345,517.5 C582.5,517.5 582.5,268.0 820,268.0 L820,279.0 C582.5,279.0 582.5,528.5 345,528.5 Z" fill="var(--l-intent)" class="rib"><title>How much → Consensys · SERVO relay</title></path>
-<path d="M345,542.5 C582.5,542.5 582.5,178.5 820,178.5 L820,189.5 C582.5,189.5 582.5,553.5 345,553.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · MM APIs</title></path>
-<path d="M345,553.5 C582.5,553.5 582.5,369.5 820,369.5 L820,380.5 C582.5,380.5 582.5,564.5 345,564.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Blockaid</title></path>
-<path d="M345,564.5 C582.5,564.5 582.5,454.5 820,454.5 L820,465.5 C582.5,465.5 582.5,575.5 345,575.5 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → Consensys · Infura</title></path>
-<path d="M345,589.5 C582.5,589.5 582.5,279.0 820,279.0 L820,290.0 C582.5,290.0 582.5,600.5 345,600.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Consensys · SERVO relay</title></path>
-<path d="M345,600.5 C582.5,600.5 582.5,801.0 820,801.0 L820,812.0 C582.5,812.0 582.5,611.5 345,611.5 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → Builders · relays</title></path>
-<path d="M345,625.5 C582.5,625.5 582.5,290.0 820,290.0 L820,301.0 C582.5,301.0 582.5,636.5 345,636.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · SERVO relay</title></path>
-<path d="M345,636.5 C582.5,636.5 582.5,465.5 820,465.5 L820,476.5 C582.5,476.5 582.5,647.5 345,647.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Consensys · Infura</title></path>
-<path d="M345,647.5 C582.5,647.5 582.5,527.5 820,527.5 L820,538.5 C582.5,538.5 582.5,658.5 345,658.5 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → Etherscan</title></path>
-<rect x="215" y="70" width="130" height="132.0" fill="var(--l-ip)"/>
-<text x="207" y="140.0" text-anchor="end" class="dl">Your IP address</text>
-<rect x="215" y="216.0" width="130" height="66.0" fill="var(--l-addr)"/>
-<text x="207" y="253.0" text-anchor="end" class="dl">Your address</text>
-<rect x="215" y="296.0" width="130" height="33.0" fill="var(--l-jwt)"/>
-<text x="207" y="316.5" text-anchor="end" class="dl">ALL your addresses</text>
-<rect x="215" y="343.0" width="130" height="33.0" fill="var(--l-jwt)"/>
-<text x="207" y="363.5" text-anchor="end" class="dl">Your login token</text>
-<rect x="215" y="390.0" width="130" height="16.5" fill="var(--l-jwt)"/>
-<text x="207" y="402.25" text-anchor="end" class="dl">Your tracking ID</text>
-<rect x="215" y="420.5" width="130" height="16.5" fill="var(--muted)"/>
-<text x="207" y="432.75" text-anchor="end" class="dl">Cookies</text>
-<rect x="215" y="451.0" width="130" height="16.5" fill="var(--l-hold)"/>
-<text x="207" y="463.25" text-anchor="end" class="dl">Which tokens you hold</text>
-<rect x="215" y="481.5" width="130" height="22.0" fill="var(--l-rcpt)"/>
-<text x="207" y="496.5" text-anchor="end" class="dl">Who you&#x27;re paying</text>
-<rect x="215" y="517.5" width="130" height="11.0" fill="var(--l-intent)"/>
-<text x="207" y="527.0" text-anchor="end" class="dl">How much</text>
-<rect x="215" y="542.5" width="130" height="33.0" fill="var(--l-addr)"/>
-<text x="207" y="563.0" text-anchor="end" class="dl">The whole unsigned tx</text>
-<rect x="215" y="589.5" width="130" height="22.0" fill="var(--l-signed)"/>
-<text x="207" y="604.5" text-anchor="end" class="dl big">THE SIGNED TX</text>
-<rect x="215" y="625.5" width="130" height="33.0" fill="var(--l-hash)"/>
-<text x="207" y="646.0" text-anchor="end" class="dl">The tx hash</text>
-<rect x="820" y="96" width="330" height="93.5" rx="6" class="co blk lie2"/>
-<text x="832" y="113" class="cn">Consensys · MM APIs</text>
-<text x="832" y="129" class="ct t-blk">can stop you</text>
-<text x="832" y="143" class="ct t-lie2">can swap the code you run</text>
-<text x="832" y="157" class="ct t-txi">writes into your tx</text>
-<rect x="820" y="207.5" width="330" height="93.5" rx="6" class="co blk lie1"/>
-<text x="832" y="224.5" class="cn">Consensys · SERVO relay</text>
-<text x="832" y="240.5" class="ct t-blk">can stop you</text>
-<text x="832" y="254.5" class="ct t-lie1">can show you wrong numbers</text>
-<rect x="820" y="319.0" width="330" height="68" rx="6" class="co blk lie1"/>
-<text x="832" y="336.0" class="cn">Blockaid</text>
-<text x="832" y="352.0" class="ct t-blk">can stop you</text>
-<text x="832" y="366.0" class="ct t-lie1">can show you wrong numbers</text>
-<text x="832" y="380.0" class="ct t-txi">writes into your tx</text>
-<rect x="820" y="405.0" width="330" height="71.5" rx="6" class="co blk lie2"/>
-<text x="832" y="422.0" class="cn">Consensys · Infura</text>
-<text x="832" y="438.0" class="ct t-blk">can stop you</text>
-<text x="832" y="452.0" class="ct t-lie2">can get your funds stuck</text>
-<text x="832" y="466.0" class="ct t-txi">writes into your tx</text>
-<rect x="820" y="494.5" width="330" height="44.0" rx="6" class="co lie1"/>
-<text x="832" y="511.5" class="cn">Etherscan</text>
-<text x="832" y="527.5" class="ct t-lie1">can show you wrong numbers</text>
-<rect x="820" y="556.5" width="330" height="54" rx="6" class="co opt"/>
-<text x="832" y="573.5" class="cn">Segment</text>
-<text x="832" y="589.5" class="ct t-idle">even when you do nothing</text>
-<text x="832" y="603.5" class="ct t-idle">only if you opted in</text>
-<rect x="820" y="628.5" width="330" height="68" rx="6" class="co blk lie2"/>
-<text x="832" y="645.5" class="cn">Google · Web Store</text>
-<text x="832" y="661.5" class="ct t-blk">can stop you</text>
-<text x="832" y="675.5" class="ct t-lie2">can swap the code you run</text>
-<text x="832" y="689.5" class="ct t-idle">even when you do nothing</text>
-<rect x="820" y="714.5" width="330" height="54" rx="6" class="co opt"/>
-<text x="832" y="731.5" class="cn">Sentry</text>
-<text x="832" y="747.5" class="ct t-idle">even when you do nothing</text>
-<text x="832" y="761.5" class="ct t-idle">only if you opted in</text>
-<rect x="820" y="786.5" width="330" height="40" rx="6" class="co blk"/>
-<text x="832" y="803.5" class="cn">Builders · relays</text>
-<text x="832" y="819.5" class="ct t-blk">can stop you</text>
-</svg></div>
 </section>
 
 <section class="view" id="view-m1">
@@ -1401,6 +1347,17 @@ render('map-ab1', CITIES['ab1'], "AB1 · 7 stations · 9 requests · 5 operators
 render('map-u1', CITIES['u1'], "U1 · 22 stations · 26 requests · 12 operators (4 minor not drawn) · code-traced (live capture pending)");
 render('map-night', CITIES['night'], "N · 9 stations · 15 requests (4 minor not drawn) · code-traced (live capture pending)");
 
+// home previews: clone each rendered map into its card, scaled by viewBox
+document.querySelectorAll('.prev[data-city]').forEach(p=>{
+ const src=document.querySelector('#map-'+p.dataset.city+' svg');
+ if(!src)return;
+ const c=src.cloneNode(true);
+ c.removeAttribute('width');c.removeAttribute('height');
+ c.setAttribute('aria-hidden','true');
+ c.querySelectorAll('title').forEach(t=>t.remove());
+ p.appendChild(c);
+});
+
 // station index table
 const ROWS=[["BL1", "Builders · relays", "(4337 EntryPoint · builder network) +1 more", "Signed raw tx, Signed userOp (4337)", "blk", "—", "CR0 · O1 · P2 · S3"], ["ES1", "Etherscan", "etherscan.io", "Cookies, IP address, Tx hash", "lie", "Otterscan or Blockscout against your own node", "CR3 · O0 · P0 · S2"], ["AC AC1 DF FF GA1 IC NF PH PR TK TS1", "Consensys · MM APIs", "accounts.api.cx.metamask.io +10 more", "All account addresses, Profile-sync JWT, IP address, Selected address, Tracked-token list, Chain id, Full unsigned tx, Wallet version", "blk lie tun", "Basic functionality off", "CR2 · O0 · P0 · S0"], ["EN1 IN IN1 IN2 IN3 MC", "Consensys · Infura", "mainnet.infura.io", "All account addresses, IP address, Selected address, Chain id, ENS name, Tx hash, Full unsigned tx", "blk lie", "User sets a custom RPC", "CR1 · O0 · P0 · S0"], ["SV1 SV2", "Consensys · SERVO relay", "transaction.api.cx.metamask.io", "Profile-sync JWT, IP address, Selected address, Amount, Recipient address, Signed raw tx, Tx hash", "blk lie tun", "Smart Transactions off", "CR1 · O0 · P0 · S2"], ["BK1 BK2", "Blockaid", "security-alerts.api.cx.metamask.io", "IP address, Selected address, Recipient address, Full unsigned tx", "blk lie tun", "Security alerts off", "CR2 · O0 · P1 · S2"], ["SN SNA", "Sentry", "o331974.ingest.sentry.io +3 more", "Per-install id (X-API-Key / extensionId / clientId), IP address, Wallet version", "", "MetaMetrics off · Rabby: Data analysis off", "CR3 · O1 · P0 · S3"], ["GO GU", "Google · Web Store", "clients2.google.com", "IP address, Wallet version", "blk lie", "build the extension from source and side-load", "CR2 · O0 · P1 · S0"], ["AM", "Amplitude", "api2.amplitude.com", "Per-install id (X-API-Key / extensionId / clientId), IP address, Selected address", "blk", "Aave: self-hosted frontend (official static build)", "CR2 · O0 · P0 · S3"], ["GH LG", "GitHub", "raw.githubusercontent.com", "IP address", "lie", "vendor the metadata files", "CR3 · O0 · P1 · S2"], ["CR CX FS FS2 MT RB1 RB2 RB3 RB4 RG1 RR1 RR2 RS1 RS2 RS3 RS4 RS5 RX1 ST WL", "Rabby · DeBank API", "api.rabby.io +4 more", "All account addresses, Per-install id (X-API-Key / extensionId / clientId), IP address, Selected address, Amount, Chain id, dApp origin, Recipient address, Signed raw tx, Tx hash, Full unsigned tx, Wallet version", "blk lie tun", "Rabby: custom RPC for the chain · Rabby: Data analysis off · Rabby: whitelist off", "CR1 · O1 · P0 · S0"], ["AC AM AP CD FE FL GQ PF QT SS SW UR", "Uniswap Labs", "app.uniswap.org +9 more", "Per-install id (X-API-Key / extensionId / clientId), Balances + positions, IP address, Selected address, Amount, Chain id, Swap route + quote (path, amountOut, minOut, Universal Router calldata), Swap token pair (tokenIn/tokenOut), Tx hash", "blk lie tun", "Uniswap: Allow analytics off", "CR0 · O1 · P0 · S0"], ["RP", "Alchemy", "app.aave.com/api/rpc-proxy → eth-mainnet.g.alchemy.com", "Balances + positions, IP address, Selected address", "blk lie", "own node — the dApp's reads are plain JSON-RPC", "CR0 · O0 · P1 · S2"], ["CN LA PY RF VH", "Ambire · relayer", "relayer.ambire.com", "All account addresses, IP address, Selected address, Amount, Chain id, Recipient address, Full unsigned tx", "blk lie tun", "—", "CR0 · O1 · P0 · S1"], ["FE", "Avara · app.aave.com", "app.aave.com", "Balances + positions, IP address, Selected address", "blk lie tun", "run the interface locally or talk to the pool contracts from your own tooling", "CR0 · O1 · P1 · S0"], ["MR", "ACI · aavechan", "apps.aavechan.com", "IP address, Selected address", "lie", "—", "CR3 · O? · P1 · S2"], ["CE", "Ambire · cena", "cena.ambire.com", "IP address, Tracked-token list", "lie tun", "—", "CR3 · O0 · P1 · S2"], ["IV1 IV2 IV3", "Ambire · invictus RPC", "invictus.ambire.com", "IP address, Selected address, Amount, Chain id, Recipient address, Full unsigned tx", "blk lie tun", "Ambire: custom RPC for the network", "CR1 · O0 · P1 · S1"], ["CP", "Compliance vendor", "app.aave.com/api/preflight-compliance → vendor unknown", "IP address, Selected address", "blk lie", "—", "CR0 · O0 · P1 · S1"], ["DD", "Datadog", "browser-intake-datadoghq.com", "Per-install id (X-API-Key / extensionId / clientId), IP address", "", "—", "CR3 · O0 · P1 · S3"], ["EN", "ENS metadata", "metadata.ens.domains", "IP address, Selected address", "", "self-host the metadata service", "CR3 · O3 · P1 · S3"], ["FB", "Google · Firebase", "firebaseinstallations.googleapis.com +1 more", "Per-install id (X-API-Key / extensionId / clientId), IP address", "blk lie", "—", "CR2 · O0 · P0 · S0"], ["GA", "Google Analytics", "www.google-analytics.com", "Per-install id (X-API-Key / extensionId / clientId), IP address, Wallet version", "", "Rabby: Data analysis off", "CR3 · O0 · P0 · S3"], ["PB PX1 PX2", "Pimlico bundler", "api.pimlico.io", "IP address, Selected address, Amount, Chain id, Recipient address, Signed userOp (4337), Tx hash, Full unsigned tx", "blk lie tun", "—", "CR0 · O? · P1 · S0"], ["MA MG MN PA PA2 PT PT2", "Rainbow · APIs", "metadata.p.rainbow.me +1 more", "IP address, Selected address, Chain id, Tx hash", "blk lie tun", "—", "CR0 · O0 · P1 · S0"], ["RP1 RP2 RP3 RP4 RX1", "Rainbow · RPC proxy", "rpc.rainbow.me", "IP address, Selected address, Amount, Chain id, Recipient address, Signed raw tx, Full unsigned tx", "blk lie tun", "Rainbow: custom RPC on localhost/LAN", "CR1 · O0 · P1 · S0"], ["RS RS2", "RudderStack", "rainbowjiumask.dataplane.rudderstack.com", "Per-install id (X-API-Key / extensionId / clientId), IP address, Amount, Chain id, Wallet version", "", "Rainbow: Analytics off", "CR3 · O1 · P0 · S3"], ["SG", "Segment", "api.segment.io", "IP address, MetaMetrics id", "", "MetaMetrics off", "CR3 · O0 · P0 · S3"], ["SGQ", "The Graph", "app.aave.com/api/subgraph-proxy", "IP address, Selected address", "lie", "Aave: self-hosted frontend (official static build)", "CR3 · O1 · P1 · S2"], ["CK", "WalletConnect", "relay.walletconnect.org", "IP address, Selected address", "blk", "self-hosted relay", "CR2 · O1 · P1 · S3"], ["MO", "Ambire · monitor", "monitor.ambire.com", "IP address, Wallet version", "tun", "Ambire: crash reporting off", "CR3 · O1 · P1 · S3"], ["EN3", "Avatar host", "(any URL the name owner set)", "IP address, ENS name", "", "wallet setting: don't fetch avatars / no remote images", "CR3 · O? · P1 · S3"], ["EN2", "CCIP gateway", "(gateway URL chosen by the name issuer)", "IP address, ENS name", "blk lie", "avoid offchain subnames", "CR0 · O? · P1 · S0"], ["AS CG", "CoinGecko", "app.aave.com/api/coingecko-categories +1 more", "IP address", "", "Aave: self-hosted frontend (official static build)", "CR3 · O0 · P1 · S3"], ["P2P", "Ethereum p2p", "devp2p gossip", "IP address, Signed raw tx", "", "run a node; Tor hides the first-hop IP", "CR3 · O3 · P1 · S3"], ["PRF", "Family", "app.aave.com/api/prices-proxy → Family API", "IP address", "lie", "Aave: self-hosted frontend (official static build)", "CR3 · O0 · P1 · S2"], ["MK", "Merkl", "api.merkl.xyz", "IP address", "lie tun", "—", "CR3 · O? · P1 · S2"], ["LK1 ON1 OT1 RC1 SG1", "You", "localhost:5100 +2 more", "Everything — and nothing leaves", "self", "—", "—"]];
 const tb=document.getElementById('stationrows');
@@ -1416,7 +1373,7 @@ const tpl=document.getElementById('legend-tpl');
 document.querySelectorAll('.legend-slot').forEach(s=>s.appendChild(tpl.content.cloneNode(true)));
 
 // router
-const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','night','center','fixes','index'];
+const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','night','center','fixes','index','how'];
 function route(){
  const r=(location.hash.replace(/^#\/?/,'')||'home');
  const v=views.includes(r)?r:'home';
