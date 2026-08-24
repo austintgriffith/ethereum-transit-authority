@@ -140,7 +140,7 @@ h1 a{color:inherit;text-decoration:none}
 .mapcard .sign strong{font-size:17px;font-weight:600;letter-spacing:.02em;white-space:nowrap}
 .mapcard .sign .stat{font-family:Barlow,sans-serif;font-size:13px;opacity:.75;white-space:nowrap}
 .mapcard .prev{border:2px solid var(--ink);background:var(--panel);padding:8px 12px}
-.mapcard .prev svg{width:100%;height:auto;display:block}
+.mapcard .prev svg{max-width:100%;height:auto;display:block}
 .mapcard:hover .sign{background:var(--blue)}
 .mapcard:hover .prev{border-color:var(--blue)}
 @media (max-width:640px){ .mapcard .sign{flex-wrap:wrap;gap:6px 12px} .mapcard .sign strong,.mapcard .sign .stat{white-space:normal} }
@@ -185,39 +185,39 @@ h1 a{color:inherit;text-decoration:none}
 <!-- ================= HOME ================= -->
 <section class="view" id="view-home">
   <a class="mapcard" href="#/m1">
-    <span class="sign"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span class="stat">12 stations · 12 requests · 7 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-addr)">M1</span><strong>The Normie Send</strong><span class="stat">7 lines · 12 stations · 12 requests</span></span>
     <div class="prev" data-city="m1"></div>
   </a>
   <a class="mapcard" href="#/r1">
-    <span class="sign"><span class="b" style="background:var(--l-rcpt)">R1</span><strong>The Rabby Send</strong><span class="stat">13 stations · 16 requests · 4 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-rcpt)">R1</span><strong>The Rabby Send</strong><span class="stat">7 lines · 13 stations · 16 requests</span></span>
     <div class="prev" data-city="r1"></div>
   </a>
   <a class="mapcard" href="#/m2">
-    <span class="sign"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span class="stat">15 stations · 15 requests · 9 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-ens)">M2</span><strong>The ENS Send</strong><span class="stat">8 lines · 15 stations · 15 requests</span></span>
     <div class="prev" data-city="m2"></div>
   </a>
   <a class="mapcard" href="#/m0">
-    <span class="sign"><span class="b" style="background:var(--self)">M0</span><strong>The Mountain Man</strong><span class="stat">7 stations · 7 requests · 1 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--self)">M0</span><strong>The Mountain Man</strong><span class="stat">6 lines · 7 stations · 7 requests</span></span>
     <div class="prev" data-city="m0"></div>
   </a>
   <a class="mapcard" href="#/m3">
-    <span class="sign"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span class="stat">19 stations · 26 requests · 20 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--blue)">M3</span><strong>The Aave Deposit</strong><span class="stat">8 lines · 19 stations · 26 requests</span></span>
     <div class="prev" data-city="m3"></div>
   </a>
   <a class="mapcard" href="#/rb1">
-    <span class="sign"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span class="stat">11 stations · 14 requests · 7 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-ens)">RB1</span><strong>The Rainbow Send</strong><span class="stat">7 lines · 11 stations · 14 requests</span></span>
     <div class="prev" data-city="rb1"></div>
   </a>
   <a class="mapcard" href="#/ab1">
-    <span class="sign"><span class="b" style="background:var(--l-hold)">AB1</span><strong>The Ambire Send</strong><span class="stat">7 stations · 9 requests · 5 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-hold)">AB1</span><strong>The Ambire Send</strong><span class="stat">8 lines · 7 stations · 9 requests</span></span>
     <div class="prev" data-city="ab1"></div>
   </a>
   <a class="mapcard" href="#/u1">
-    <span class="sign"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span class="stat">22 stations · 26 requests · 12 operators</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-intent)">U1</span><strong>The Uniswap Swap</strong><span class="stat">7 lines · 22 stations · 26 requests</span></span>
     <div class="prev" data-city="u1"></div>
   </a>
   <a class="mapcard" href="#/night">
-    <span class="sign"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span class="stat">9 stations · 15 requests</span></span>
+    <span class="sign"><span class="b" style="background:var(--l-hold)">N</span><strong>Night Service</strong><span class="stat">4 lines · 9 stations · 15 requests</span></span>
     <div class="prev" data-city="night"></div>
   </a>
   <div class="cities">
@@ -1183,14 +1183,18 @@ const EXAMPLE={
   {slot:3.2, code:'BL',  name:'Builders', host:'(builder network)', carries:['signed'], blocks:1},
  ]};
 
-function render(id, J, caption){
- const fig=document.getElementById(id);
+function render(target, J, caption, mini){
+ // mini: unlabeled silhouette for the home cards — geometry only, click through for names
+ const fig=typeof target==='string'?document.getElementById(target):target;
+ const pid=typeof target==='string'?target:'mini-'+(render._n=(render._n||0)+1);
  const L=J.lanes, laneIdx={}; L.forEach((l,i)=>laneIdx[l.id]=i);
- const PADL=216, SLOT=104, laneGap=36, topPad=252, glyphPad=60;
+ const PADL=mini?36:216, SLOT=104, laneGap=36, topPad=mini?64:252, glyphPad=mini?44:60;
  const maxSlot=Math.max(J.eth?J.eth.slot:0, J.through?J.through.slot+0.9:0, ...J.calls.map(c=>c.slot));
- const W=PADL+(maxSlot+2.1)*SLOT, H=topPad+(L.length-1)*laneGap+glyphPad+34;
- const svg=el('svg',{viewBox:'0 0 '+W+' '+H, width:W, height:H, role:'img',
-   'aria-label':caption, 'font-family':'Barlow Semi Condensed, Barlow, sans-serif'});
+ const W=PADL+(maxSlot+(mini?1.2:2.1))*SLOT, H=topPad+(L.length-1)*laneGap+glyphPad+(mini?8:34);
+ const svg=el('svg',{viewBox:'0 0 '+W+' '+H, 'font-family':'Barlow Semi Condensed, Barlow, sans-serif'});
+ // mini gets half-scale dimensions (capped by max-width:100%) so density compares across cards
+ if(mini){svg.setAttribute('aria-hidden','true');svg.setAttribute('width',Math.round(W/2));svg.setAttribute('height',Math.round(H/2));}
+ else{svg.setAttribute('width',W);svg.setAttribute('height',H);svg.setAttribute('role','img');svg.setAttribute('aria-label',caption);}
  const X=s=>PADL+s*SLOT, Y=i=>topPad+i*laneGap;
  const laneBot=Y(L.length-1);
  const riverX=J.riverAfter!=null?X(J.riverAfter+0.5):null;
@@ -1198,7 +1202,7 @@ function render(id, J, caption){
 
  // defs: tunnel hatch
  const defs=el('defs',{},svg);
- const pat=el('pattern',{id:id+'-hatch',width:7,height:7,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
+ const pat=el('pattern',{id:pid+'-hatch',width:7,height:7,patternUnits:'userSpaceOnUse',patternTransform:'rotate(45)'},defs);
  el('rect',{width:7,height:7,fill:'none'},pat);
  el('line',{x1:0,y1:0,x2:0,y2:7,stroke:'var(--tunnel)','stroke-width':2,opacity:.5},pat);
 
@@ -1206,11 +1210,11 @@ function render(id, J, caption){
  (J.houses||[]).forEach(h=>{
    const x1=X(h.from)-46, x2=X(h.to)+46, y1=Y(0)-40, y2=laneBot+glyphPad;
    el('rect',{x:x1,y:y1,width:x2-x1,height:y2-y1,rx:14,fill:'var(--house)',stroke:'var(--self)','stroke-width':2.5},svg);
-   txt(svg,x1+12,y2-10,h.label,{'font-size':11,'font-weight':700,fill:'var(--self)','letter-spacing':'.14em'});
+   if(!mini)txt(svg,x1+12,y2-10,h.label,{'font-size':11,'font-weight':700,fill:'var(--self)','letter-spacing':'.14em'});
  });
 
  // zone bands (top)
- (J.zones||[]).forEach(z=>{
+ (mini?[]:(J.zones||[])).forEach(z=>{
    const x1=X(z[0])-34, x2=X(z[1])+34;
    el('line',{x1:x1,y1:26,x2:x2,y2:26,stroke:'var(--muted)','stroke-width':1.5},svg);
    [x1,x2].forEach(x=>el('line',{x1:x,y1:22,x2:x,y2:30,stroke:'var(--muted)','stroke-width':1.5},svg));
@@ -1219,7 +1223,7 @@ function render(id, J, caption){
 
  // river
  if(riverX!=null){
-   const rw=30, ry1=62, ry2=laneBot+glyphPad;
+   const rw=30, ry1=mini?topPad-34:62, ry2=laneBot+glyphPad;
    const amps=[7,5,8,6,7,6], seg=64;
    const segsOf=()=>{const s=[];let y=ry1,i=0;while(y<ry2){const h=Math.min(seg,ry2-y);s.push({h:h,a:amps[i%amps.length]*(i%2?1:-1)*(h/seg)});y+=h;i++;}return s;};
    const bankDown=(x0)=>{let d='M'+x0+' '+ry1;segsOf().forEach(s=>{d+=' q'+s.a+' '+(s.h/2)+' 0 '+s.h;});return d;};
@@ -1227,7 +1231,7 @@ function render(id, J, caption){
    el('path',{d:bankDown(riverX-rw/2)+' '+bankUp(riverX+rw/2)+' Z',fill:'var(--river)',opacity:.9},svg);
    el('path',{d:bankDown(riverX-rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
    el('path',{d:bankDown(riverX+rw/2),fill:'none',stroke:'var(--river-edge)','stroke-width':2,'stroke-linecap':'round'},svg);
-   txt(svg,riverX,ry1-8,'SIGNATURE RIVER',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
+   if(!mini)txt(svg,riverX,ry1-8,'SIGNATURE RIVER',{'text-anchor':'middle','font-size':11.5,fill:'var(--river-edge)','font-weight':700,'letter-spacing':'.14em'});
  }
 
  // your machine: box around the device terminal on maps without explicit houses
@@ -1241,17 +1245,17 @@ function render(id, J, caption){
  if(devLanes.length){
    const y1=Y(laneIdx[devLanes[0].id])-10, y2=Y(laneIdx[devLanes[devLanes.length-1].id])+10;
    el('line',{x1:PADL-14,y1:y1,x2:PADL-14,y2:y2,stroke:'var(--ink)','stroke-width':7},svg);
-   txt(svg,PADL-16,Y(0)-50,'YOUR MACHINE',{'text-anchor':'middle','font-size':12,'font-weight':700,fill:'var(--ink)','letter-spacing':'.1em'});
+   if(!mini)txt(svg,PADL-16,Y(0)-50,'YOUR MACHINE',{'text-anchor':'middle','font-size':12,'font-weight':700,fill:'var(--ink)','letter-spacing':'.1em'});
  }
 
  // lanes
  L.forEach((l,i)=>{
    const y=Y(i), color='var('+l.v+')';
    const isNo=(J.noservice||[]).includes(l.id);
-   txt(svg,PADL-58,y+4,l.name,{'text-anchor':'end','font-size':l.bold?12.5:12,'font-weight':l.bold?700:600,fill:color,'letter-spacing':l.bold?'.06em':'0'});
+   if(!mini)txt(svg,PADL-58,y+4,l.name,{'text-anchor':'end','font-size':l.bold?12.5:12,'font-weight':l.bold?700:600,fill:color,'letter-spacing':l.bold?'.06em':'0'});
    if(isNo){
      el('line',{x1:PADL-14,y1:y,x2:PADL+60,y2:y,stroke:color,'stroke-width':3,'stroke-dasharray':'3 6',opacity:.45},svg);
-     txt(svg,PADL+72,y+4,'no service on this route — never leaves the house',{'font-size':11,fill:'var(--muted)','font-style':'italic'});
+     if(!mini)txt(svg,PADL+72,y+4,'no service on this route — never leaves the house',{'font-size':11,fill:'var(--muted)','font-style':'italic'});
      return;
    }
    const carrying=J.calls.filter(c=>c.carries.includes(l.id));
@@ -1270,7 +1274,7 @@ function render(id, J, caption){
    }
    if(thru){ // through-service: line runs off-map east
      el('line',{x1:xEnd+6,y1:y,x2:xEnd+34,y2:y,stroke:color,'stroke-width':l.bold?6:5,'stroke-dasharray':'3 6','stroke-linecap':'round'},svg);
-     txt(svg,xEnd+46,y+4,'»',{'font-size':14,fill:color,'font-weight':700});
+     if(!mini)txt(svg,xEnd+46,y+4,'»',{'font-size':14,fill:color,'font-weight':700});
    }else if(!(J.eth&&J.eth.lane===l.id)){ // terminus cap
      el('line',{x1:xEnd+9,y1:y-8,x2:xEnd+9,y2:y+8,stroke:color,'stroke-width':4},svg);
    }
@@ -1280,7 +1284,7 @@ function render(id, J, caption){
  {
   const gy=laneBot+26, xEndMap=X(maxSlot)+(J.eth?20:40);
   el('line',{x1:PADL-14,y1:gy,x2:xEndMap,y2:gy,stroke:'var(--crops)','stroke-width':9,opacity:.45,'stroke-linecap':'round'},svg);
-  txt(svg,PADL-58,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--crops)'});
+  if(!mini)txt(svg,PADL-58,gy+4,'\u{1F33E} CROPS',{'text-anchor':'end','font-size':12,'font-weight':700,fill:'var(--crops)'});
  }
 
  // station calls
@@ -1289,36 +1293,42 @@ function render(id, J, caption){
    const ys=c.carries.map(k=>Y(laneIdx[k]));
    const yMin=Math.min(...ys), yMax=Math.max(...ys);
    if(c.tunnel){
-     el('rect',{x:x-16,y:yMin-16,width:32,height:(yMax-yMin)+32,fill:'url(#'+id+'-hatch)',stroke:'var(--tunnel)','stroke-width':1.5,'stroke-dasharray':'5 4',rx:8},svg);
+     el('rect',{x:x-16,y:yMin-16,width:32,height:(yMax-yMin)+32,fill:'url(#'+pid+'-hatch)',stroke:'var(--tunnel)','stroke-width':1.5,'stroke-dasharray':'5 4',rx:8},svg);
    }
    const stroke=c.self?'var(--self)':'var(--ink)';
    if(ys.length>1)el('line',{x1:x,y1:yMin,x2:x,y2:yMax,stroke:stroke,'stroke-width':7,opacity:.9,...(c.opt?{'stroke-dasharray':'5 5'}:{})},svg);
    ys.forEach(y=>el('circle',{cx:x,cy:y,r:7,fill:'var(--panel)',stroke:stroke,'stroke-width':3,...(c.opt?{'stroke-dasharray':'3 3'}:{})},svg));
-   // label (45°) — always anchored above the top lane so it never crosses the lane field
-   const lx=x, ly=Y(0)-26;
-   el('line',{x1:x,y1:yMin-11,x2:x,y2:ly+8,stroke:'var(--muted)','stroke-width':1,'stroke-dasharray':'2 3'},svg);
-   const g=el('g',{transform:'translate('+lx+' '+ly+') rotate(-45)'},svg);
-   txt(g,0,0,c.name,{'font-size':12.5,'font-weight':600,fill:'var(--ink)'});
-   txt(g,0,13,c.code+' · '+c.host,{'font-size':10,fill:'var(--muted)','font-family':'IBM Plex Mono, monospace'});
-   // glyph row
-   let gx=x-((c.blocks?1:0)+(c.lies?1:0)+(c.txin?1:0)+(c.rep?1:0))*13+2;
+   if(!mini){
+    // label (45°) — always anchored above the top lane so it never crosses the lane field
+    const lx=x, ly=Y(0)-26;
+    el('line',{x1:x,y1:yMin-11,x2:x,y2:ly+8,stroke:'var(--muted)','stroke-width':1,'stroke-dasharray':'2 3'},svg);
+    const g=el('g',{transform:'translate('+lx+' '+ly+') rotate(-45)'},svg);
+    txt(g,0,0,c.name,{'font-size':12.5,'font-weight':600,fill:'var(--ink)'});
+    txt(g,0,13,c.code+' · '+c.host,{'font-size':10,fill:'var(--muted)','font-family':'IBM Plex Mono, monospace'});
+   }
+   // glyph row — mini keeps the colored squares (the shape of the risk), drops the characters
+   let gx=x-((c.blocks?1:0)+(c.lies?1:0)+(c.txin?1:0)+(c.rep&&!mini?1:0))*13+2;
    const gy=laneBot+26;
-   if(c.blocks){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-addr)',rx:2},svg);txt(svg,gx,gy+3,'✕',{'text-anchor':'middle','font-size':10,fill:'#fff','font-weight':700});gx+=22;}
-   if(c.lies){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-intent)',rx:2},svg);txt(svg,gx,gy+3,'≈',{'text-anchor':'middle','font-size':11,fill:'#1a1a1a','font-weight':700});gx+=22;}
-   if(c.txin){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-signed)',rx:2},svg);txt(svg,gx,gy+3,'✎',{'text-anchor':'middle','font-size':10,fill:'#fff','font-weight':700});gx+=22;}
-   if(c.rep){txt(svg,gx,gy+3,c.rep,{'text-anchor':'middle','font-size':10.5,fill:'var(--muted)','font-weight':600});}
-   // tooltip on the whole station: an invisible hit rect
-   const hit=el('rect',{x:x-18,y:yMin-60,width:36,height:(yMax-yMin)+96,fill:'transparent'},svg);
-   el('title',{},hit).textContent=c.name+' ('+c.host+')\nReceives: '+c.carries.join(', ')+(c.tip?'\n'+c.tip:'');
+   if(c.blocks){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-addr)',rx:2},svg);if(!mini)txt(svg,gx,gy+3,'✕',{'text-anchor':'middle','font-size':10,fill:'#fff','font-weight':700});gx+=22;}
+   if(c.lies){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-intent)',rx:2},svg);if(!mini)txt(svg,gx,gy+3,'≈',{'text-anchor':'middle','font-size':11,fill:'#1a1a1a','font-weight':700});gx+=22;}
+   if(c.txin){el('rect',{x:gx-8,y:gy-9,width:16,height:16,fill:'var(--l-signed)',rx:2},svg);if(!mini)txt(svg,gx,gy+3,'✎',{'text-anchor':'middle','font-size':10,fill:'#fff','font-weight':700});gx+=22;}
+   if(c.rep&&!mini){txt(svg,gx,gy+3,c.rep,{'text-anchor':'middle','font-size':10.5,fill:'var(--muted)','font-weight':600});}
+   if(!mini){
+    // tooltip on the whole station: an invisible hit rect
+    const hit=el('rect',{x:x-18,y:yMin-60,width:36,height:(yMax-yMin)+96,fill:'transparent'},svg);
+    el('title',{},hit).textContent=c.name+' ('+c.host+')\nReceives: '+c.carries.join(', ')+(c.tip?'\n'+c.tip:'');
+   }
  });
 
  // through-service portal
  if(J.through){
    const x=X(J.through.slot);
    el('line',{x1:x,y1:Y(0)-18,x2:x,y2:laneBot+18,stroke:'var(--muted)','stroke-width':1,'stroke-dasharray':'2 4'},svg);
-   const g=el('g',{transform:'translate('+x+' '+(Y(0)-26)+') rotate(-45)'},svg);
-   txt(g,0,0,J.through.label,{'font-size':12.5,'font-weight':700,fill:'var(--ink)'});
-   if(J.through.sub)txt(g,0,13,J.through.sub,{'font-size':10,fill:'var(--muted)','font-family':'IBM Plex Mono, monospace'});
+   if(!mini){
+     const g=el('g',{transform:'translate('+x+' '+(Y(0)-26)+') rotate(-45)'},svg);
+     txt(g,0,0,J.through.label,{'font-size':12.5,'font-weight':700,fill:'var(--ink)'});
+     if(J.through.sub)txt(g,0,13,J.through.sub,{'font-size':10,fill:'var(--muted)','font-family':'IBM Plex Mono, monospace'});
+   }
  }
 
  // Ethereum terminus
@@ -1326,14 +1336,16 @@ function render(id, J, caption){
    const x=X(J.eth.slot), y=Y(laneIdx[J.eth.lane]);
    el('circle',{cx:x,cy:y,r:13,fill:'var(--panel)',stroke:'var(--ink)','stroke-width':4},svg);
    el('circle',{cx:x,cy:y,r:5,fill:'var(--ink)'},svg);
-   el('line',{x1:x,y1:44,x2:x,y2:laneBot+glyphPad,stroke:'var(--ink)','stroke-width':1,'stroke-dasharray':'2 5',opacity:.6},svg);
-   txt(svg,x,Y(0)-40,'ETHEREUM',{'text-anchor':'middle','font-size':15,'font-weight':700,fill:'var(--ink)','letter-spacing':'.16em','font-family':'Jost'});
+   el('line',{x1:x,y1:mini?topPad-24:44,x2:x,y2:laneBot+glyphPad,stroke:'var(--ink)','stroke-width':1,'stroke-dasharray':'2 5',opacity:.6},svg);
+   if(!mini)txt(svg,x,Y(0)-40,'ETHEREUM',{'text-anchor':'middle','font-size':15,'font-weight':700,fill:'var(--ink)','letter-spacing':'.16em','font-family':'Jost'});
  }
 
  fig.appendChild(svg);
- const cap=document.createElement('figcaption');
- cap.textContent=(W>1200?'scroll east → · ':'')+caption;
- fig.appendChild(cap);
+ if(!mini){
+   const cap=document.createElement('figcaption');
+   cap.textContent=(W>1200?'scroll east → · ':'')+caption;
+   fig.appendChild(cap);
+ }
 }
 
 render('map-example', EXAMPLE, 'IP and address leak to a company before and after signing. Only the signed tx arrives.');
@@ -1347,15 +1359,9 @@ render('map-ab1', CITIES['ab1'], "AB1 · 7 stations · 9 requests · 5 operators
 render('map-u1', CITIES['u1'], "U1 · 22 stations · 26 requests · 12 operators (4 minor not drawn) · code-traced (live capture pending)");
 render('map-night', CITIES['night'], "N · 9 stations · 15 requests (4 minor not drawn) · code-traced (live capture pending)");
 
-// home previews: clone each rendered map into its card, scaled by viewBox
+// home previews: unlabeled mini render per city — see the shape of the leak, click for the names
 document.querySelectorAll('.prev[data-city]').forEach(p=>{
- const src=document.querySelector('#map-'+p.dataset.city+' svg');
- if(!src)return;
- const c=src.cloneNode(true);
- c.removeAttribute('width');c.removeAttribute('height');
- c.setAttribute('aria-hidden','true');
- c.querySelectorAll('title').forEach(t=>t.remove());
- p.appendChild(c);
+ if(CITIES[p.dataset.city])render(p, CITIES[p.dataset.city], '', true);
 });
 
 // station index table
