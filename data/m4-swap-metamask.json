@@ -1,0 +1,90 @@
+{
+  "id": "m4-swap-metamask",
+  "title": "The MetaMask Swap",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-24",
+    "captures": [
+      {
+        "run": "20260824-214902-swap-metamask",
+        "note": "dry — driven to the fully quoted swap screen, not broadcast"
+      }
+    ]
+  },
+  "_comment": "MetaMask's BUILT-IN Swap (not a dapp) — the swap most people actually do: in-wallet, no site connect. It extends the M1 send backbone (Infura, feature flags, prices, screening, broadcast). What the swap ADDS is one closed engine: bridge.api.cx.metamask.io/getQuoteStream computes the route, the minimum-out, AND the swap calldata you sign, in one call — the same one-company-computes-what-you-sign risk as U1, but the company is MetaMask itself. Two defaults observed live (run 20260824-214902): the receive token pre-fills to mUSD, MetaMask's OWN stablecoin, and the quote screen discloses a 0.875% MetaMask fee taken on top of network + slippage. The swap executes as a contract call to MetaMask's swap router (the 'recipient' is that contract, not a person), broadcast through the same Smart Transactions relay as M1.",
+  "prepend_steps": [
+    {
+      "id": "swap-tokens",
+      "phase": "discover",
+      "name": "Token list · what you can swap",
+      "host": "tokens.api.cx.metamask.io/v3/assets",
+      "actor": "consensys-apis",
+      "purpose": "The swappable-token list the Swap screen offers, with each token's price and metadata",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "which tokens you can pick, and the mUSD default it fills",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the list decides what you can swap into and what it's labelled; the receive field defaults to MetaMask's own mUSD"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-214902-swap-metamask · tokens.api.cx.metamask.io /v3/assets, token.api.cx.metamask.io"
+      },
+      "notes": "The receive token pre-fills to mUSD (MetaMask's own stablecoin) — a self-default the user did not choose.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "swap-quote",
+      "phase": "discover",
+      "name": "MetaMask swap engine · route + calldata + fee",
+      "host": "bridge.api.cx.metamask.io/getQuoteStream",
+      "actor": "consensys-apis",
+      "purpose": "One streamed call returns the route, the minimum received, the 0.875% MetaMask fee, and the swap-router calldata the wallet will sign",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount",
+        "holdings"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you act on and the exact bytes you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no quote → no swap; there is no second quote source in the UI",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "one closed API sets the route, the minimum-out, and the calldata together — a bad minOut drains you within slippage and the wallet can't check the custom-encoded calldata locally"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-214902-swap-metamask · GET bridge.api.cx.metamask.io/getQuoteStream"
+      },
+      "notes": "MetaMask merged Swaps + Bridge into one 'bridge' quote API. The quote screen discloses 'Includes 0.875% MetaMask fee' on top of network fee and 2% default slippage.",
+      "fixed_by": [
+        "verifiable-rpc",
+        "indie-frontends"
+      ]
+    }
+  ]
+}
