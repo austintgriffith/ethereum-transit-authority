@@ -1,0 +1,53 @@
+{
+  "id": "mt1-send-token",
+  "title": "The Token Send",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-24",
+    "captures": [
+      {
+        "run": "20260824-223756-send-token",
+        "tx": "0xfda8cdbb4c36f7a99420d14c2c8fcd9bc16f9f3f2f2f2d3e2320569a2b8382cd"
+      }
+    ]
+  },
+  "_comment": "Sending an ERC-20 TOKEN (mUSD), not native ETH. Same MetaMask backbone as M1, with two real differences. (1) The signed transaction's 'to' is the TOKEN CONTRACT, not the person you're paying — the recipient and amount ride inside transfer() calldata (0xa9059cbb…) that the wallet must decode to show you who you're really paying. (2) An extra screening call fires: security-alerts.api.cx.metamask.io/token/scan-bulk — Blockaid scans the token contract itself (a plain ETH send never hits this). Observed live: real mainnet tx 0xfda8cdbb…82cd, 1.0 mUSD → austingriffith.eth, broadcast via the Smart Transactions relay. mUSD is the stablecoin M4's swap produced, so this maps the money's next hop.",
+  "prepend_steps": [
+    {
+      "id": "token-scan",
+      "phase": "discover",
+      "name": "Blockaid · token-contract scan",
+      "host": "security-alerts.api.cx.metamask.io/token/scan-bulk",
+      "actor": "blockaid",
+      "purpose": "Scan the ERC-20 contract you're transferring (bulk token security check) before the send — extra to the recipient/address scan a plain ETH send does",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair"
+      ],
+      "returns": "a token-safety verdict the send screen trusts",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong verdict either scares you off a real token or waves through a malicious one"
+      },
+      "removable_by": "security_alerts_off",
+      "tx_input": "gate",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260824-223756-send-token · POST security-alerts.api.cx.metamask.io/token/scan-bulk"
+      },
+      "notes": "Only fires for token transfers; the plain ETH send (M1) has address/evm/scan but no token/scan-bulk.",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    }
+  ]
+}

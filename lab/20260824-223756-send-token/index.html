@@ -1,0 +1,129 @@
+<meta charset="utf-8"><title>lab run 20260824-223756-send-token</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260824-223756-send-token</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260824-223756-send-token
+action: send-token
+guest_ip: 192.168.64.10
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>send-token: extension id canglmpflkjehkfaioejbblmakepelcl -&gt; send 1 mUSD to 0x34aa3f359a9d614239015126635ce7732c18fdf3 · broadcast true
+  fill unlock-pw: unlock-password
+  click unlock: unlock-submit
+  click send: eth-overview-send
+  pick-token: clicked mUSD row
+  fill recipient: recipient-address-input
+  fill amount: input[placeholder=&quot;0&quot;]
+  continue: clicked
+  confirm: clicked (role)
+  skip open-activity (not present)
+send-token: submitted; txhash (see flows.jsonl)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260824-223756-send-token
+
+action: send-token · guest 192.168.64.10 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 334 requests · 55 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| mainnet.infura.io | 71 | POST | — |
+| tron-mainnet.infura.io | 36 | GET/OPTIONS/POST | — |
+| sentry.io | 31 | POST | — |
+| price.api.cx.metamask.io | 15 | GET | authorization |
+| accounts.api.cx.metamask.io | 14 | GET | authorization |
+| bitcoin-mainnet.infura.io | 11 | GET | — |
+| solana-mainnet.infura.io | 9 | GET/OPTIONS/POST | — |
+| tokens.api.cx.metamask.io | 8 | GET | authorization |
+| tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 8 | GET/POST | authorization |
+| api.segment.io | 7 | POST | — |
+| metamask.github.io | 6 | GET | — |
+| authentication.api.cx.metamask.io | 6 | GET/POST/PUT | authorization |
+| user-storage.api.cx.metamask.io | 6 | GET | authorization |
+| transaction.api.cx.metamask.io | 6 | GET/POST | authorization |
+| static.cx.metamask.io | 5 | GET | — |
+| monad-mainnet.infura.io | 5 | POST | — |
+| subscription.api.cx.metamask.io | 5 | GET | authorization |
+| cma.itunes.apple.com | 5 | POST | — |
+| base-mainnet.infura.io | 4 | POST | — |
+| bsc-mainnet.infura.io | 4 | POST | — |
+| optimism-mainnet.infura.io | 4 | POST | — |
+| arbitrum-mainnet.infura.io | 4 | POST | — |
+| polygon-mainnet.infura.io | 4 | POST | — |
+| linea-mainnet.infura.io | 4 | POST | — |
+| android.clients.google.com | 4 | POST | authorization |
+| pancake.apple.com | 4 | GET | — |
+| token.api.cx.metamask.io | 3 | GET | — |
+| on-ramp-cache.api.cx.metamask.io | 3 | GET | — |
+| cdn.contentful.com | 3 | GET | — |
+| security-alerts.api.cx.metamask.io | 3 | POST | — |
+| bag.itunes.apple.com | 3 | GET | — |
+| bridge.api.cx.metamask.io | 2 | GET | — |
+| acl.execution.metamask.io | 2 | GET | — |
+| api.merkl.xyz | 2 | GET | — |
+| carrot.megaeth.com | 2 | POST | cookie |
+| testnet-rpc.monad.xyz | 2 | POST | — |
+| sepolia.infura.io | 2 | POST | — |
+| linea-sepolia.infura.io | 2 | POST | — |
+| notification.api.cx.metamask.io | 2 | POST | authorization |
+| gas.api.cx.metamask.io | 2 | GET | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| geolocation.api.cx.metamask.io | 1 | GET | — |
+| chainid.network | 1 | GET | — |
+| phishing-detection.api.cx.metamask.io | 1 | GET | — |
+| client-config.api.cx.metamask.io | 1 | GET | — |
+| rewards.api.cx.metamask.io | 1 | POST | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
+| defiadapters.api.cx.metamask.io | 1 | GET | — |
+| oidc.api.cx.metamask.io | 1 | POST | — |
+| gateway.api.cx.metamask.io | 1 | GET | cookie |
+| www.4byte.directory | 1 | GET | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 2969 proxied pkts · 5 BYPASS dst · 1 QUIC dst · 391 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.217.76.214 (?) · 48 pkts
+- 23.54.40.29 (?) · 28 pkts
+- 23.54.42.148 (?) · 12 pkts
+- 199.232.67.6 (no DNS seen) · 6 pkts
+- 23.54.40.238 (no DNS seen) · 5 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (no DNS seen) · 53 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 18 pkts
+- 23.11.32.159:80 (no DNS seen) · 10 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+- 104.18.38.233:80 (no DNS seen) · 2 pkts
+
+</pre>
