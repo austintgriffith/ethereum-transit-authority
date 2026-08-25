@@ -9,10 +9,11 @@
     "settings": "app.aave.com prod defaults",
     "captures": [
       {
-        "run": "20260821-220208-deposit-aave",
-        "note": "dry — driven to the supply confirm, not broadcast"
+        "run": "20260824-203044-deposit-aave",
+        "tx": "0x84fa74dddca2546d3c70289e18bd3a6be6f43ce70f24216d846e81b621098db6"
       }
-    ]
+    ],
+    "observed": "2026-08-24"
   },
   "toggles": [
     "aave_self_host",
@@ -79,7 +80,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface pages/api/preflight-compliance.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface pages/api/preflight-compliance.ts"
       },
       "tx_input": "gate",
       "notes": "FAILS CLOSED IF YOU SELF-HOST: the check needs Aave's COMPLIANCE_SECRET (pages/api/preflight-compliance.ts); without it a production build 500s and the client renders the same blocking AddressBlockedModal on connect (compliance.tsx maps any error to blocked). Skipped only in dev mode, read-only mode, or with testnets toggled. Result cached per-address in localStorage until nextCheck."
@@ -137,7 +138,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface ServerJsonRpcProvider.ts + rpc-proxy.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface ServerJsonRpcProvider.ts + rpc-proxy.ts"
       },
       "fixed_by": [
         "verifiable-rpc",
@@ -194,7 +195,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface useUserMeritIncentives.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface useUserMeritIncentives.ts"
       }
     },
     {
@@ -246,7 +247,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface wagmiConfig.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface wagmiConfig.ts"
       }
     },
     {
@@ -303,7 +304,7 @@
       "removable_by": "aave_self_host",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface /api/coingecko-categories"
+        "ref": "20260824-203044-deposit-aave · aave/interface /api/coingecko-categories"
       }
     },
     {
@@ -375,7 +376,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface useMerklIncentives.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface useMerklIncentives.ts"
       }
     },
     {
@@ -398,7 +399,7 @@
       "removable_by": "none",
       "provenance": {
         "status": "observed",
-        "ref": "20260821-220208-deposit-aave · aave/interface sentry.client.config.ts"
+        "ref": "20260824-203044-deposit-aave · aave/interface sentry.client.config.ts"
       },
       "notes": "DSN HARDCODED in sentry.client.config.ts — no env gate, no opt-out in the UI. A self-hosted build still fires Sentry unless stripped from source. (On a static IPFS host the /monitoring tunnel rewrite is missing, so delivery likely fails silently — unverified.)"
     }

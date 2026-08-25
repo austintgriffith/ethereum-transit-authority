@@ -1,17 +1,17 @@
-<meta charset="utf-8"><title>lab run 20260821-220208-deposit-aave</title>
+<meta charset="utf-8"><title>lab run 20260824-203044-deposit-aave</title>
 <style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
 @media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
 h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
 pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
 <a href="../../">← Ethereum Transit Authority</a>
-<h1>CROPS Lab run 20260821-220208-deposit-aave</h1>
+<h1>CROPS Lab run 20260824-203044-deposit-aave</h1>
 <p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
 The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
 <a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
 <h2>meta.txt</h2>
-<pre>run_id: 20260821-220208-deposit-aave
+<pre>run_id: 20260824-203044-deposit-aave
 action: deposit-aave
-guest_ip: 192.168.64.6
+guest_ip: 192.168.64.2
 host_proxy: 192.168.64.1:8080
 base_image: crops-warm
 action_rc: 0
@@ -25,68 +25,72 @@ gold_playwright: 1.62.1
 gold_quic_allowed: 0
 </pre>
 <h2>driver.log</h2>
-<pre>deposit-aave: ext canglmpflkjehkfaioejbblmakepelcl · supply 0.0005 ETH · broadcast false
+<pre>deposit-aave: ext canglmpflkjehkfaioejbblmakepelcl · supply 0.0005 ETH · broadcast true
   wallet unlocked
   clicked MetaMask
   mm connect: clicked /^Connect$/i
   connected: 5 supply buttons
   amount filled via input[placeholder=&quot;0.00&quot;]
   clicked Supply (modal action)
-  mm supply-tx-dry: reached (NOT confirming — dry)
-deposit-aave: reached tx confirm (dry, not broadcast)
+  mm supply-tx: clicked /^Confirm$/i
+deposit-aave: submitted
 </pre>
 <h2>summary.md</h2>
-<pre># capture 20260821-220208-deposit-aave
+<pre># capture 20260824-203044-deposit-aave
 
-action: deposit-aave · guest 192.168.64.6 · proxy 192.168.64.1:8080 · action_rc 0
+action: deposit-aave · guest 192.168.64.2 · proxy 192.168.64.1:8080 · action_rc 0
 
-## decrypted: 594 requests · 66 hosts
+## decrypted: 692 requests · 72 hosts
 
 | host | req | methods | secret headers present |
 |---|---:|---|---|
-| app.aave.com | 185 | GET/HEAD/POST | cookie |
-| mainnet.infura.io | 44 | POST | — |
-| app.family.co | 40 | GET/POST | — |
-| sentry.io | 28 | POST | — |
-| price.api.cx.metamask.io | 24 | GET | authorization |
-| tron-mainnet.infura.io | 24 | GET/OPTIONS/POST | — |
-| bitcoin-mainnet.infura.io | 19 | GET | — |
-| user-storage.api.cx.metamask.io | 15 | GET | authorization |
-| tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 14 | GET/POST | authorization |
+| app.aave.com | 187 | GET/HEAD/POST | cookie |
+| mainnet.infura.io | 70 | POST | — |
+| app.family.co | 41 | GET/POST | cookie |
+| tron-mainnet.infura.io | 36 | GET/OPTIONS/POST | — |
+| sentry.io | 30 | POST | — |
+| price.api.cx.metamask.io | 25 | GET | authorization |
+| bitcoin-mainnet.infura.io | 23 | GET | — |
+| tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 23 | GET/POST | authorization |
+| user-storage.api.cx.metamask.io | 16 | GET | authorization |
 | api.v3.aave.com | 12 | OPTIONS/POST | — |
-| subscription.api.cx.metamask.io | 11 | GET | authorization |
-| api.merkl.xyz | 9 | GET | — |
+| authentication.api.cx.metamask.io | 11 | GET/POST/PUT | authorization |
+| api.merkl.xyz | 10 | GET | — |
+| subscription.api.cx.metamask.io | 10 | GET | authorization |
+| monad-mainnet.infura.io | 9 | POST | — |
 | solana-mainnet.infura.io | 9 | GET/OPTIONS/POST | — |
-| accounts.api.cx.metamask.io | 8 | GET | authorization |
-| authentication.api.cx.metamask.io | 8 | GET/POST/PUT | authorization |
-| monad-mainnet.infura.io | 8 | POST | — |
+| bsc-mainnet.infura.io | 8 | POST | — |
+| base-mainnet.infura.io | 8 | POST | — |
+| arbitrum-mainnet.infura.io | 8 | POST | — |
+| optimism-mainnet.infura.io | 8 | POST | — |
+| linea-mainnet.infura.io | 8 | POST | — |
+| polygon-mainnet.infura.io | 8 | POST | — |
 | data-api.fun.xyz | 8 | POST | — |
+| accounts.api.cx.metamask.io | 7 | GET | authorization |
+| api.segment.io | 7 | POST | — |
 | metamask.github.io | 6 | GET | — |
-| api.segment.io | 6 | POST | — |
-| bsc-mainnet.infura.io | 6 | POST | — |
-| polygon-mainnet.infura.io | 6 | POST | — |
-| optimism-mainnet.infura.io | 6 | POST | — |
-| base-mainnet.infura.io | 6 | POST | — |
-| arbitrum-mainnet.infura.io | 6 | POST | — |
-| linea-mainnet.infura.io | 6 | POST | — |
-| cca-lite.coinbase.com | 6 | POST | cookie |
+| gas.api.cx.metamask.io | 6 | GET | — |
+| static.cx.metamask.io | 5 | GET | — |
 | tokens.api.cx.metamask.io | 5 | GET | authorization |
 | notification.api.cx.metamask.io | 5 | POST | authorization |
-| static.cx.metamask.io | 4 | GET | — |
+| browser-intake-datadoghq.com | 5 | POST | — |
+| cma.itunes.apple.com | 5 | POST | — |
+| cdn.contentful.com | 4 | GET | — |
+| android.clients.google.com | 4 | POST | authorization |
+| cca-lite.coinbase.com | 4 | POST | cookie |
 | mainnet.gateway.tenderly.co | 4 | OPTIONS/POST | — |
+| pancake.apple.com | 4 | GET | — |
 | on-ramp-cache.api.cx.metamask.io | 3 | GET | — |
-| cdn.contentful.com | 3 | GET | — |
-| browser-intake-datadoghq.com | 3 | POST | — |
 | security-alerts.api.cx.metamask.io | 3 | POST | — |
-| gas.api.cx.metamask.io | 3 | GET | — |
+| bag.itunes.apple.com | 3 | GET | — |
+| transaction.api.cx.metamask.io | 3 | GET/POST | authorization |
 | token.api.cx.metamask.io | 2 | GET | — |
-| acl.execution.metamask.io | 2 | GET | — |
 | bridge.api.cx.metamask.io | 2 | GET | — |
-| testnet-rpc.monad.xyz | 2 | POST | — |
+| acl.execution.metamask.io | 2 | GET | — |
 | carrot.megaeth.com | 2 | POST | cookie |
 | sepolia.infura.io | 2 | POST | — |
 | linea-sepolia.infura.io | 2 | POST | — |
-| android.clients.google.com | 2 | POST | authorization |
+| testnet-rpc.monad.xyz | 2 | POST | — |
 | sr-client-cfg.amplitude.com | 2 | GET | — |
 | apps.aavechan.com | 2 | GET | — |
 | example.com | 1 | GET | — |
@@ -96,40 +100,45 @@ action: deposit-aave · guest 192.168.64.6 · proxy 192.168.64.1:8080 · action_
 | geolocation.api.cx.metamask.io | 1 | GET | — |
 | chainid.network | 1 | GET | — |
 | phishing-detection.api.cx.metamask.io | 1 | GET | — |
-| client-side-detection.api.cx.metamask.io | 1 | GET | — |
 | client-config.api.cx.metamask.io | 1 | GET | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
 | rewards.api.cx.metamask.io | 1 | POST | — |
 | defiadapters.api.cx.metamask.io | 1 | GET | — |
+| oidc.api.cx.metamask.io | 1 | POST | — |
 | o4508407151525888.ingest.de.sentry.io | 1 | POST | — |
 | content-autofill.googleapis.com | 1 | GET | — |
 | static.cloudflareinsights.com | 1 | GET | — |
-| sdk-cdn.fun.xyz | 1 | GET | — |
 | gateway.api.cx.metamask.io | 1 | GET | cookie |
+| sdk-cdn.fun.xyz | 1 | GET | — |
 | relay.walletconnect.org | 1 | GET | — |
 | verify.walletconnect.org | 1 | GET | — |
 | dapp-scanning.api.cx.metamask.io | 1 | GET | — |
 | api.moonpay.com | 1 | GET | — |
 | www.4byte.directory | 1 | GET | — |
+| device-config.pcms.apple.com | 1 | GET | — |
 
 ## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
 
 - none
 
-## wire: 3867 proxied pkts · 3 BYPASS dst · 1 QUIC dst · 86 Apple-OS pkts
+## wire: 4761 proxied pkts · 4 BYPASS dst · 2 QUIC dst · 427 Apple-OS pkts
 
 BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
 
 ### BYPASS — guest spoke TLS to these directly, not through the proxy
-- 23.47.200.181 (?) · 33 pkts
-- 23.37.106.14 (no DNS seen) · 29 pkts
-- 23.64.99.186 (no DNS seen) · 5 pkts
+- 23.217.76.214 (?) · 58 pkts
+- 23.60.174.31 (?) · 19 pkts
+- 23.60.175.11 (no DNS seen) · 5 pkts
+- 199.232.67.6 (?) · 5 pkts
 
 ### QUIC LEAK — udp/443 left the guest
-- 199.232.67.6 (no DNS seen) · 13 pkts
+- 199.232.67.6 (?) · 37 pkts
+- 44.233.108.18 (no DNS seen) · 9 pkts
 
 ### other egress (non-443, non-DNS)
 - 192.168.64.255:137 (no DNS seen) · 18 pkts
-- 23.11.32.159:80 (no DNS seen) · 10 pkts
-- 224.0.0.251:5353 (no DNS seen) · 3 pkts
+- 23.11.32.159:80 (no DNS seen) · 8 pkts
+- 224.0.0.251:5353 (no DNS seen) · 6 pkts
+- 104.18.38.233:80 (no DNS seen) · 2 pkts
 
 </pre>
