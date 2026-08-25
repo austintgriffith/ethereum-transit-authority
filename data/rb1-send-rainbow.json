@@ -7,11 +7,11 @@
     "network": "mainnet",
     "settings": "defaults",
     "version": "rainbow-me/browser-extension tag v1.6.11 (GPL-3); built bundle at ~/ef/crops-lab/wallet/rainbow",
-    "observed": "2026-08-23",
+    "observed": "2026-08-24",
     "captures": [
       {
-        "run": "20260823-094753-send-eth-rainbow",
-        "note": "dry — driven to review, not broadcast"
+        "run": "20260824-192602-send-eth-rainbow",
+        "tx": "0xf2954ed16ba6de8afaeb24477f7a6edb28bccde4d7a53109fc54d43cfcdb068b"
       }
     ]
   },
@@ -420,8 +420,8 @@
       },
       "removable_by": "rainbow_lan_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "handlers/wallet.ts:92-102 · src/core/utils/gas.ts:513,518,520-527"
+        "status": "observed",
+        "ref": "20260824-192602-send-eth-rainbow · handlers/wallet.ts:92-102 · src/core/utils/gas.ts:513,518,520-527"
       },
       "tx_input": "field",
       "fixed_by": [
@@ -452,8 +452,8 @@
       },
       "removable_by": "rainbow_lan_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "handlers/wallet.ts:104-109 · src/core/utils/transactions.ts:498-530"
+        "status": "observed",
+        "ref": "20260824-192602-send-eth-rainbow · handlers/wallet.ts:104-109 · src/core/utils/transactions.ts:498-530"
       },
       "tx_input": "field",
       "fixed_by": [
@@ -481,8 +481,8 @@
       },
       "removable_by": "rainbow_lan_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "src/core/keychain/index.ts:263-266 (ethers Wallet.sendTransaction) · `_getInternalBlockNumber(100+2*this.pollingInterval)` present in background.js"
+        "status": "observed",
+        "ref": "20260824-192602-send-eth-rainbow · src/core/keychain/index.ts:263-266 (ethers Wallet.sendTransaction) · `_getInternalBlockNumber(100+2*this.pollingInterval)` present in background.js"
       }
     },
     {
@@ -511,8 +511,8 @@
       },
       "removable_by": "rainbow_lan_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "send/index.tsx:373-379 · handlers/wallet.ts:165 · background/procedures/popup/wallet/sendTransaction.ts:10-15 · src/core/keychain/index.ts:255-268 · src/core/viem/clientRpc.ts:21-35 · src/core/providers/proxy.ts:21-38 · static/data/networks.json mainnet defaultRPC https://rpc.rainbow.me/v1/1/"
+        "status": "observed",
+        "ref": "20260824-192602-send-eth-rainbow · send/index.tsx:373-379 · handlers/wallet.ts:165 · background/procedures/popup/wallet/sendTransaction.ts:10-15 · src/core/keychain/index.ts:255-268 · src/core/viem/clientRpc.ts:21-35 · src/core/providers/proxy.ts:21-38 · static/data/networks.json mainnet defaultRPC https://rpc.rainbow.me/v1/1/"
       },
       "notes": "The only broadcast path. A custom RPC with a public URL is rewritten to rpc.rainbow.me/…?custom_rpc=<url> and fetched by Rainbow's server; only localhost / 10.x / 192.168.x / 172.16-31.x URLs escape.",
       "fixed_by": [
@@ -598,8 +598,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "state/transactions/pendingTransactions/watchPendingTransactions.ts:73-91 · resources/transactions/transaction.ts:33,66-78 · state/networks/timing.ts:37-42,72 · background/handlers/handleWatchPendingTransactions.ts:30-50"
+        "status": "observed",
+        "ref": "20260824-192602-send-eth-rainbow · state/transactions/pendingTransactions/watchPendingTransactions.ts:73-91 · resources/transactions/transaction.ts:33,66-78 · state/networks/timing.ts:37-42,72 · background/handlers/handleWatchPendingTransactions.ts:30-50"
       },
       "notes": "With the popup closed only EIP-5792 batch txs keep polling; a plain send is re-checked when the popup reopens.",
       "fixed_by": [

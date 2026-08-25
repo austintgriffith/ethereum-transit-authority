@@ -1,0 +1,104 @@
+<meta charset="utf-8"><title>lab run 20260824-192602-send-eth-rainbow</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260824-192602-send-eth-rainbow</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260824-192602-send-eth-rainbow
+action: send-eth-rainbow
+guest_ip: 192.168.64.5
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm-rainbow
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1787621230.654] send-eth-rainbow: extension id pkhkkapgbigcelohhfkmkpjcekohieej -&gt; send 0.0002 ETH to 0x34aa3f359a9d614239015126635ce7732c18fdf3
+[t=1787621233.613]   fill unlock-pw: password-input
+[t=1787621233.673]   click unlock: unlock-button (click)
+[t=1787621234.276]   unlock: submitted
+[t=1787621249.849]   shot home failed: page.screenshot: Timeout 5000ms exceeded.
+[t=1787621476.974]   click send: header-link-send (click)
+[t=1787621481.013]   fill recipient: to-address-input
+[t=1787621483.235]   click open-token-picker: token-input (click)
+[t=1787621485.058]   click pick-eth: text:Ethereum (click)
+[t=1787621487.588]   fill amount: send-input-mask
+[t=1787621489.902]   click review: send-review-button (click)
+[t=1787621494.357]   click confirm: review-confirm-button (click)
+[t=1787621494.972]   confirm: clicked
+[t=1787621530.529] send-eth-rainbow: submitted
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260824-192602-send-eth-rainbow
+
+action: send-eth-rainbow · guest 192.168.64.5 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 166 requests · 26 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| rpc.rainbow.me | 66 | POST | — |
+| platform.p.rainbow.me | 15 | GET | authorization |
+| rainbowjiumask.dataplane.rudderstack.com | 13 | POST | authorization |
+| attester.gateway.icloud.com | 11 | POST | — |
+| radarsubmissions.apple.com | 9 | POST | — |
+| metadata.p.rainbow.me | 7 | GET/POST | authorization |
+| o331974.ingest.sentry.io | 7 | POST | — |
+| cma.itunes.apple.com | 7 | POST | — |
+| pancake.apple.com | 5 | GET | — |
+| rainbow.imgix.net | 4 | GET | — |
+| addys.p.rainbow.me | 3 | POST | authorization |
+| bag.itunes.apple.com | 3 | GET | — |
+| android.clients.google.com | 2 | POST | authorization |
+| rainbowme-res.cloudinary.com | 2 | GET | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| firebaseremoteconfig.googleapis.com | 1 | POST | — |
+| valid.apple.com | 1 | GET | — |
+| ocsp2.apple.com | 1 | GET | — |
+| euc.li | 1 | GET | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+| token.safebrowsing.apple | 1 | GET | — |
+| unlinkability.apple.com | 1 | GET | — |
+| dap.pat-issuer.cloudflare.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 2159 proxied pkts · 6 BYPASS dst · 2 QUIC dst · 590 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.217.76.214 (?) · 69 pkts
+- 199.232.67.6 (no DNS seen) · 16 pkts
+- 44.233.108.18 (no DNS seen) · 8 pkts
+- 184.29.31.10 (no DNS seen) · 4 pkts
+- 54.69.185.163 (no DNS seen) · 3 pkts
+- 184.29.30.30 (no DNS seen) · 2 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 162.159.196.66 (?) · 12 pkts
+- 199.232.67.6 (no DNS seen) · 1 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 15 pkts
+- 23.11.32.159:80 (no DNS seen) · 13 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+
+</pre>
