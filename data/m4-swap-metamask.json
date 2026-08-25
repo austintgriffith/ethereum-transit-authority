@@ -11,12 +11,12 @@
     "observed": "2026-08-24",
     "captures": [
       {
-        "run": "20260824-214902-swap-metamask",
-        "note": "dry — driven to the fully quoted swap screen, not broadcast"
+        "run": "20260824-222054-swap-metamask",
+        "note": "swap submitted via MetaMask Smart Transactions relay (submitTransactions 200); on-chain inclusion pending confirmation"
       }
     ]
   },
-  "_comment": "MetaMask's BUILT-IN Swap (not a dapp) — the swap most people actually do: in-wallet, no site connect. It extends the M1 send backbone (Infura, feature flags, prices, screening, broadcast). What the swap ADDS is one closed engine: bridge.api.cx.metamask.io/getQuoteStream computes the route, the minimum-out, AND the swap calldata you sign, in one call — the same one-company-computes-what-you-sign risk as U1, but the company is MetaMask itself. Two defaults observed live (run 20260824-214902): the receive token pre-fills to mUSD, MetaMask's OWN stablecoin, and the quote screen discloses a 0.875% MetaMask fee taken on top of network + slippage. The swap executes as a contract call to MetaMask's swap router (the 'recipient' is that contract, not a person), broadcast through the same Smart Transactions relay as M1.",
+  "_comment": "MetaMask's BUILT-IN Swap (not a dapp) — the swap most people actually do: in-wallet, no site connect. It extends the M1 send backbone (Infura, feature flags, prices, screening, broadcast). What the swap ADDS is one closed engine: bridge.api.cx.metamask.io/getQuoteStream computes the route, the minimum-out, AND the swap calldata you sign, in one call — the same one-company-computes-what-you-sign risk as U1, but the company is MetaMask itself. Two defaults observed live (run 20260824-214902): the receive token pre-fills to mUSD, MetaMask's OWN stablecoin, and the quote screen discloses a 0.875% MetaMask fee taken on top of network + slippage. The swap executes as a contract call to MetaMask's swap router (the 'recipient' is that contract, not a person), broadcast through the same Smart Transactions relay as M1. FINDING (run 20260824-222054): the swap was signed and handed to the STX relay (transaction.api.cx.metamask.io/submitTransactions → 200, then batchStatus polling) — the wallet showed 'Transaction submitted' — but it did NOT appear in the public mempool or mine on the observed window (sender nonce unchanged). The STX relay is a private gatekeeper between you and the chain: your signed swap goes to MetaMask's relay, not a public node, and inclusion is at the relay's discretion. Whether this run ultimately mines is a relay-side decision the user can't see.",
   "prepend_steps": [
     {
       "id": "swap-tokens",
