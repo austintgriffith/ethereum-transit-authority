@@ -1,0 +1,143 @@
+{
+  "id": "on1-buy-metamask",
+  "title": "The Fiat On-Ramp",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-25",
+    "captures": [
+      {
+        "run": "20260825-124239-buy-metamask",
+        "note": "capture-only — drove MetaMask's Buy to the aggregator surface and STOPPED; no purchase, no KYC, no payment ever entered"
+      }
+    ]
+  },
+  "_comment": "The ENTRY to the whole funnel — turning fiat into crypto, and the moment you hand over the MOST. There is no signing here and no self-custody until the crypto arrives; the entire flow is identity. Before you type anything, MetaMask's on-ramp aggregator (on-ramp.api.cx.metamask.io) GEOLOCATES you and keys everything to your detected region (observed: us-co) — the region decides which providers you're even allowed to use, so your jurisdiction gates your access. It then hands you to a KYC provider (MoonPay / Coinbase / Transak), who geolocates your IP again (api.moonpay.com/v3/ip_address, observed in earlier captures) and takes full legal identity — name, government ID, selfie, and a bank or card — before releasing any crypto. The zero-option question here is stark: there is essentially NO private fiat on-ramp through these rails; the only 'zero option' is to already hold crypto (earn it, get paid in it, or acquire it peer-to-peer) and skip the fiat ramp entirely. Capture-only: driven to the aggregator surface, never into a provider's KYC or payment.",
+  "steps": [
+    {
+      "id": "onramp-geolocation",
+      "phase": "discover",
+      "name": "MetaMask on-ramp · geolocation",
+      "host": "on-ramp.api.cx.metamask.io/geolocation",
+      "actor": "consensys-apis",
+      "purpose": "Geolocate you the moment Buy opens, to decide your region",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "births": [
+        "kyc"
+      ],
+      "returns": "your region — which gates everything below",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no region → no providers offered",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the region it assigns decides which providers and payment methods you're allowed to see"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260825-124239-buy-metamask · on-ramp.api.cx.metamask.io/geolocation"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "onramp-region",
+      "phase": "discover",
+      "name": "MetaMask on-ramp · region-gated providers",
+      "host": "on-ramp-cache.api.cx.metamask.io/v2/regions/{region}/providers",
+      "actor": "consensys-apis",
+      "purpose": "Return the on-ramp providers, payment methods, and tokens allowed in your jurisdiction",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the list of KYC providers you're permitted to use",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "empty list in an unsupported region → you cannot buy at all",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "your jurisdiction decides who you can buy from; a restricted region is simply excluded"
+      },
+      "removable_by": "none",
+      "repeat": "on every Buy open",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260825-124239-buy-metamask · /v2/regions/us-co/providers, /payments, /topTokens, /eligibility/mm-card"
+      },
+      "notes": "Observed region: us-co. Also checks MetaMask Card eligibility for your region.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "provider-moonpay",
+      "phase": "confirm",
+      "name": "MoonPay · IP geolocation + KYC",
+      "host": "api.moonpay.com",
+      "actor": "moonpay",
+      "purpose": "The chosen provider geolocates your IP, then runs full KYC (ID, selfie, bank/card) before releasing crypto",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "kyc"
+      ],
+      "returns": "the crypto — after it has your legal identity and payment method",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "fail KYC or an unsupported region → no crypto",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the provider holds your identity, your bank link, and the on/off switch to your entry into crypto"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "api.moonpay.com/v3/ip_address (observed in earlier captures); KYC/payment behind the provider — NOT entered"
+      },
+      "notes": "The identity SINK: name, government ID, selfie, and a bank or card. This is the most a normal user ever hands over in the whole journey — and it happens at the very first step.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "provider-coinbase",
+      "phase": "confirm",
+      "name": "Coinbase · on-ramp (alternative provider)",
+      "host": "cca-lite.coinbase.com",
+      "actor": "coinbase-onramp",
+      "purpose": "The CEX-backed on-ramp option — same KYC + bank rails, tied to a Coinbase account",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "kyc"
+      ],
+      "returns": "the crypto — via a Coinbase account + KYC",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "optional": true,
+      "provenance": {
+        "status": "observed",
+        "ref": "20260825-124239-buy-metamask · cca-lite.coinbase.com (telemetry); the on-ramp itself is one of the region-gated providers"
+      },
+      "notes": "One of the providers the aggregator offers; KYC/payment behind Coinbase — NOT entered.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    }
+  ]
+}
