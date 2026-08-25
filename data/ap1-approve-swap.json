@@ -1,0 +1,92 @@
+{
+  "id": "ap1-approve-swap",
+  "title": "The Token Approval",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-25",
+    "captures": [
+      {
+        "run": "20260825-094249-approve-swap",
+        "tx": "0x0befcc214f5a3a82a816913c5b0248c356ba7f770ee7174cd5df90e178e2ed48"
+      }
+    ]
+  },
+  "_comment": "The APPROVAL — the signature that drains wallets. To swap a token OUT (mUSD → ETH), MetaMask needs permission to move your mUSD. Unlike an ETH-input swap (M4), an ERC-20 input requires an allowance. Modern MetaMask grants it with PERMIT2: instead of a visible on-chain approve() transaction, you SIGN a typed-data permit locally (eth_signTypedData) — gasless, no separate tx, invisible in the mempool — and the signed permit is embedded in the swap calldata (real tx 0x0befcc…ed48 to MetaSwap, method swap, 0 ETH value, mUSD pulled via the permit). This is exactly the phishing vector: a malicious site asks for a Permit2/permit signature and drains the token, because a signature — not an obvious 'send' — is what grants the allowance. The wallet shows a swap; the allowance rides inside it. Same getQuoteStream engine and STX relay as M4.",
+  "prepend_steps": [
+    {
+      "id": "approve-permit",
+      "phase": "sign",
+      "name": "Permit2 allowance — you SIGN it",
+      "host": "(local Permit2 signature — no on-chain approve, no network call)",
+      "actor": "self",
+      "purpose": "Grant MetaMask's swap router permission to move your mUSD by signing an EIP-712 Permit2 permit — gasless, done locally, then embedded in the swap calldata",
+      "need": "W",
+      "carries": [
+        "selected_address",
+        "token_pair"
+      ],
+      "births": [
+        "signed_tx"
+      ],
+      "returns": "an allowance the router can spend against — as large and as long-lived as the permit says",
+      "can_block": false,
+      "on_failure": "blocks",
+      "failure_note": "no permit → the router can't pull the token → no swap",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "THE drain vector: a permit signed for a malicious spender (or an unlimited amount) lets that spender empty the token later — and it's a signature, not a 'send', so it doesn't look dangerous"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260825-094249-approve-swap · tx 0x0befcc…ed48 (Permit2 embedded in the swap calldata; no separate approve tx and no network request for the signature)"
+      },
+      "notes": "Signed locally on your device — the danger isn't who receives it, it's what you authorized. Phishing sites request exactly this signature.",
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "swap-quote-out",
+      "phase": "discover",
+      "name": "MetaMask swap engine · route + calldata",
+      "host": "bridge.api.cx.metamask.io/getQuoteStream",
+      "actor": "consensys-apis",
+      "purpose": "Same closed engine as M4 — returns the route, minimum-out, fee, and the swap calldata (which carries your signed Permit2 permit)",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount",
+        "holdings"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you act on and the bytes you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "one closed API sets the route, the minimum-out, and the calldata your permit authorizes"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260825-094249-approve-swap · GET bridge.api.cx.metamask.io/getQuoteStream"
+      },
+      "fixed_by": [
+        "verifiable-rpc"
+      ]
+    }
+  ]
+}
