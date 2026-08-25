@@ -1,17 +1,17 @@
-<meta charset="utf-8"><title>lab run 20260821-214213-send-ens</title>
+<meta charset="utf-8"><title>lab run 20260824-191831-send-ens-mainnet</title>
 <style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
 @media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
 h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
 pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
 <a href="../../">← Ethereum Transit Authority</a>
-<h1>CROPS Lab run 20260821-214213-send-ens</h1>
+<h1>CROPS Lab run 20260824-191831-send-ens-mainnet</h1>
 <p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
 The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
 <a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
 <h2>meta.txt</h2>
-<pre>run_id: 20260821-214213-send-ens
+<pre>run_id: 20260824-191831-send-ens-mainnet
 action: send-ens
-guest_ip: 192.168.64.3
+guest_ip: 192.168.64.4
 host_proxy: 192.168.64.1:8080
 base_image: crops-warm
 action_rc: 0
@@ -25,98 +25,103 @@ gold_playwright: 1.62.1
 gold_quic_allowed: 0
 </pre>
 <h2>driver.log</h2>
-<pre>send-eth: extension id canglmpflkjehkfaioejbblmakepelcl -&gt; send 0.0002 ETH to ens.eth
+<pre>send-eth: extension id canglmpflkjehkfaioejbblmakepelcl -&gt; send 0.0002 ETH to austingriffith.eth
   fill unlock-pw: unlock-password
   click unlock: unlock-submit
   click send: eth-overview-send
   pick-eth: clicked ETH row
-  recipient is an ENS name: ens.eth
+  recipient is an ENS name: austingriffith.eth
   fill recipient: recipient-address-input
   fill amount: input[placeholder=&quot;0&quot;]
   continue: clicked
-  new-address modal: continued
-send-eth: DRY run — stopped at confirm screen, NOT broadcasting (set SEND_BROADCAST=1 to submit)
+  confirm: clicked (role)
+  skip open-activity (not present)
+send-eth: submitted; txhash (see flows.jsonl)
 </pre>
 <h2>summary.md</h2>
-<pre># capture 20260821-214213-send-ens
+<pre># capture 20260824-191831-send-ens-mainnet
 
-action: send-ens · guest 192.168.64.3 · proxy 192.168.64.1:8080 · action_rc 0
+action: send-ens · guest 192.168.64.4 · proxy 192.168.64.1:8080 · action_rc 0
 
-## decrypted: 193 requests · 50 hosts
+## decrypted: 291 requests · 54 hosts
 
 | host | req | methods | secret headers present |
 |---|---:|---|---|
-| sentry.io | 24 | POST | — |
-| tron-mainnet.infura.io | 24 | GET/OPTIONS/POST | — |
-| mainnet.infura.io | 19 | POST | — |
-| accounts.api.cx.metamask.io | 9 | GET | authorization |
+| mainnet.infura.io | 48 | POST | — |
+| tron-mainnet.infura.io | 36 | GET/OPTIONS/POST | — |
+| sentry.io | 29 | POST | — |
+| accounts.api.cx.metamask.io | 12 | GET | authorization |
+| bitcoin-mainnet.infura.io | 11 | GET | — |
 | solana-mainnet.infura.io | 9 | GET/OPTIONS/POST | — |
-| price.api.cx.metamask.io | 8 | GET | authorization |
-| bitcoin-mainnet.infura.io | 7 | GET | — |
+| price.api.cx.metamask.io | 9 | GET | authorization |
+| api.segment.io | 7 | POST | — |
 | metamask.github.io | 6 | GET | — |
+| authentication.api.cx.metamask.io | 6 | GET/POST/PUT | authorization |
 | user-storage.api.cx.metamask.io | 6 | GET | authorization |
 | tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 6 | GET/POST | authorization |
+| transaction.api.cx.metamask.io | 6 | GET/POST | authorization |
+| monad-mainnet.infura.io | 5 | POST | — |
+| subscription.api.cx.metamask.io | 5 | GET | authorization |
 | tokens.api.cx.metamask.io | 5 | GET | authorization |
-| api.segment.io | 4 | POST | — |
+| cma.itunes.apple.com | 5 | POST | — |
+| static.cx.metamask.io | 4 | GET | — |
+| base-mainnet.infura.io | 4 | POST | — |
+| linea-mainnet.infura.io | 4 | POST | — |
+| bsc-mainnet.infura.io | 4 | POST | — |
+| polygon-mainnet.infura.io | 4 | POST | — |
+| optimism-mainnet.infura.io | 4 | POST | — |
+| arbitrum-mainnet.infura.io | 4 | POST | — |
+| pancake.apple.com | 4 | GET | — |
+| token.api.cx.metamask.io | 3 | GET | — |
 | on-ramp-cache.api.cx.metamask.io | 3 | GET | — |
-| authentication.api.cx.metamask.io | 3 | GET/POST/PUT | authorization |
-| static.cx.metamask.io | 3 | GET | — |
-| monad-mainnet.infura.io | 3 | POST | — |
-| subscription.api.cx.metamask.io | 3 | GET | authorization |
+| cdn.contentful.com | 3 | GET | — |
+| bag.itunes.apple.com | 3 | GET | — |
 | www.google.com | 2 | GET | — |
-| token.api.cx.metamask.io | 2 | GET | — |
 | acl.execution.metamask.io | 2 | GET | — |
 | api.merkl.xyz | 2 | GET | — |
-| polygon-mainnet.infura.io | 2 | POST | — |
-| bsc-mainnet.infura.io | 2 | POST | — |
-| linea-mainnet.infura.io | 2 | POST | — |
-| arbitrum-mainnet.infura.io | 2 | POST | — |
-| base-mainnet.infura.io | 2 | POST | — |
-| optimism-mainnet.infura.io | 2 | POST | — |
-| testnet-rpc.monad.xyz | 2 | POST | — |
-| linea-sepolia.infura.io | 2 | POST | — |
 | carrot.megaeth.com | 2 | POST | cookie |
+| linea-sepolia.infura.io | 2 | POST | — |
 | sepolia.infura.io | 2 | POST | — |
-| cdn.contentful.com | 2 | GET | — |
+| testnet-rpc.monad.xyz | 2 | POST | — |
+| android.clients.google.com | 2 | POST | authorization |
 | notification.api.cx.metamask.io | 2 | POST | authorization |
-| security-alerts.api.cx.metamask.io | 2 | POST | — |
 | gas.api.cx.metamask.io | 2 | GET | — |
+| security-alerts.api.cx.metamask.io | 2 | POST | — |
 | example.com | 1 | GET | — |
 | clients2.google.com | 1 | GET | — |
 | accounts.google.com | 1 | POST | — |
 | geolocation.api.cx.metamask.io | 1 | GET | — |
 | chainid.network | 1 | GET | — |
 | phishing-detection.api.cx.metamask.io | 1 | GET | — |
-| client-side-detection.api.cx.metamask.io | 1 | GET | — |
 | client-config.api.cx.metamask.io | 1 | GET | — |
 | bridge.api.cx.metamask.io | 1 | GET | — |
 | rewards.api.cx.metamask.io | 1 | POST | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
 | defiadapters.api.cx.metamask.io | 1 | GET | — |
-| android.clients.google.com | 1 | POST | authorization |
-| iadsdk.apple.com | 1 | POST | — |
-| stocks-data-service.apple.com | 1 | GET | — |
+| oidc.api.cx.metamask.io | 1 | POST | — |
 | gateway.api.cx.metamask.io | 1 | GET | cookie |
+| device-config.pcms.apple.com | 1 | GET | — |
 
 ## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
 
 - none
 
-## wire: 1773 proxied pkts · 3 BYPASS dst · 2 QUIC dst · 192 Apple-OS pkts
+## wire: 2691 proxied pkts · 3 BYPASS dst · 1 QUIC dst · 181 Apple-OS pkts
 
 BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
 
 ### BYPASS — guest spoke TLS to these directly, not through the proxy
-- 23.47.200.181 (?) · 18 pkts
-- 199.232.67.6 (no DNS seen) · 14 pkts
-- 23.64.99.186 (no DNS seen) · 5 pkts
+- 23.217.76.214 (?) · 39 pkts
+- 23.37.106.14 (no DNS seen) · 25 pkts
+- 184.29.31.10 (no DNS seen) · 4 pkts
 
 ### QUIC LEAK — udp/443 left the guest
-- 199.232.67.6 (no DNS seen) · 26 pkts
-- 44.233.108.18 (?) · 14 pkts
+- 199.232.67.6 (no DNS seen) · 27 pkts
 
 ### other egress (non-443, non-DNS)
-- 192.168.64.255:137 (no DNS seen) · 18 pkts
-- 224.0.0.251:5353 (no DNS seen) · 8 pkts
-- 162.159.142.9:80 (no DNS seen) · 4 pkts
+- 192.168.64.255:137 (no DNS seen) · 15 pkts
+- 23.11.32.159:80 (no DNS seen) · 8 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+- 172.64.149.23:80 (no DNS seen) · 2 pkts
 
 </pre>

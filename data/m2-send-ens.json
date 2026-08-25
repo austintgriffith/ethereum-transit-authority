@@ -9,10 +9,11 @@
     "settings": "defaults",
     "captures": [
       {
-        "run": "20260821-214213-send-ens",
-        "note": "dry — driven to the confirm screen, not broadcast"
+        "run": "20260824-191831-send-ens-mainnet",
+        "tx": "0x8ef0a2289537d3b378b168e10a1fff9086ebc52d5ebc5cddf176c5c87288a3cf"
       }
-    ]
+    ],
+    "observed": "2026-08-24"
   },
   "_comment": "Prepends the resolve phase, then runs the whole M1 track. The recipient lane opens at EN1 — the resolver's answer IS the destination.",
   "prepend_steps": [
