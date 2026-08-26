@@ -108,6 +108,9 @@ td .host{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--mute
 .zo-none{background:var(--l-addr);color:#fff}
 .zo-painful{background:var(--l-hold);color:#fff}
 .zo-local{background:var(--self);color:#fff}
+.zo-build-yes{background:transparent;color:var(--self);border:1.5px solid var(--self)}
+.zo-build-partial{background:transparent;color:var(--l-hold);border:1.5px solid var(--l-hold)}
+.zo-build-no{background:transparent;color:var(--muted);border:1.5px solid var(--rule)}
 
 /* planned service */
 .planned{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
@@ -192,6 +195,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="pill" href="#/on" data-r="on"><span class="b" style="background:var(--l-kyc)">ON</span>Fiat On-Ramp <small>· 4 stops</small></a>
   <a class="pill" href="#/night" data-r="night"><span class="b" style="background:var(--l-hold)">N</span>Night Service <small>· 9 stops</small></a>
   <a class="pill" href="#/vectors" data-r="vectors"><span class="b" style="background:var(--l-addr)">≡</span>Access Vectors</a>
+  <a class="pill" href="#/gadgets" data-r="gadgets"><span class="b" style="background:var(--self)">⚙</span>Gadget Shelf</a>
   <a class="pill" href="#/center" data-r="center"><span class="b" style="background:var(--blue)">★</span>Interchanges</a>
   <a class="pill" href="#/fixes" data-r="fixes"><span class="b" style="background:var(--self)">▲</span>Fixes</a>
   <a class="pill" href="#/index" data-r="index"><span class="b" style="background:var(--muted)">i</span>Station Index</a>
@@ -253,6 +257,7 @@ h1 a{color:inherit;text-decoration:none}
   </a>
   <div class="cities">
     <a class="cityln" href="#/vectors"><span class="b" style="background:var(--l-addr)">≡</span><strong>Access Vectors</strong><span>actors as categories, ranked by reach × exposure, with the zero-option</span><span class="go">→</span></a>
+    <a class="cityln" href="#/gadgets"><span class="b" style="background:var(--self)">⚙</span><strong>Gadget Shelf</strong><span>what the Mountain Man must run himself for each gadget — and its cost</span><span class="go">→</span></a>
     <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all maps</span><span class="go">→</span></a>
     <a class="cityln" href="#/fixes"><span class="b" style="background:var(--self)">▲</span><strong>Fixes</strong><span>what to build, ranked by the risk it removes</span><span class="go">→</span></a>
     <a class="cityln" href="#/index"><span class="b" style="background:var(--muted)">i</span><strong>Station Index</strong><span>every station, what it gets, how to skip it</span><span class="go">→</span></a>
@@ -1564,6 +1569,100 @@ h1 a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- ================= GADGET SHELF ================= -->
+<section class="view" id="view-gadgets">
+  <a class="back" href="#/">← ALL MAPS</a>
+  <h2><span class="bullet" style="background:var(--self)">⚙</span>The Mountain Man's Gadget Shelf</h2>
+  <p class="section-sub">The clean Mountain Man map hides his real UX. Every gadget the centralized flows <em>outsource</em> to a company (a leak you can see), the Mountain Man must <strong>run himself</strong> — at a cost the map never shows — or it's simply <strong>missing</strong> (no self-sovereign option today). This is that hidden shelf: per gadget, who the centralized flows use, what the Mountain Man does instead and what it costs, and whether you could <strong>build your own now with AI</strong>. The <span class="zo zo-none">MISSING</span> rows are the real gaps; the <span class="zo zo-build-yes">buildable now</span> ones are where the cost is already dropping. Computed from the route data.</p>
+  <div class="citylist">
+    <div class="cityrow"><div class="rank">1</div><div class="cbody">
+      <strong>Wallet&#x27;s own backend (flags, config, prices)</strong> <span class="zo zo-none">MISSING</span> <span class="zo zo-build-no">not buildable yet</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Ambire · monitor, Consensys · MM APIs, Google · Firebase, Rabby · DeBank API, Statsig, WalletConnect</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-hold)">N</span><span class="rb" style="background:var(--l-kyc)">ON</span><span class="rb" style="background:var(--l-rcpt)">R1</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 12 flows</p>
+      <p><strong>Mountain Man:</strong> Use a wallet with no phone-home backend</p>
+      <p class="section-sub" style="margin:2px 0 0">Feature flags, remote config, and defaults served from the wallet vendor. Proprietary; no self-sovereign version short of a different wallet.</p></div></div>
+    <div class="cityrow"><div class="rank">2</div><div class="cbody">
+      <strong>TLS edge / CDN</strong> <span class="zo zo-none">MISSING</span> <span class="zo zo-build-no">not buildable yet</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">AWS CloudFront, Cloudflare edge</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-hold)">N</span><span class="rb" style="background:var(--l-kyc)">ON</span><span class="rb" style="background:var(--l-rcpt)">R1</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 12 flows</p>
+      <p><strong>Mountain Man:</strong> Unavoidable while using any hosted service</p>
+      <p class="section-sub" style="margin:2px 0 0">Cloudflare/CloudFront front nearly everything. They can block by jurisdiction and terminate TLS. No self-sovereign option while using hosted services.</p></div></div>
+    <div class="cityrow"><div class="rank">3</div><div class="cbody">
+      <strong>Hosted dApp frontend</strong> <span class="zo zo-none">MISSING</span> <span class="zo zo-build-partial">partly buildable</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Avara · app.aave.com, Family, Uniswap Labs</span> <span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 2 flows</p>
+      <p><strong>Mountain Man:</strong> Self-host the UI or call the contract raw — often impossible</p>
+      <p class="section-sub" style="margin:2px 0 0">THE hard gap. If a dApp&#x27;s frontend depends on its own backend, you can&#x27;t use it without them. Safe can be self-hosted; many can&#x27;t. No zero option in the general case.</p></div></div>
+    <div class="cityrow"><div class="rank">4</div><div class="cbody">
+      <strong>ERC-4337 bundler / paymaster</strong> <span class="zo zo-none">MISSING</span> <span class="zo zo-build-no">not buildable yet</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Pimlico bundler</span> <span class="rb" style="background:var(--l-hold)">AB1</span> · outsourced on 1 flow</p>
+      <p><strong>Mountain Man:</strong> N/A — an EOA avoids it entirely</p>
+      <p class="section-sub" style="margin:2px 0 0">Smart-account infra. A 4337 account cannot even onboard or transact without a live bundler/paymaster (see Ambire). No offline option.</p></div></div>
+    <div class="cityrow"><div class="rank">5</div><div class="cbody">
+      <strong>Fiat on-ramp / off-ramp</strong> <span class="zo zo-none">MISSING</span> <span class="zo zo-build-no">not buildable yet</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Coinbase on-ramp, MoonPay</span> <span class="rb" style="background:var(--l-kyc)">ON</span> · outsourced on 1 flow</p>
+      <p><strong>Mountain Man:</strong> No private fiat rail — earn it, get paid in it, or go P2P</p>
+      <p class="section-sub" style="margin:2px 0 0">The funnel entry. No private fiat rail exists: geolocation + jurisdiction gate + full KYC. The only zero option is to skip fiat entirely.</p></div></div>
+    <div class="cityrow"><div class="rank">6</div><div class="cbody">
+      <strong>Block builders &amp; relays</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-no">not buildable yet</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Builders · relays</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--self)">M0</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-rcpt)">R1</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 11 flows</p>
+      <p><strong>Mountain Man:</strong> Wait for a non-censoring builder (Fossil fixes this)</p>
+      <p class="section-sub" style="margin:2px 0 0">On EVERY flow. Can censor today in principle; the fix is Fossil / forced inclusion. Binary-ish: does a censorship-resistant path exist.</p></div></div>
+    <div class="cityrow"><div class="rank">7</div><div class="cbody">
+      <strong>RPC — chain reads &amp; writes</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-partial">partly buildable</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Alchemy, Ambire · invictus RPC, Consensys · Infura, Rainbow · RPC proxy</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-hold)">N</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 10 flows</p>
+      <p><strong>Mountain Man:</strong> Sync + run a full node — disk, time, upkeep</p>
+      <p class="section-sub" style="margin:2px 0 0">The single most prevalent dependency. Sees every read and takes your broadcast. A node is the fallback but costs sync time, disk, and upkeep.</p></div></div>
+    <div class="cityrow"><div class="rank">8</div><div class="cbody">
+      <strong>Block explorer (verify a tx completed)</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Etherscan</span> <span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-rcpt)">R1</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 9 flows</p>
+      <p><strong>Mountain Man:</strong> Run your own explorer (Otterscan) — or build one with AI</p>
+      <p class="section-sub" style="margin:2px 0 0">Etherscan is a UNIVERSAL trust assumption — every user, even Mountain Men, sanity-checks a tx on Etherscan. A node confirms it, but people still trust the explorer&#x27;s UI.</p></div></div>
+    <div class="cityrow"><div class="rank">9</div><div class="cbody">
+      <strong>Transaction broadcast / relay</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-partial">partly buildable</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Ambire · relayer, Consensys · SERVO relay</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 8 flows</p>
+      <p><strong>Mountain Man:</strong> Broadcast to your own node / the public mempool</p>
+      <p class="section-sub" style="margin:2px 0 0">Private relays (Smart Transactions) and bundlers sit between you and inclusion. Direct broadcast is the fallback but loses MEV protection and can be slow.</p></div></div>
+    <div class="cityrow"><div class="rank">10</div><div class="cbody">
+      <strong>Wallet / code distribution</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-partial">partly buildable</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">GitHub, Google · Web Store</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-hold)">N</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 5 flows</p>
+      <p><strong>Mountain Man:</strong> Build the wallet from source and side-load it</p>
+      <p class="section-sub" style="margin:2px 0 0">The Web Store / GitHub that ships (and can silently update) the wallet code. Building from source avoids the auto-update trust but is painful.</p></div></div>
+    <div class="cityrow"><div class="rank">11</div><div class="cbody">
+      <strong>Indexer — balances, history, token lists</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">ACI · aavechan, Merkl, Rainbow · APIs, The Graph</span> <span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-ens)">RB1</span> · outsourced on 2 flows</p>
+      <p><strong>Mountain Man:</strong> Run your own indexer over your node</p>
+      <p class="section-sub" style="margin:2px 0 0">The &#x27;what do I own / what happened&#x27; layer. Self-indexing is possible but heavy; most wallets have no local option.</p></div></div>
+    <div class="cityrow"><div class="rank">12</div><div class="cbody">
+      <strong>Prices &amp; market data</strong> <span class="zo zo-painful">SELF-RUN (costly)</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Ambire · cena, CoinGecko</span> <span class="rb" style="background:var(--l-hold)">AB1</span><span class="rb" style="background:var(--blue)">M3</span> · outsourced on 2 flows</p>
+      <p><strong>Mountain Man:</strong> Run your own price feed, or go without fiat values</p>
+      <p class="section-sub" style="margin:2px 0 0">Fiat valuations and swap pricing. Degrades gracefully without it; a self-sovereign feed is possible but rarely done.</p></div></div>
+    <div class="cityrow"><div class="rank">13</div><div class="cbody">
+      <strong>Address / tx security screening</strong> <span class="zo zo-local">SELF-RUN</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Blockaid, Compliance vendor</span> <span class="rb" style="background:var(--l-signed)">AP</span><span class="rb" style="background:var(--l-addr)">M1</span><span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-intent)">M4</span><span class="rb" style="background:var(--l-rcpt)">MT</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 7 flows</p>
+      <p><strong>Mountain Man:</strong> Local blocklist, or skip it</p>
+      <p class="section-sub" style="margin:2px 0 0">A downloadable blocklist or local check can replace the server call; the Mountain Man often just doesn&#x27;t use it.</p></div></div>
+    <div class="cityrow"><div class="rank">14</div><div class="cbody">
+      <strong>Analytics &amp; crash telemetry</strong> <span class="zo zo-local">SELF-RUN</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Amplitude, Datadog, Google Analytics, RudderStack, Segment, Sentry</span> <span class="rb" style="background:var(--blue)">M3</span><span class="rb" style="background:var(--l-hold)">N</span><span class="rb" style="background:var(--l-rcpt)">R1</span><span class="rb" style="background:var(--l-ens)">RB1</span><span class="rb" style="background:var(--l-intent)">U1</span> · outsourced on 5 flows</p>
+      <p><strong>Mountain Man:</strong> Send nothing</p>
+      <p class="section-sub" style="margin:2px 0 0">Segment/Sentry/Amplitude/etc. Removable by a toggle or by using a wallet that doesn&#x27;t phone home. The Mountain Man sends none.</p></div></div>
+    <div class="cityrow"><div class="rank">15</div><div class="cbody">
+      <strong>Name resolution (ENS)</strong> <span class="zo zo-local">SELF-RUN</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">CCIP gateway, ENS metadata</span> <span class="rb" style="background:var(--l-ens)">M2</span><span class="rb" style="background:var(--blue)">M3</span> · outsourced on 2 flows</p>
+      <p><strong>Mountain Man:</strong> Resolve on-chain via your own node</p>
+      <p class="section-sub" style="margin:2px 0 0">ENS resolves on-chain; a node does it with no extra party. Metadata/avatar services are optional cosmetics.</p></div></div>
+    <div class="cityrow"><div class="rank">16</div><div class="cbody">
+      <strong>Avatars &amp; token images</strong> <span class="zo zo-local">SELF-RUN</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">Avatar host</span> <span class="rb" style="background:var(--l-ens)">M2</span> · outsourced on 1 flow</p>
+      <p><strong>Mountain Man:</strong> Skip the images</p>
+      <p class="section-sub" style="margin:2px 0 0">Cosmetic only. Leaks IP + address for a picture; trivially skippable.</p></div></div>
+    <div class="cityrow"><div class="rank">17</div><div class="cbody">
+      <strong>Transaction simulation</strong> <span class="zo zo-local">SELF-RUN</span> <span class="zo zo-build-yes">buildable now</span>
+      <p><strong>Centralized flows use:</strong> <span class="host">—</span>  · outsourced on 0 flows</p>
+      <p><strong>Mountain Man:</strong> Run a simulator against your own node</p>
+      <p class="section-sub" style="margin:2px 0 0">Blockaid-style pre-sign simulation. A local version is feasible today — MetaMask required Blockaid to also ship an obfuscated local build. Good-enough local sim exists.</p></div></div>
+  </div>
+</section>
+
 <!-- ================= INTERCHANGES ================= -->
 <section class="view" id="view-center">
   <a class="back" href="#/">← ALL MAPS</a>
@@ -1885,7 +1984,7 @@ const tpl=document.getElementById('legend-tpl');
 document.querySelectorAll('.legend-slot').forEach(s=>s.appendChild(tpl.content.cloneNode(true)));
 
 // router
-const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','m4','mt','ap','on','night','vectors','center','fixes','index','how'];
+const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','m4','mt','ap','on','night','vectors','gadgets','center','fixes','index','how'];
 function route(){
  const r=(location.hash.replace(/^#\/?/,'')||'home');
  const v=views.includes(r)?r:'home';
