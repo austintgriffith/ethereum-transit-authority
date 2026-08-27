@@ -1,0 +1,92 @@
+{
+  "id": "br1-bridge-base",
+  "title": "The L2 Bridge",
+  "extends": "m1-send-metamask",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet → Base",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-26",
+    "captures": [
+      {
+        "run": "20260826-185312-bridge-metamask",
+        "note": "dry — driven to the quoted Ethereum→Base bridge screen (ETH→ETH on Base), not broadcast"
+      }
+    ]
+  },
+  "_comment": "Moving ETH from Ethereum to an L2 (Base). MetaMask merged Bridge INTO Swap — same closed engine, bridge.api.cx.metamask.io/getQuoteStream, now computing a CROSS-CHAIN route (observed: 0.002 ETH → 0.00198 ETH on Base, rate ~0.991, 0.875% MetaMask fee). The convenient bridge stacks NEW trust beyond a same-chain send: (1) MetaMask's closed quote engine picks the route and the bridge provider you can't see; (2) whatever bridge/relayer that route uses becomes a party that can stall or censor the transfer; (3) you enter Base — Coinbase's L2 — whose sequencer now orders your transactions. THE ZERO-OPTION POINT (Yoav, Aug 25): this convenient path is NOT the escape hatch. The self-sovereign way off an L2 is the FORCED L1 EXIT — submitting your withdrawal directly through the L1 rollup contract without the sequencer's cooperation (Base/OP via the portal's forced inclusion; Arbitrum via the delayed inbox). Slow, painful, technical — but operator-independent. Success there is BINARY: either you can load an exit UI from IPFS and force your way out, or you can't. This map draws the convenient path (observed); the forced exit is the missing zero option.",
+  "prepend_steps": [
+    {
+      "id": "bridge-quote",
+      "phase": "discover",
+      "name": "MetaMask bridge engine · route + provider",
+      "host": "bridge.api.cx.metamask.io/getQuoteStream",
+      "actor": "consensys-apis",
+      "purpose": "One streamed call returns the cross-chain route, which bridge provider carries it, the minimum received, and the 0.875% fee",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "amount",
+        "holdings",
+        "chain_id"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the route + the bridge operator you'll trust to carry your funds across",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no quote → no bridge; no second route source in the UI",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "one closed API picks the bridge provider and the minimum-out; a bad route or a bridge that stalls can strand or lose funds mid-transfer"
+      },
+      "removable_by": "none",
+      "tx_input": "field",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260826-185312-bridge-metamask · GET bridge.api.cx.metamask.io/getQuoteStream"
+      },
+      "notes": "Same engine as the M4 swap — MetaMask unified Swap + Bridge. The bridge provider it routes through is not shown to the user.",
+      "fixed_by": [
+        "cr-broadcast",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "l2-read",
+      "phase": "discover",
+      "name": "Infura · Base L2 state",
+      "host": "base-mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "Read Base (the destination L2) — balances and state on the chain you're bridging into",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "destination-chain state",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the same RPC company now also sees you on the L2 — your activity on both chains links to one IP + address"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260826-185312-bridge-metamask · base-mainnet.infura.io"
+      },
+      "notes": "Bridging doesn't escape the RPC dependency — it doubles it (mainnet + the L2), under the same company.",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    }
+  ]
+}

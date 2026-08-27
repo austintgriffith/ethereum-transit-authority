@@ -1,0 +1,122 @@
+<meta charset="utf-8"><title>lab run 20260826-185312-bridge-metamask</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260826-185312-bridge-metamask</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260826-185312-bridge-metamask
+action: bridge-metamask
+guest_ip: 192.168.64.2
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>bridge-metamask: ext canglmpflkjehkfaioejbblmakepelcl · bridge 0.002 ETH -&gt;  Base · broadcast false
+  fill unlock-pw: unlock-password
+  click unlock: unlock-submit
+  click open-swap: text:Swap
+  fill from-amount: input[placeholder=&quot;0&quot;]
+  skip open-dest-picker (not present)
+  open-dest-picker: clicked dest chip by position
+  click open-network-filter: text:All networks
+  pick-network (exact): Base true
+  pick-dest-token: Ether row
+bridge-metamask: DRY run — reached the quoted bridge screen, NOT broadcasting (BRIDGE_BROADCAST=1 to submit)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260826-185312-bridge-metamask
+
+action: bridge-metamask · guest 192.168.64.2 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 211 requests · 51 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| static.cx.metamask.io | 32 | GET | — |
+| tron-mainnet.infura.io | 24 | GET/OPTIONS/POST | — |
+| sentry.io | 15 | POST | — |
+| bitcoin-mainnet.infura.io | 9 | GET | — |
+| solana-mainnet.infura.io | 9 | GET/OPTIONS/POST | — |
+| price.api.cx.metamask.io | 9 | GET | authorization |
+| mainnet.infura.io | 7 | POST | — |
+| accounts.api.cx.metamask.io | 6 | GET | authorization |
+| metamask.github.io | 6 | GET | — |
+| api.segment.io | 6 | POST | — |
+| user-storage.api.cx.metamask.io | 6 | GET | authorization |
+| bridge.api.cx.metamask.io | 5 | GET/POST | authorization |
+| authentication.api.cx.metamask.io | 5 | GET/POST/PUT | authorization |
+| tokens.api.cx.metamask.io | 5 | GET | authorization |
+| token.api.cx.metamask.io | 4 | GET | — |
+| gas.api.cx.metamask.io | 4 | GET | — |
+| on-ramp-cache.api.cx.metamask.io | 3 | GET | — |
+| monad-mainnet.infura.io | 3 | POST | — |
+| subscription.api.cx.metamask.io | 3 | GET | authorization |
+| android.clients.google.com | 3 | POST | authorization |
+| tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 3 | GET | authorization |
+| acl.execution.metamask.io | 2 | GET | — |
+| api.merkl.xyz | 2 | GET | — |
+| base-mainnet.infura.io | 2 | POST | — |
+| arbitrum-mainnet.infura.io | 2 | POST | — |
+| polygon-mainnet.infura.io | 2 | POST | — |
+| optimism-mainnet.infura.io | 2 | POST | — |
+| linea-mainnet.infura.io | 2 | POST | — |
+| bsc-mainnet.infura.io | 2 | POST | — |
+| carrot.megaeth.com | 2 | POST | cookie |
+| linea-sepolia.infura.io | 2 | POST | — |
+| sepolia.infura.io | 2 | POST | — |
+| testnet-rpc.monad.xyz | 2 | POST | — |
+| cdn.contentful.com | 2 | GET | — |
+| notification.api.cx.metamask.io | 2 | POST | authorization |
+| example.com | 1 | GET | — |
+| cf.iadsdk.apple.com | 1 | POST | — |
+| iadsdk.apple.com | 1 | POST | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| geolocation.api.cx.metamask.io | 1 | GET | — |
+| chainid.network | 1 | GET | — |
+| client-config.api.cx.metamask.io | 1 | GET | — |
+| rewards.api.cx.metamask.io | 1 | POST | — |
+| phishing-detection.api.cx.metamask.io | 1 | GET | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
+| defiadapters.api.cx.metamask.io | 1 | GET | — |
+| oidc.api.cx.metamask.io | 1 | POST | — |
+| images.ctfassets.net | 1 | GET | — |
+| gateway.api.cx.metamask.io | 1 | GET | cookie |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 1937 proxied pkts · 5 BYPASS dst · 0 QUIC dst · 108 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.47.200.181 (?) · 18 pkts
+- 23.222.27.147 (?) · 15 pkts
+- 23.222.27.142 (no DNS seen) · 2 pkts
+- 23.60.175.11 (no DNS seen) · 2 pkts
+- 23.222.27.150 (no DNS seen) · 2 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 15 pkts
+- 23.11.32.159:80 (no DNS seen) · 10 pkts
+- 104.18.38.233:80 (no DNS seen) · 2 pkts
+- 224.0.0.251:5353 (no DNS seen) · 2 pkts
+
+</pre>
