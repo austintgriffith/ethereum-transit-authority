@@ -1909,7 +1909,7 @@ function render(target, J, caption, mini){
  const PADL=mini?36:216, SLOT=104, laneGap=36, glyphPad=mini?44:60;
  const hasBld=!!(J.buildings&&J.buildings.length&&!mini);
  const SKYH=hasBld?146:0;   // skyline band: gadget BUILDINGS positioned above their stations
- const topPad=(mini?64:252)+SKYH;
+ const topPad=(mini?64:(hasBld?100:252))+SKYH;   // buildings present: shrink the header so lines ride up close under the skyline
  const maxSlot=Math.max(J.eth?J.eth.slot:0, J.through?J.through.slot+0.9:0, ...J.calls.map(c=>c.slot));
  let W=PADL+(maxSlot+(mini?1.2:2.1))*SLOT;
  const parkedN=hasBld?J.buildings.filter(b=>b.slot==null).length:0;
