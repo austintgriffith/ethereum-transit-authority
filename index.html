@@ -1940,17 +1940,20 @@ function render(target, J, caption, mini){
   let bx=x0;
   J.gadgets.forEach(g=>{
     const p=g.provision;
-    const faded=(p==='na'||p==='missing');   // absent for this user → show through
-    const col=p==='missing'?'var(--l-addr)':p==='self'?'var(--self)':p==='outsourced'?'var(--tunnel)':'var(--muted)';
+    // GREEN = you run it at home · RED = you go out to a company · YELLOW-DASHED
+    // + transparent building = the gadget is MISSING (no option). na = not used
+    // in this flow (transparent, no bar).
+    const home=p==='self', out=p==='outsourced', miss=p==='missing';
+    const solid=home||out;   // present buildings solid; missing/na show through
+    const col=home?'var(--self)':out?'var(--l-addr)':miss?'var(--l-hold)':'var(--muted)';
     if(g.img){
-      el('image',{href:g.img,x:bx,y:by,width:bw,height:bh,preserveAspectRatio:'xMidYMax meet',opacity:faded?0.28:1},svg);
+      el('image',{href:g.img,x:bx,y:by,width:bw,height:bh,preserveAspectRatio:'xMidYMax meet',opacity:solid?1:0.26},svg);
     }else{
-      txt(svg,bx+bw/2,by+bh/2,g.label,{'text-anchor':'middle','font-size':13,'font-weight':700,fill:col,opacity:faded?0.4:1});
+      txt(svg,bx+bw/2,by+bh/2,g.label,{'text-anchor':'middle','font-size':13,'font-weight':700,fill:col,opacity:solid?1:0.4},svg);
     }
-    // provision GROUND-BAR under each building (colour = who runs it) — keeps the
-    // strip coherent instead of framing each building.
-    el('line',{x1:bx+5,y1:by+bh+3,x2:bx+bw-5,y2:by+bh+3,stroke:col,'stroke-width':p==='na'?1.5:4.5,'stroke-linecap':'round',...(p==='missing'?{'stroke-dasharray':'7 5'}:{}),opacity:p==='na'?0.5:1},svg);
-    const rl=p==='self'?'you run it':p==='outsourced'?('→ '+g.cost):p==='missing'?'MISSING':'';
+    // provision GROUND-BAR (colour = who runs it). No bar for na (not used here).
+    if(p!=='na')el('line',{x1:bx+5,y1:by+bh+3,x2:bx+bw-5,y2:by+bh+3,stroke:col,'stroke-width':miss?3.5:4.5,'stroke-linecap':'round',...(miss?{'stroke-dasharray':'8 5'}:{})},svg);
+    const rl=home?'you run it':out?('→ '+g.cost):miss?'MISSING':'';
     if(rl)txt(svg,bx+bw/2,by+bh+18,rl,{'text-anchor':'middle','font-size':10.5,'font-weight':700,fill:col});
     bx+=bw;
   });
