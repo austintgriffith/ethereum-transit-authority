@@ -20,6 +20,7 @@
       "name": "DeBank static · chain lists",
       "host": "static.debank.com",
       "actor": "rabby",
+      "gadget": "wallet-backend",
       "purpose": "supported_chains.json, fake_mm_dapps.json, testnet chains, rabby/config.json (server-busy level)",
       "need": "T",
       "carries": [
@@ -48,6 +49,7 @@
       "name": "Rabby · chainrpc list",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "wallet-backend",
       "purpose": "GET /v1/chainrpc — which public RPCs (if any) to use per chain, and whether to push txs to them",
       "need": "T",
       "carries": [
@@ -80,6 +82,7 @@
       "name": "Rabby · feature switches",
       "host": "download.rabby.io",
       "actor": "rabby",
+      "gadget": "wallet-backend",
       "purpose": "wallet-config/rabby-extension.json remote flags",
       "need": "T",
       "carries": [
@@ -108,6 +111,7 @@
       "name": "Rabby · fiat rates",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "price-oracle",
       "purpose": "/v1/currency/exchange_list",
       "need": "R",
       "carries": [
@@ -134,6 +138,7 @@
       "name": "Rabby · whitelist CEX lookup",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "screening",
       "purpose": "/v1/engine/addr/desc for up to 10 whitelisted addresses on unlock",
       "need": "T",
       "carries": [
@@ -161,6 +166,7 @@
       "name": "Matomo (DeBank-hosted)",
       "host": "matomo.debank.com",
       "actor": "rabby",
+      "gadget": "analytics",
       "purpose": "Daily User/enable, pinnedChains, UserAddress counts per keyring brand",
       "need": "T",
       "carries": [
@@ -187,6 +193,7 @@
       "name": "Google Analytics 4",
       "host": "www.google-analytics.com",
       "actor": "google-analytics",
+      "gadget": "analytics",
       "purpose": "Same events as Matomo via Measurement Protocol",
       "need": "T",
       "carries": [
@@ -213,6 +220,7 @@
       "name": "Sentry crash reports",
       "host": "o4507018303438848.ingest.us.sentry.io",
       "actor": "sentry",
+      "gadget": "analytics",
       "purpose": "Crash reports (sendDefaultPii: true)",
       "need": "T",
       "carries": [
@@ -238,6 +246,7 @@
       "name": "Rabby · balances, tokens, prices",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "indexer",
       "purpose": "/v1/user/total_balance, complex_app_list, token_list, token/price_change",
       "need": "R",
       "carries": [
@@ -268,6 +277,7 @@
       "name": "Rabby · sanctions check",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "screening",
       "purpose": "/v1/engine/addr/is_blocked on the recipient",
       "need": "T",
       "carries": [
@@ -299,6 +309,7 @@
       "name": "Rabby · recipient risk (every address you own)",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "screening",
       "purpose": "/v1/engine/addr/desc + /v2/engine/addr/has_transfer for each own address against the recipient; eth_getCode via eth_rpc",
       "need": "T",
       "carries": [
@@ -332,6 +343,7 @@
       "name": "Rabby · gas market",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "price-oracle",
       "purpose": "/v2/wallet/gas_market price tiers",
       "need": "C",
       "carries": [
@@ -365,6 +377,7 @@
       "name": "Rabby RPC proxy · estimateGas, nonce, latest block",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "rpc",
       "purpose": "eth_estimateGas, eth_getTransactionCount, eth_getBlockByNumber — all via POST /v1/wallet/eth_rpc on mainnet",
       "need": "RC",
       "carries": [
@@ -401,6 +414,7 @@
       "name": "Rabby · classify tx",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "simulation",
       "purpose": "/v1/engine/action/parse_tx",
       "need": "T",
       "carries": [
@@ -435,6 +449,7 @@
       "name": "Rabby · simulation (pre_exec_tx)",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "simulation",
       "purpose": "/v1/wallet/pre_exec_tx balance-change preview + gas",
       "need": "C",
       "carries": [
@@ -470,6 +485,7 @@
       "name": "Rabby · sanctions check (sender + recipient)",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "screening",
       "purpose": "/v1/engine/addr/is_blocked ×2, plus security-engine input fetches",
       "need": "T",
       "carries": [
@@ -502,6 +518,7 @@
       "name": "Rabby · rule log",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "analytics",
       "purpose": "/v1/engine/action/log — which security rules fired",
       "need": "T",
       "carries": [
@@ -527,6 +544,7 @@
       "name": "Rabby · gasless eligibility",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "relay-broadcast",
       "purpose": "/v1/wallet/tx_is_gasless",
       "need": "T",
       "carries": [
@@ -553,6 +571,7 @@
       "name": "Rabby · submit_tx (backend broadcasts)",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "relay-broadcast",
       "purpose": "POST /v2/wallet/submit_tx — the signed tx goes to Rabby, Rabby pushes it to the chain",
       "need": "W",
       "carries": [
@@ -589,6 +608,7 @@
       "name": "festats funnel",
       "host": "festats.debank.com",
       "actor": "rabby",
+      "gadget": "analytics",
       "purpose": "submitTransaction / signedTransaction events",
       "need": "T",
       "carries": [
@@ -640,6 +660,7 @@
       "name": "Rabby RPC proxy · receipt",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "rpc",
       "purpose": "eth_getTransactionReceipt via eth_rpc every 2–5 s",
       "need": "R",
       "carries": [
@@ -703,6 +724,7 @@
       "name": "Rabby · balance refresh",
       "host": "api.rabby.io",
       "actor": "rabby",
+      "gadget": "indexer",
       "purpose": "Balance cache expired on ON_TX_COMPLETED; dashboard re-reads total_balance + token_list",
       "need": "R",
       "carries": [
