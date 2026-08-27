@@ -49,6 +49,19 @@
 .leak .cn{font-family:Jost;font-weight:700;font-size:14.5px;fill:var(--ink)}
 .leak .ct{font-size:11.5px;font-weight:600}
 .leak .t-blk{fill:var(--l-addr)} .leak .t-lie2{fill:var(--ink)} .leak .t-lie1{fill:var(--muted)} .leak .t-txi{fill:var(--l-signed)} .leak .t-idle{fill:var(--muted);font-weight:400}
+.leak .axl{font-family:Jost;font-weight:700;font-size:11px;letter-spacing:.1em;fill:var(--muted)}
+.leak .ct.dim{fill:var(--muted);font-weight:600}
+.leak .co.zob-none{stroke:var(--l-addr);stroke-width:3.5} .leak .co.zob-painful{stroke:var(--l-hold);stroke-width:3} .leak .co.zob-local{stroke:var(--self);stroke-width:3}
+.zolg{font-weight:700;padding:0 5px;border-radius:3px;border:2px solid;color:var(--ink)}
+.zolg.zob-none{border-color:var(--l-addr)} .zolg.zob-painful{border-color:var(--l-hold)} .zolg.zob-local{border-color:var(--self)}
+/* leverage: what-leaks-widest bars */
+.lkh{font-family:Jost;font-size:17px;margin:26px 0 2px}
+.lkbars{border:2px solid var(--ink);background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+.lkrow{display:flex;align-items:center;gap:10px;font-size:13px}
+.lklbl{flex:none;width:150px;text-align:right;font-weight:600}
+.lktrack{flex:1;min-width:0;display:flex}
+.lkbar{display:block;height:15px;border-radius:2px;min-width:3px}
+.lkn{flex:none;color:var(--muted);font-size:12px;white-space:nowrap}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;line-height:1.5}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 
@@ -195,6 +208,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="pill" href="#/on" data-r="on"><span class="b" style="background:var(--l-kyc)">ON</span>Fiat On-Ramp <small>· 4 stops</small></a>
   <a class="pill" href="#/br" data-r="br"><span class="b" style="background:var(--l-ens)">BR</span>L2 Bridge <small>· 14 stops</small></a>
   <a class="pill" href="#/night" data-r="night"><span class="b" style="background:var(--l-hold)">N</span>Night Service <small>· 9 stops</small></a>
+  <a class="pill" href="#/leverage" data-r="leverage"><span class="b" style="background:var(--l-ip)">⇉</span>Leverage</a>
   <a class="pill" href="#/vectors" data-r="vectors"><span class="b" style="background:var(--l-addr)">≡</span>Access Vectors</a>
   <a class="pill" href="#/gadgets" data-r="gadgets"><span class="b" style="background:var(--self)">⚙</span>Gadget Shelf</a>
   <a class="pill" href="#/center" data-r="center"><span class="b" style="background:var(--blue)">★</span>Interchanges</a>
@@ -261,6 +275,7 @@ h1 a{color:inherit;text-decoration:none}
     <div class="prev" data-city="night"></div>
   </a>
   <div class="cities">
+    <a class="cityln" href="#/leverage"><span class="b" style="background:var(--l-ip)">⇉</span><strong>Leverage</strong><span>all flows' leaks summed — which gadget & which company sees the most, and where there's no escape</span><span class="go">→</span></a>
     <a class="cityln" href="#/vectors"><span class="b" style="background:var(--l-addr)">≡</span><strong>Access Vectors</strong><span>actors as categories, ranked by reach × exposure, with the zero-option</span><span class="go">→</span></a>
     <a class="cityln" href="#/gadgets"><span class="b" style="background:var(--self)">⚙</span><strong>Gadget Shelf</strong><span>what the Mountain Man must run himself for each gadget — and its cost</span><span class="go">→</span></a>
     <a class="cityln" href="#/center"><span class="b" style="background:var(--blue)">★</span><strong>Interchanges</strong><span>busiest stations across all maps</span><span class="go">→</span></a>
@@ -1597,6 +1612,364 @@ h1 a{color:inherit;text-decoration:none}
 
 </section>
 
+<!-- ================= LEVERAGE ================= -->
+<section class="view" id="view-leverage">
+  <a class="back" href="#/">← ALL MAPS</a>
+  <h2>Where's the leverage?</h2>
+  <p class="section-sub">Every flow's leak, summed across all 13 mapped journeys. A ribbon's thickness = how many of the 13 flows carry that data to that place (not raw request count — so one heavily-mapped wallet can't skew it). The question this opens: fix the biggest sink, or the one with no escape?</p>
+
+  <h3 class="lkh">1 · What leaks widest</h3>
+  <p class="section-sub">Which of your data reaches the most different companies. Your IP is the tell — it rides almost everything.</p>
+  <div class="lkbars"><div class="lkrow"><span class="lklbl">Your IP address</span><span class="lktrack"><span class="lkbar" style="width:100.0%;background:var(--l-ip)"></span></span><span class="lkn">38 companies · 13 flows</span></div>
+<div class="lkrow"><span class="lklbl">Your address</span><span class="lktrack"><span class="lkbar" style="width:52.6%;background:var(--l-addr)"></span></span><span class="lkn">20 companies · 12 flows</span></div>
+<div class="lkrow"><span class="lklbl">How much</span><span class="lktrack"><span class="lkbar" style="width:23.7%;background:var(--l-intent)"></span></span><span class="lkn">9 companies · 11 flows</span></div>
+<div class="lkrow"><span class="lklbl">The whole unsigned tx</span><span class="lktrack"><span class="lkbar" style="width:21.1%;background:var(--l-addr)"></span></span><span class="lkn">8 companies · 11 flows</span></div>
+<div class="lkrow"><span class="lklbl">Who you&#x27;re paying</span><span class="lktrack"><span class="lkbar" style="width:18.4%;background:var(--l-rcpt)"></span></span><span class="lkn">7 companies · 11 flows</span></div>
+<div class="lkrow"><span class="lklbl">The tx hash</span><span class="lktrack"><span class="lkbar" style="width:18.4%;background:var(--l-hash)"></span></span><span class="lkn">7 companies · 11 flows</span></div>
+<div class="lkrow"><span class="lklbl">Your device ID</span><span class="lktrack"><span class="lkbar" style="width:18.4%;background:var(--l-jwt)"></span></span><span class="lkn">7 companies · 3 flows</span></div>
+<div class="lkrow"><span class="lklbl">THE SIGNED TX</span><span class="lktrack"><span class="lkbar" style="width:13.2%;background:var(--l-signed)"></span></span><span class="lkn">5 companies · 11 flows</span></div>
+<div class="lkrow"><span class="lklbl">ALL your addresses</span><span class="lktrack"><span class="lkbar" style="width:10.5%;background:var(--l-jwt)"></span></span><span class="lkn">4 companies · 10 flows</span></div>
+<div class="lkrow"><span class="lklbl">Your balances</span><span class="lktrack"><span class="lkbar" style="width:7.9%;background:var(--l-hold)"></span></span><span class="lkn">3 companies · 5 flows</span></div>
+<div class="lkrow"><span class="lklbl">Swap token pair (tokenIn/tokenOut)</span><span class="lktrack"><span class="lkbar" style="width:7.9%;background:var(--l-intent)"></span></span><span class="lkn">3 companies · 4 flows</span></div>
+<div class="lkrow"><span class="lklbl">The name you typed</span><span class="lktrack"><span class="lkbar" style="width:7.9%;background:var(--l-ens)"></span></span><span class="lkn">3 companies · 1 flow</span></div>
+<div class="lkrow"><span class="lklbl">Which tokens you hold</span><span class="lktrack"><span class="lkbar" style="width:5.3%;background:var(--l-hold)"></span></span><span class="lkn">2 companies · 9 flows</span></div>
+<div class="lkrow"><span class="lklbl">Your login token</span><span class="lktrack"><span class="lkbar" style="width:5.3%;background:var(--l-jwt)"></span></span><span class="lkn">2 companies · 8 flows</span></div>
+<div class="lkrow"><span class="lklbl">Signed userOp (4337)</span><span class="lktrack"><span class="lkbar" style="width:5.3%;background:var(--l-signed)"></span></span><span class="lkn">2 companies · 1 flow</span></div>
+<div class="lkrow"><span class="lklbl">Legal identity (KYC + bank)</span><span class="lktrack"><span class="lkbar" style="width:5.3%;background:var(--l-kyc)"></span></span><span class="lkn">2 companies · 1 flow</span></div>
+<div class="lkrow"><span class="lklbl">Cookies</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--muted)"></span></span><span class="lkn">1 company · 10 flows</span></div>
+<div class="lkrow"><span class="lklbl">Your tracking ID</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--l-jwt)"></span></span><span class="lkn">1 company · 8 flows</span></div>
+<div class="lkrow"><span class="lklbl">Which dapp you&#x27;re on</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--muted)"></span></span><span class="lkn">1 company · 1 flow</span></div>
+<div class="lkrow"><span class="lklbl">Swap route + quote (path, amountOut, minOut, Universal Router calldata)</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--l-intent)"></span></span><span class="lkn">1 company · 1 flow</span></div></div>
+
+  <h3 class="lkh">2 · By gadget type — the leverage cut</h3>
+  <p class="section-sub">Actors folded into categories (Infura = Alchemy = RPC), sorted by reach. Box border = is there a self-sovereign escape? <span class="zolg zob-none">red = none</span> (highest leverage to build), <span class="zolg zob-painful">amber = painful</span>, <span class="zolg zob-local">green = already exists</span>. See the Gadget Shelf for the fix + cost.</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 1032.8" width="100%" style="max-width:1180px;display:block">
+<text x="227" y="22" text-anchor="end" class="axl">YOUR DATA</text>
+<text x="795" y="22" class="axl">WHICH GADGET GETS IT</text>
+<path d="M360,34 C577.5,34 577.5,34.0 795,34.0 L795,53.2 C577.5,53.2 577.5,53.2 360,53.2 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → wallet-backend · 12 flows</title></path>
+<path d="M360,53.2 C577.5,53.2 577.5,192.2 795,192.2 L795,209.79999999999998 C577.5,209.79999999999998 577.5,70.80000000000001 360,70.80000000000001 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → relay-broadcast · 11 flows</title></path>
+<path d="M360,70.80000000000001 C577.5,70.80000000000001 577.5,323.4 795,323.4 L795,341.0 C577.5,341.0 577.5,88.4 360,88.4 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → rpc · 11 flows</title></path>
+<path d="M360,88.4 C577.5,88.4 577.5,432.2 795,432.2 L795,448.2 C577.5,448.2 577.5,104.4 360,104.4 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → verification-explorer · 10 flows</title></path>
+<path d="M360,104.4 C577.5,104.4 577.5,496.2 795,496.2 L795,512.2 C577.5,512.2 577.5,120.4 360,120.4 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → analytics · 10 flows</title></path>
+<path d="M360,120.4 C577.5,120.4 577.5,554.5 795,554.5 L795,570.5 C577.5,570.5 577.5,136.4 360,136.4 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → code-distribution · 10 flows</title></path>
+<path d="M360,136.4 C577.5,136.4 577.5,592.0 795,592.0 L795,606.4 C577.5,606.4 577.5,150.8 360,150.8 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → screening · 9 flows</title></path>
+<path d="M360,150.8 C577.5,150.8 577.5,675.9 795,675.9 L795,680.6999999999999 C577.5,680.6999999999999 577.5,155.60000000000002 360,155.60000000000002 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → indexer · 3 flows</title></path>
+<path d="M360,155.60000000000002 C577.5,155.60000000000002 577.5,721.3 795,721.3 L795,726.0999999999999 C577.5,726.0999999999999 577.5,160.40000000000003 360,160.40000000000003 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → price-oracle · 3 flows</title></path>
+<path d="M360,160.40000000000003 C577.5,160.40000000000003 577.5,761.0999999999999 795,761.0999999999999 L795,764.3 C577.5,764.3 577.5,163.60000000000002 360,163.60000000000002 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → frontend · 2 flows</title></path>
+<path d="M360,163.60000000000002 C577.5,163.60000000000002 577.5,808.0999999999999 795,808.0999999999999 L795,811.3 C577.5,811.3 577.5,166.8 360,166.8 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → name-resolution · 2 flows</title></path>
+<path d="M360,166.8 C577.5,166.8 577.5,848.6999999999999 795,848.6999999999999 L795,850.3 C577.5,850.3 577.5,168.4 360,168.4 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → bundler · 1 flow</title></path>
+<path d="M360,168.4 C577.5,168.4 577.5,892.5 795,892.5 L795,894.1 C577.5,894.1 577.5,170.0 360,170.0 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → simulation · 1 flow</title></path>
+<path d="M360,170.0 C577.5,170.0 577.5,937.9 795,937.9 L795,939.5 C577.5,939.5 577.5,171.6 360,171.6 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → on-ramp · 1 flow</title></path>
+<path d="M360,171.6 C577.5,171.6 577.5,981.6999999999999 795,981.6999999999999 L795,983.3 C577.5,983.3 577.5,173.2 360,173.2 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → media · 1 flow</title></path>
+<path d="M360,186.20000000000002 C577.5,186.20000000000002 577.5,53.2 795,53.2 L795,66.0 C577.5,66.0 577.5,199.00000000000003 360,199.00000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → wallet-backend · 8 flows</title></path>
+<path d="M360,199.00000000000003 C577.5,199.00000000000003 577.5,209.79999999999998 795,209.79999999999998 L795,225.79999999999998 C577.5,225.79999999999998 577.5,215.00000000000003 360,215.00000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → relay-broadcast · 10 flows</title></path>
+<path d="M360,215.00000000000003 C577.5,215.00000000000003 577.5,341.0 795,341.0 L795,357.0 C577.5,357.0 577.5,231.00000000000003 360,231.00000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → rpc · 10 flows</title></path>
+<path d="M360,231.00000000000003 C577.5,231.00000000000003 577.5,512.2 795,512.2 L795,513.8000000000001 C577.5,513.8000000000001 577.5,232.60000000000002 360,232.60000000000002 Z" fill="var(--l-addr)" class="rib"><title>Your address → analytics · 1 flow</title></path>
+<path d="M360,232.60000000000002 C577.5,232.60000000000002 577.5,606.4 795,606.4 L795,620.8 C577.5,620.8 577.5,247.00000000000003 360,247.00000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → screening · 9 flows</title></path>
+<path d="M360,247.00000000000003 C577.5,247.00000000000003 577.5,680.6999999999999 795,680.6999999999999 L795,685.4999999999999 C577.5,685.4999999999999 577.5,251.80000000000004 360,251.80000000000004 Z" fill="var(--l-addr)" class="rib"><title>Your address → indexer · 3 flows</title></path>
+<path d="M360,251.80000000000004 C577.5,251.80000000000004 577.5,764.3 795,764.3 L795,765.9 C577.5,765.9 577.5,253.40000000000003 360,253.40000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → frontend · 1 flow</title></path>
+<path d="M360,253.40000000000003 C577.5,253.40000000000003 577.5,811.3 795,811.3 L795,812.9 C577.5,812.9 577.5,255.00000000000003 360,255.00000000000003 Z" fill="var(--l-addr)" class="rib"><title>Your address → name-resolution · 1 flow</title></path>
+<path d="M360,255.00000000000003 C577.5,255.00000000000003 577.5,850.3 795,850.3 L795,851.9 C577.5,851.9 577.5,256.6 360,256.6 Z" fill="var(--l-addr)" class="rib"><title>Your address → bundler · 1 flow</title></path>
+<path d="M360,256.6 C577.5,256.6 577.5,894.1 795,894.1 L795,895.7 C577.5,895.7 577.5,258.20000000000005 360,258.20000000000005 Z" fill="var(--l-addr)" class="rib"><title>Your address → simulation · 1 flow</title></path>
+<path d="M360,258.20000000000005 C577.5,258.20000000000005 577.5,939.5 795,939.5 L795,941.1 C577.5,941.1 577.5,259.80000000000007 360,259.80000000000007 Z" fill="var(--l-addr)" class="rib"><title>Your address → on-ramp · 1 flow</title></path>
+<path d="M360,272.8 C577.5,272.8 577.5,66.0 795,66.0 L795,78.8 C577.5,78.8 577.5,285.6 360,285.6 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → wallet-backend · 8 flows</title></path>
+<path d="M360,285.6 C577.5,285.6 577.5,225.79999999999998 795,225.79999999999998 L795,227.39999999999998 C577.5,227.39999999999998 577.5,287.20000000000005 360,287.20000000000005 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → relay-broadcast · 1 flow</title></path>
+<path d="M360,287.20000000000005 C577.5,287.20000000000005 577.5,357.0 795,357.0 L795,369.8 C577.5,369.8 577.5,300.00000000000006 360,300.00000000000006 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → rpc · 8 flows</title></path>
+<path d="M360,300.00000000000006 C577.5,300.00000000000006 577.5,620.8 795,620.8 L795,622.4 C577.5,622.4 577.5,301.6000000000001 360,301.6000000000001 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → screening · 1 flow</title></path>
+<path d="M360,314.6 C577.5,314.6 577.5,78.8 795,78.8 L795,91.6 C577.5,91.6 577.5,327.40000000000003 360,327.40000000000003 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → wallet-backend · 8 flows</title></path>
+<path d="M360,327.40000000000003 C577.5,327.40000000000003 577.5,227.39999999999998 795,227.39999999999998 L795,240.2 C577.5,240.2 577.5,340.20000000000005 360,340.20000000000005 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → relay-broadcast · 8 flows</title></path>
+<path d="M360,353.20000000000005 C577.5,353.20000000000005 577.5,513.8000000000001 795,513.8000000000001 L795,526.6 C577.5,526.6 577.5,366.00000000000006 360,366.00000000000006 Z" fill="var(--l-jwt)" class="rib"><title>Your tracking ID → analytics · 8 flows</title></path>
+<path d="M360,379.00000000000006 C577.5,379.00000000000006 577.5,91.6 795,91.6 L795,94.8 C577.5,94.8 577.5,382.20000000000005 360,382.20000000000005 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → wallet-backend · 2 flows</title></path>
+<path d="M360,382.20000000000005 C577.5,382.20000000000005 577.5,240.2 795,240.2 L795,241.79999999999998 C577.5,241.79999999999998 577.5,383.80000000000007 360,383.80000000000007 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → relay-broadcast · 1 flow</title></path>
+<path d="M360,383.80000000000007 C577.5,383.80000000000007 577.5,369.8 795,369.8 L795,371.40000000000003 C577.5,371.40000000000003 577.5,385.4000000000001 360,385.4000000000001 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → rpc · 1 flow</title></path>
+<path d="M360,385.4000000000001 C577.5,385.4000000000001 577.5,526.6 795,526.6 L795,531.4 C577.5,531.4 577.5,390.2000000000001 360,390.2000000000001 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → analytics · 3 flows</title></path>
+<path d="M360,390.2000000000001 C577.5,390.2000000000001 577.5,622.4 795,622.4 L795,624.0 C577.5,624.0 577.5,391.8000000000001 360,391.8000000000001 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → screening · 1 flow</title></path>
+<path d="M360,391.8000000000001 C577.5,391.8000000000001 577.5,685.4999999999999 795,685.4999999999999 L795,687.0999999999999 C577.5,687.0999999999999 577.5,393.40000000000015 360,393.40000000000015 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → indexer · 1 flow</title></path>
+<path d="M360,393.40000000000015 C577.5,393.40000000000015 577.5,726.0999999999999 795,726.0999999999999 L795,727.6999999999999 C577.5,727.6999999999999 577.5,395.00000000000017 360,395.00000000000017 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → price-oracle · 1 flow</title></path>
+<path d="M360,395.00000000000017 C577.5,395.00000000000017 577.5,765.9 795,765.9 L795,767.5 C577.5,767.5 577.5,396.6000000000002 360,396.6000000000002 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → frontend · 1 flow</title></path>
+<path d="M360,396.6000000000002 C577.5,396.6000000000002 577.5,895.7 795,895.7 L795,897.3000000000001 C577.5,897.3000000000001 577.5,398.2000000000002 360,398.2000000000002 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → simulation · 1 flow</title></path>
+<path d="M360,411.20000000000005 C577.5,411.20000000000005 577.5,448.2 795,448.2 L795,464.2 C577.5,464.2 577.5,427.20000000000005 360,427.20000000000005 Z" fill="var(--muted)" class="rib"><title>Cookies → verification-explorer · 10 flows</title></path>
+<path d="M360,440.20000000000005 C577.5,440.20000000000005 577.5,94.8 795,94.8 L795,107.6 C577.5,107.6 577.5,453.00000000000006 360,453.00000000000006 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → wallet-backend · 8 flows</title></path>
+<path d="M360,453.00000000000006 C577.5,453.00000000000006 577.5,727.6999999999999 795,727.6999999999999 L795,729.3 C577.5,729.3 577.5,454.6000000000001 360,454.6000000000001 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → price-oracle · 1 flow</title></path>
+<path d="M360,467.6 C577.5,467.6 577.5,107.6 795,107.6 L795,112.39999999999999 C577.5,112.39999999999999 577.5,472.40000000000003 360,472.40000000000003 Z" fill="var(--l-hold)" class="rib"><title>Your balances → wallet-backend · 3 flows</title></path>
+<path d="M360,472.40000000000003 C577.5,472.40000000000003 577.5,371.40000000000003 795,371.40000000000003 L795,373.00000000000006 C577.5,373.00000000000006 577.5,474.00000000000006 360,474.00000000000006 Z" fill="var(--l-hold)" class="rib"><title>Your balances → rpc · 1 flow</title></path>
+<path d="M360,474.00000000000006 C577.5,474.00000000000006 577.5,767.5 795,767.5 L795,769.1 C577.5,769.1 577.5,475.6000000000001 360,475.6000000000001 Z" fill="var(--l-hold)" class="rib"><title>Your balances → frontend · 1 flow</title></path>
+<path d="M360,488.6 C577.5,488.6 577.5,241.79999999999998 795,241.79999999999998 L795,243.39999999999998 C577.5,243.39999999999998 577.5,490.20000000000005 360,490.20000000000005 Z" fill="var(--muted)" class="rib"><title>Which dapp you&#x27;re on → relay-broadcast · 1 flow</title></path>
+<path d="M360,490.20000000000005 C577.5,490.20000000000005 577.5,373.00000000000006 795,373.00000000000006 L795,374.6000000000001 C577.5,374.6000000000001 577.5,491.80000000000007 360,491.80000000000007 Z" fill="var(--muted)" class="rib"><title>Which dapp you&#x27;re on → rpc · 1 flow</title></path>
+<path d="M360,491.80000000000007 C577.5,491.80000000000007 577.5,897.3000000000001 795,897.3000000000001 L795,898.9000000000001 C577.5,898.9000000000001 577.5,493.4000000000001 360,493.4000000000001 Z" fill="var(--muted)" class="rib"><title>Which dapp you&#x27;re on → simulation · 1 flow</title></path>
+<path d="M360,506.40000000000003 C577.5,506.40000000000003 577.5,374.6000000000001 795,374.6000000000001 L795,376.2000000000001 C577.5,376.2000000000001 577.5,508.00000000000006 360,508.00000000000006 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → rpc · 1 flow</title></path>
+<path d="M360,508.00000000000006 C577.5,508.00000000000006 577.5,812.9 795,812.9 L795,814.5 C577.5,814.5 577.5,509.6000000000001 360,509.6000000000001 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → name-resolution · 1 flow</title></path>
+<path d="M360,509.6000000000001 C577.5,509.6000000000001 577.5,983.3 795,983.3 L795,984.9 C577.5,984.9 577.5,511.2000000000001 360,511.2000000000001 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → media · 1 flow</title></path>
+<path d="M360,524.2 C577.5,524.2 577.5,243.39999999999998 795,243.39999999999998 L795,259.4 C577.5,259.4 577.5,540.2 360,540.2 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → relay-broadcast · 10 flows</title></path>
+<path d="M360,540.2 C577.5,540.2 577.5,376.2000000000001 795,376.2000000000001 L795,379.4000000000001 C577.5,379.4000000000001 577.5,543.4000000000001 360,543.4000000000001 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → rpc · 2 flows</title></path>
+<path d="M360,543.4000000000001 C577.5,543.4000000000001 577.5,624.0 795,624.0 L795,638.4 C577.5,638.4 577.5,557.8000000000001 360,557.8000000000001 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → screening · 9 flows</title></path>
+<path d="M360,557.8000000000001 C577.5,557.8000000000001 577.5,851.9 795,851.9 L795,853.5 C577.5,853.5 577.5,559.4000000000001 360,559.4000000000001 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → bundler · 1 flow</title></path>
+<path d="M360,572.4000000000001 C577.5,572.4000000000001 577.5,112.39999999999999 795,112.39999999999999 L795,117.19999999999999 C577.5,117.19999999999999 577.5,577.2 360,577.2 Z" fill="var(--l-intent)" class="rib"><title>How much → wallet-backend · 3 flows</title></path>
+<path d="M360,577.2 C577.5,577.2 577.5,259.4 795,259.4 L795,275.4 C577.5,275.4 577.5,593.2 360,593.2 Z" fill="var(--l-intent)" class="rib"><title>How much → relay-broadcast · 10 flows</title></path>
+<path d="M360,593.2 C577.5,593.2 577.5,379.4000000000001 795,379.4000000000001 L795,382.6000000000001 C577.5,382.6000000000001 577.5,596.4000000000001 360,596.4000000000001 Z" fill="var(--l-intent)" class="rib"><title>How much → rpc · 2 flows</title></path>
+<path d="M360,596.4000000000001 C577.5,596.4000000000001 577.5,531.4 795,531.4 L795,533.0 C577.5,533.0 577.5,598.0000000000001 360,598.0000000000001 Z" fill="var(--l-intent)" class="rib"><title>How much → analytics · 1 flow</title></path>
+<path d="M360,598.0000000000001 C577.5,598.0000000000001 577.5,769.1 795,769.1 L795,770.7 C577.5,770.7 577.5,599.6000000000001 360,599.6000000000001 Z" fill="var(--l-intent)" class="rib"><title>How much → frontend · 1 flow</title></path>
+<path d="M360,599.6000000000001 C577.5,599.6000000000001 577.5,853.5 795,853.5 L795,855.1 C577.5,855.1 577.5,601.2000000000002 360,601.2000000000002 Z" fill="var(--l-intent)" class="rib"><title>How much → bundler · 1 flow</title></path>
+<path d="M360,614.2 C577.5,614.2 577.5,117.19999999999999 795,117.19999999999999 L795,130.0 C577.5,130.0 577.5,627.0 360,627.0 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → wallet-backend · 8 flows</title></path>
+<path d="M360,627.0 C577.5,627.0 577.5,275.4 795,275.4 L795,278.59999999999997 C577.5,278.59999999999997 577.5,630.2 360,630.2 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → relay-broadcast · 2 flows</title></path>
+<path d="M360,630.2 C577.5,630.2 577.5,382.6000000000001 795,382.6000000000001 L795,400.2000000000001 C577.5,400.2000000000001 577.5,647.8000000000001 360,647.8000000000001 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → rpc · 11 flows</title></path>
+<path d="M360,647.8000000000001 C577.5,647.8000000000001 577.5,638.4 795,638.4 L795,651.1999999999999 C577.5,651.1999999999999 577.5,660.6 360,660.6 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → screening · 8 flows</title></path>
+<path d="M360,660.6 C577.5,660.6 577.5,855.1 795,855.1 L795,856.7 C577.5,856.7 577.5,662.2 360,662.2 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → bundler · 1 flow</title></path>
+<path d="M360,662.2 C577.5,662.2 577.5,898.9000000000001 795,898.9000000000001 L795,900.5000000000001 C577.5,900.5000000000001 577.5,663.8000000000001 360,663.8000000000001 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → simulation · 1 flow</title></path>
+<path d="M360,676.8000000000001 C577.5,676.8000000000001 577.5,153.1 795,153.1 L795,170.7 C577.5,170.7 577.5,694.4000000000001 360,694.4000000000001 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → builder · 11 flows</title></path>
+<path d="M360,694.4000000000001 C577.5,694.4000000000001 577.5,278.59999999999997 795,278.59999999999997 L795,294.59999999999997 C577.5,294.59999999999997 577.5,710.4000000000001 360,710.4000000000001 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → relay-broadcast · 10 flows</title></path>
+<path d="M360,710.4000000000001 C577.5,710.4000000000001 577.5,400.2000000000001 795,400.2000000000001 L795,401.8000000000001 C577.5,401.8000000000001 577.5,712.0000000000001 360,712.0000000000001 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → rpc · 1 flow</title></path>
+<path d="M360,712.0000000000001 C577.5,712.0000000000001 577.5,900.5000000000001 795,900.5000000000001 L795,902.1000000000001 C577.5,902.1000000000001 577.5,713.6000000000001 360,713.6000000000001 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → simulation · 1 flow</title></path>
+<path d="M360,726.6 C577.5,726.6 577.5,294.59999999999997 795,294.59999999999997 L795,307.4 C577.5,307.4 577.5,739.4 360,739.4 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → relay-broadcast · 8 flows</title></path>
+<path d="M360,739.4 C577.5,739.4 577.5,401.8000000000001 795,401.8000000000001 L795,416.2000000000001 C577.5,416.2000000000001 577.5,753.8 360,753.8 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → rpc · 9 flows</title></path>
+<path d="M360,753.8 C577.5,753.8 577.5,464.2 795,464.2 L795,480.2 C577.5,480.2 577.5,769.8 360,769.8 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → verification-explorer · 10 flows</title></path>
+<path d="M360,769.8 C577.5,769.8 577.5,687.0999999999999 795,687.0999999999999 L795,688.6999999999999 C577.5,688.6999999999999 577.5,771.4 360,771.4 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → indexer · 1 flow</title></path>
+<path d="M360,771.4 C577.5,771.4 577.5,770.7 795,770.7 L795,772.3000000000001 C577.5,772.3000000000001 577.5,773.0 360,773.0 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → frontend · 1 flow</title></path>
+<path d="M360,773.0 C577.5,773.0 577.5,856.7 795,856.7 L795,858.3000000000001 C577.5,858.3000000000001 577.5,774.6 360,774.6 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → bundler · 1 flow</title></path>
+<rect x="235" y="34" width="125" height="139.20000000000002" fill="var(--l-ip)"/>
+<text x="227" y="107.60000000000001" text-anchor="end" class="dl">Your IP address</text>
+<rect x="235" y="186.20000000000002" width="125" height="73.60000000000001" fill="var(--l-addr)"/>
+<text x="227" y="227.00000000000003" text-anchor="end" class="dl">Your address</text>
+<rect x="235" y="272.8" width="125" height="28.8" fill="var(--l-jwt)"/>
+<text x="227" y="291.2" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="235" y="314.6" width="125" height="25.6" fill="var(--l-jwt)"/>
+<text x="227" y="331.40000000000003" text-anchor="end" class="dl">Your login token</text>
+<rect x="235" y="353.20000000000005" width="125" height="12.8" fill="var(--l-jwt)"/>
+<text x="227" y="363.6" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="235" y="379.00000000000006" width="125" height="19.200000000000003" fill="var(--l-jwt)"/>
+<text x="227" y="392.6000000000001" text-anchor="end" class="dl">Your device ID</text>
+<rect x="235" y="411.20000000000005" width="125" height="16.0" fill="var(--muted)"/>
+<text x="227" y="423.20000000000005" text-anchor="end" class="dl">Cookies</text>
+<rect x="235" y="440.20000000000005" width="125" height="14.4" fill="var(--l-hold)"/>
+<text x="227" y="451.40000000000003" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="235" y="467.6" width="125" height="8.0" fill="var(--l-hold)"/>
+<text x="227" y="475.6" text-anchor="end" class="dl">Your balances</text>
+<rect x="235" y="488.6" width="125" height="4.800000000000001" fill="var(--muted)"/>
+<text x="227" y="495.0" text-anchor="end" class="dl">Which dapp you&#x27;re on</text>
+<rect x="235" y="506.40000000000003" width="125" height="4.800000000000001" fill="var(--l-ens)"/>
+<text x="227" y="512.8" text-anchor="end" class="dl">The name you typed</text>
+<rect x="235" y="524.2" width="125" height="35.2" fill="var(--l-rcpt)"/>
+<text x="227" y="545.8000000000001" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="235" y="572.4000000000001" width="125" height="28.8" fill="var(--l-intent)"/>
+<text x="227" y="590.8000000000001" text-anchor="end" class="dl">How much</text>
+<rect x="235" y="614.2" width="125" height="49.6" fill="var(--l-addr)"/>
+<text x="227" y="643.0" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="235" y="676.8000000000001" width="125" height="36.800000000000004" fill="var(--l-signed)"/>
+<text x="227" y="699.2" text-anchor="end" class="dl">THE SIGNED TX</text>
+<rect x="235" y="726.6" width="125" height="48.0" fill="var(--l-hash)"/>
+<text x="227" y="754.6" text-anchor="end" class="dl">The tx hash</text>
+<rect x="795" y="34" width="355" height="99.2" rx="6" class="co zob-none"/>
+<text x="807" y="88.1" class="cn">Wallet backend</text>
+<text x="1139" y="88.1" text-anchor="end" class="ct dim">12/13 · 5co</text>
+<rect x="795" y="149.2" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="167.2" class="cn">Block builders</text>
+<text x="1139" y="167.2" text-anchor="end" class="ct dim">12/13 · 1co</text>
+<rect x="795" y="192.2" width="355" height="115.2" rx="6" class="co zob-painful"/>
+<text x="807" y="254.29999999999998" class="cn">Tx broadcast / relay</text>
+<text x="1139" y="254.29999999999998" text-anchor="end" class="ct dim">11/13 · 4co</text>
+<rect x="795" y="323.4" width="355" height="92.80000000000001" rx="6" class="co zob-painful"/>
+<text x="807" y="374.29999999999995" class="cn">RPC — chain reads</text>
+<text x="1139" y="374.29999999999995" text-anchor="end" class="ct dim">11/13 · 5co</text>
+<rect x="795" y="432.2" width="355" height="48.0" rx="6" class="co zob-painful"/>
+<text x="807" y="460.7" class="cn">Block explorer</text>
+<text x="1139" y="460.7" text-anchor="end" class="ct dim">10/13 · 1co</text>
+<rect x="795" y="496.2" width="355" height="36.800000000000004" rx="6" class="co zob-local"/>
+<text x="807" y="519.1" class="cn">Analytics / telemetry</text>
+<text x="1139" y="519.1" text-anchor="end" class="ct dim">10/13 · 7co</text>
+<rect x="795" y="549.0" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="567.0" class="cn">Wallet / code dist.</text>
+<text x="1139" y="567.0" text-anchor="end" class="ct dim">10/13 · 2co</text>
+<rect x="795" y="592.0" width="355" height="60.800000000000004" rx="6" class="co zob-local"/>
+<text x="807" y="626.9" class="cn">Tx / address screening</text>
+<text x="1139" y="626.9" text-anchor="end" class="ct dim">9/13 · 3co</text>
+<rect x="795" y="668.8" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="686.8" class="cn">Indexer — balances</text>
+<text x="1139" y="686.8" text-anchor="end" class="ct dim">3/13 · 5co</text>
+<rect x="795" y="711.8" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="729.8" class="cn">Prices &amp; market data</text>
+<text x="1139" y="729.8" text-anchor="end" class="ct dim">3/13 · 3co</text>
+<rect x="795" y="754.8" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="772.8" class="cn">Hosted dApp frontend</text>
+<text x="1139" y="772.8" text-anchor="end" class="ct dim">2/13 · 3co</text>
+<rect x="795" y="797.8" width="355" height="27" rx="6" class="co zob-local"/>
+<text x="807" y="815.8" class="cn">Name resolution (ENS)</text>
+<text x="1139" y="815.8" text-anchor="end" class="ct dim">2/13 · 2co</text>
+<rect x="795" y="840.8" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="858.8" class="cn">ERC-4337 bundler</text>
+<text x="1139" y="858.8" text-anchor="end" class="ct dim">1/13 · 1co</text>
+<rect x="795" y="883.8" width="355" height="27" rx="6" class="co zob-local"/>
+<text x="807" y="901.8" class="cn">Tx simulation</text>
+<text x="1139" y="901.8" text-anchor="end" class="ct dim">1/13 · 1co</text>
+<rect x="795" y="926.8" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="944.8" class="cn">Fiat on/off-ramp</text>
+<text x="1139" y="944.8" text-anchor="end" class="ct dim">1/13 · 2co</text>
+<rect x="795" y="969.8" width="355" height="27" rx="6" class="co zob-local"/>
+<text x="807" y="987.8" class="cn">Avatars &amp; images</text>
+<text x="1139" y="987.8" text-anchor="end" class="ct dim">1/13 · 1co</text>
+</svg></div>
+
+  <h3 class="lkh">3 · By company — who specifically</h3>
+  <p class="section-sub">The same leaks, named. "The node provider" is one throat — but it's a different company per wallet.</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 973.8451612903225" width="100%" style="max-width:1180px;display:block">
+<text x="227" y="22" text-anchor="end" class="axl">YOUR DATA</text>
+<text x="795" y="22" class="axl">WHICH COMPANY GETS IT</text>
+<path d="M360,34 C577.5,34 577.5,77.0 795,77.0 L795,93.90322580645162 C577.5,93.90322580645162 577.5,50.903225806451616 360,50.903225806451616 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → etherscan · 10 flows</title></path>
+<path d="M360,50.903225806451616 C577.5,50.903225806451616 577.5,147.91290322580647 795,147.91290322580647 L795,164.8161290322581 C577.5,164.8161290322581 577.5,67.80645161290323 360,67.80645161290323 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → sentry · 10 flows</title></path>
+<path d="M360,67.80645161290323 C577.5,67.80645161290323 577.5,191.75806451612902 795,191.75806451612902 L795,208.66129032258064 C577.5,208.66129032258064 577.5,84.70967741935485 360,84.70967741935485 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → google · 10 flows</title></path>
+<path d="M360,84.70967741935485 C577.5,84.70967741935485 577.5,229.70967741935485 795,229.70967741935485 L795,244.9225806451613 C577.5,244.9225806451613 577.5,99.9225806451613 360,99.9225806451613 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → consensys-apis · 9 flows</title></path>
+<path d="M360,99.9225806451613 C577.5,99.9225806451613 577.5,342.05806451612904 795,342.05806451612904 L795,355.5806451612903 C577.5,355.5806451612903 577.5,113.4451612903226 360,113.4451612903226 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → servo · 8 flows</title></path>
+<path d="M360,113.4451612903226 C577.5,113.4451612903226 577.5,452.7161290322581 795,452.7161290322581 L795,466.23870967741937 C577.5,466.23870967741937 577.5,126.9677419354839 360,126.9677419354839 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → infura · 8 flows</title></path>
+<path d="M360,126.9677419354839 C577.5,126.9677419354839 577.5,538.0193548387097 795,538.0193548387097 L795,551.5419354838709 C577.5,551.5419354838709 577.5,140.4903225806452 360,140.4903225806452 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → blockaid · 8 flows</title></path>
+<path d="M360,140.4903225806452 C577.5,140.4903225806452 577.5,609.8 795,609.8 L795,623.3225806451612 C577.5,623.3225806451612 577.5,154.0129032258065 360,154.0129032258065 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → segment · 8 flows</title></path>
+<path d="M360,154.0129032258065 C577.5,154.0129032258065 577.5,664.6548387096773 795,664.6548387096773 L795,668.0354838709676 C577.5,668.0354838709676 577.5,157.3935483870968 360,157.3935483870968 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → github · 2 flows</title></path>
+<path d="M360,157.3935483870968 C577.5,157.3935483870968 577.5,700.8935483870966 795,700.8935483870966 L795,702.5838709677419 C577.5,702.5838709677419 577.5,159.08387096774197 360,159.08387096774197 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → rabby · 1 flow</title></path>
+<path d="M360,159.08387096774197 C577.5,159.08387096774197 577.5,745.5838709677419 795,745.5838709677419 L795,747.2741935483871 C577.5,747.2741935483871 577.5,160.77419354838713 360,160.77419354838713 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → uniswap-labs · 1 flow</title></path>
+<path d="M360,160.77419354838713 C577.5,160.77419354838713 577.5,789.4290322580645 795,789.4290322580645 L795,791.1193548387097 C577.5,791.1193548387097 577.5,162.4645161290323 360,162.4645161290323 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → pimlico · 1 flow</title></path>
+<path d="M360,162.4645161290323 C577.5,162.4645161290323 577.5,833.274193548387 795,833.274193548387 L795,834.9645161290322 C577.5,834.9645161290322 577.5,164.15483870967745 360,164.15483870967745 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → rainbow-rpc · 1 flow</title></path>
+<path d="M360,164.15483870967745 C577.5,164.15483870967745 577.5,876.274193548387 795,876.274193548387 L795,877.9645161290322 C577.5,877.9645161290322 577.5,165.8451612903226 360,165.8451612903226 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → ambire-relayer · 1 flow</title></path>
+<path d="M360,165.8451612903226 C577.5,165.8451612903226 577.5,920.1193548387096 795,920.1193548387096 L795,921.8096774193548 C577.5,921.8096774193548 577.5,167.53548387096777 360,167.53548387096777 Z" fill="var(--l-ip)" class="rib"><title>Your IP address → ambire-rpc · 1 flow</title></path>
+<path d="M360,180.53548387096774 C577.5,180.53548387096774 577.5,244.9225806451613 795,244.9225806451613 L795,258.4451612903226 C577.5,258.4451612903226 577.5,194.05806451612904 360,194.05806451612904 Z" fill="var(--l-addr)" class="rib"><title>Your address → consensys-apis · 8 flows</title></path>
+<path d="M360,194.05806451612904 C577.5,194.05806451612904 577.5,355.5806451612903 795,355.5806451612903 L795,369.1032258064516 C577.5,369.1032258064516 577.5,207.58064516129033 360,207.58064516129033 Z" fill="var(--l-addr)" class="rib"><title>Your address → servo · 8 flows</title></path>
+<path d="M360,207.58064516129033 C577.5,207.58064516129033 577.5,466.23870967741937 795,466.23870967741937 L795,479.76129032258063 C577.5,479.76129032258063 577.5,221.10322580645163 360,221.10322580645163 Z" fill="var(--l-addr)" class="rib"><title>Your address → infura · 8 flows</title></path>
+<path d="M360,221.10322580645163 C577.5,221.10322580645163 577.5,551.5419354838709 795,551.5419354838709 L795,565.0645161290322 C577.5,565.0645161290322 577.5,234.62580645161293 360,234.62580645161293 Z" fill="var(--l-addr)" class="rib"><title>Your address → blockaid · 8 flows</title></path>
+<path d="M360,234.62580645161293 C577.5,234.62580645161293 577.5,702.5838709677419 795,702.5838709677419 L795,704.2741935483871 C577.5,704.2741935483871 577.5,236.3161290322581 360,236.3161290322581 Z" fill="var(--l-addr)" class="rib"><title>Your address → rabby · 1 flow</title></path>
+<path d="M360,236.3161290322581 C577.5,236.3161290322581 577.5,747.2741935483871 795,747.2741935483871 L795,748.9645161290323 C577.5,748.9645161290323 577.5,238.00645161290325 360,238.00645161290325 Z" fill="var(--l-addr)" class="rib"><title>Your address → uniswap-labs · 1 flow</title></path>
+<path d="M360,238.00645161290325 C577.5,238.00645161290325 577.5,791.1193548387097 795,791.1193548387097 L795,792.8096774193549 C577.5,792.8096774193549 577.5,239.6967741935484 360,239.6967741935484 Z" fill="var(--l-addr)" class="rib"><title>Your address → pimlico · 1 flow</title></path>
+<path d="M360,239.6967741935484 C577.5,239.6967741935484 577.5,834.9645161290322 795,834.9645161290322 L795,836.6548387096774 C577.5,836.6548387096774 577.5,241.38709677419357 360,241.38709677419357 Z" fill="var(--l-addr)" class="rib"><title>Your address → rainbow-rpc · 1 flow</title></path>
+<path d="M360,241.38709677419357 C577.5,241.38709677419357 577.5,877.9645161290322 795,877.9645161290322 L795,879.6548387096774 C577.5,879.6548387096774 577.5,243.07741935483872 360,243.07741935483872 Z" fill="var(--l-addr)" class="rib"><title>Your address → ambire-relayer · 1 flow</title></path>
+<path d="M360,243.07741935483872 C577.5,243.07741935483872 577.5,921.8096774193548 795,921.8096774193548 L795,923.5 C577.5,923.5 577.5,244.76774193548388 360,244.76774193548388 Z" fill="var(--l-addr)" class="rib"><title>Your address → ambire-rpc · 1 flow</title></path>
+<path d="M360,257.76774193548385 C577.5,257.76774193548385 577.5,258.4451612903226 795,258.4451612903226 L795,271.96774193548384 C577.5,271.96774193548384 577.5,271.2903225806451 360,271.2903225806451 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → consensys-apis · 8 flows</title></path>
+<path d="M360,271.2903225806451 C577.5,271.2903225806451 577.5,479.76129032258063 795,479.76129032258063 L795,493.2838709677419 C577.5,493.2838709677419 577.5,284.8129032258064 360,284.8129032258064 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → infura · 8 flows</title></path>
+<path d="M360,284.8129032258064 C577.5,284.8129032258064 577.5,704.2741935483871 795,704.2741935483871 L795,705.9645161290323 C577.5,705.9645161290323 577.5,286.50322580645155 360,286.50322580645155 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → rabby · 1 flow</title></path>
+<path d="M360,286.50322580645155 C577.5,286.50322580645155 577.5,879.6548387096774 795,879.6548387096774 L795,881.3451612903226 C577.5,881.3451612903226 577.5,288.1935483870967 360,288.1935483870967 Z" fill="var(--l-jwt)" class="rib"><title>ALL your addresses → ambire-relayer · 1 flow</title></path>
+<path d="M360,301.19354838709677 C577.5,301.19354838709677 577.5,271.96774193548384 795,271.96774193548384 L795,285.4903225806451 C577.5,285.4903225806451 577.5,314.71612903225804 360,314.71612903225804 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → consensys-apis · 8 flows</title></path>
+<path d="M360,314.71612903225804 C577.5,314.71612903225804 577.5,369.1032258064516 795,369.1032258064516 L795,382.62580645161285 C577.5,382.62580645161285 577.5,328.2387096774193 360,328.2387096774193 Z" fill="var(--l-jwt)" class="rib"><title>Your login token → servo · 8 flows</title></path>
+<path d="M360,341.23870967741937 C577.5,341.23870967741937 577.5,623.3225806451612 795,623.3225806451612 L795,636.8451612903225 C577.5,636.8451612903225 577.5,354.76129032258063 360,354.76129032258063 Z" fill="var(--l-jwt)" class="rib"><title>Your tracking ID → segment · 8 flows</title></path>
+<path d="M360,367.76129032258063 C577.5,367.76129032258063 577.5,164.8161290322581 795,164.8161290322581 L795,166.50645161290325 C577.5,166.50645161290325 577.5,369.4516129032258 360,369.4516129032258 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → sentry · 1 flow</title></path>
+<path d="M360,369.4516129032258 C577.5,369.4516129032258 577.5,705.9645161290323 795,705.9645161290323 L795,707.6548387096775 C577.5,707.6548387096775 577.5,371.14193548387095 360,371.14193548387095 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → rabby · 1 flow</title></path>
+<path d="M360,371.14193548387095 C577.5,371.14193548387095 577.5,748.9645161290323 795,748.9645161290323 L795,750.6548387096775 C577.5,750.6548387096775 577.5,372.8322580645161 360,372.8322580645161 Z" fill="var(--l-jwt)" class="rib"><title>Your device ID → uniswap-labs · 1 flow</title></path>
+<path d="M360,385.8322580645161 C577.5,385.8322580645161 577.5,93.90322580645162 795,93.90322580645162 L795,110.80645161290323 C577.5,110.80645161290323 577.5,402.73548387096776 360,402.73548387096776 Z" fill="var(--muted)" class="rib"><title>Cookies → etherscan · 10 flows</title></path>
+<path d="M360,415.73548387096776 C577.5,415.73548387096776 577.5,285.4903225806451 795,285.4903225806451 L795,299.0129032258064 C577.5,299.0129032258064 577.5,429.258064516129 360,429.258064516129 Z" fill="var(--l-hold)" class="rib"><title>Which tokens you hold → consensys-apis · 8 flows</title></path>
+<path d="M360,442.258064516129 C577.5,442.258064516129 577.5,299.0129032258064 795,299.0129032258064 L795,304.08387096774186 C577.5,304.08387096774186 577.5,447.3290322580645 360,447.3290322580645 Z" fill="var(--l-hold)" class="rib"><title>Your balances → consensys-apis · 3 flows</title></path>
+<path d="M360,447.3290322580645 C577.5,447.3290322580645 577.5,750.6548387096775 795,750.6548387096775 L795,752.3451612903227 C577.5,752.3451612903227 577.5,449.01935483870966 360,449.01935483870966 Z" fill="var(--l-hold)" class="rib"><title>Your balances → uniswap-labs · 1 flow</title></path>
+<path d="M360,462.01935483870966 C577.5,462.01935483870966 577.5,707.6548387096775 795,707.6548387096775 L795,709.3451612903227 C577.5,709.3451612903227 577.5,463.7096774193548 360,463.7096774193548 Z" fill="var(--muted)" class="rib"><title>Which dapp you&#x27;re on → rabby · 1 flow</title></path>
+<path d="M360,476.7096774193548 C577.5,476.7096774193548 577.5,493.2838709677419 795,493.2838709677419 L795,494.97419354838706 C577.5,494.97419354838706 577.5,478.4 360,478.4 Z" fill="var(--l-ens)" class="rib"><title>The name you typed → infura · 1 flow</title></path>
+<path d="M360,491.4 C577.5,491.4 577.5,382.62580645161285 795,382.62580645161285 L795,396.1483870967741 C577.5,396.1483870967741 577.5,504.92258064516125 360,504.92258064516125 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → servo · 8 flows</title></path>
+<path d="M360,504.92258064516125 C577.5,504.92258064516125 577.5,565.0645161290322 795,565.0645161290322 L795,578.5870967741935 C577.5,578.5870967741935 577.5,518.4451612903225 360,518.4451612903225 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → blockaid · 8 flows</title></path>
+<path d="M360,518.4451612903225 C577.5,518.4451612903225 577.5,709.3451612903227 795,709.3451612903227 L795,711.0354838709679 C577.5,711.0354838709679 577.5,520.1354838709677 360,520.1354838709677 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → rabby · 1 flow</title></path>
+<path d="M360,520.1354838709677 C577.5,520.1354838709677 577.5,792.8096774193549 795,792.8096774193549 L795,794.5000000000001 C577.5,794.5000000000001 577.5,521.825806451613 360,521.825806451613 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → pimlico · 1 flow</title></path>
+<path d="M360,521.825806451613 C577.5,521.825806451613 577.5,836.6548387096774 795,836.6548387096774 L795,838.3451612903226 C577.5,838.3451612903226 577.5,523.5161290322582 360,523.5161290322582 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → rainbow-rpc · 1 flow</title></path>
+<path d="M360,523.5161290322582 C577.5,523.5161290322582 577.5,881.3451612903226 795,881.3451612903226 L795,883.0354838709678 C577.5,883.0354838709678 577.5,525.2064516129034 360,525.2064516129034 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → ambire-relayer · 1 flow</title></path>
+<path d="M360,525.2064516129034 C577.5,525.2064516129034 577.5,923.5 795,923.5 L795,925.1903225806452 C577.5,925.1903225806452 577.5,526.8967741935486 360,526.8967741935486 Z" fill="var(--l-rcpt)" class="rib"><title>Who you&#x27;re paying → ambire-rpc · 1 flow</title></path>
+<path d="M360,539.8967741935484 C577.5,539.8967741935484 577.5,304.08387096774186 795,304.08387096774186 L795,309.15483870967734 C577.5,309.15483870967734 577.5,544.9677419354839 360,544.9677419354839 Z" fill="var(--l-intent)" class="rib"><title>How much → consensys-apis · 3 flows</title></path>
+<path d="M360,544.9677419354839 C577.5,544.9677419354839 577.5,396.1483870967741 795,396.1483870967741 L795,409.6709677419354 C577.5,409.6709677419354 577.5,558.4903225806452 360,558.4903225806452 Z" fill="var(--l-intent)" class="rib"><title>How much → servo · 8 flows</title></path>
+<path d="M360,558.4903225806452 C577.5,558.4903225806452 577.5,711.0354838709679 795,711.0354838709679 L795,712.7258064516132 C577.5,712.7258064516132 577.5,560.1806451612904 360,560.1806451612904 Z" fill="var(--l-intent)" class="rib"><title>How much → rabby · 1 flow</title></path>
+<path d="M360,560.1806451612904 C577.5,560.1806451612904 577.5,752.3451612903227 795,752.3451612903227 L795,754.0354838709679 C577.5,754.0354838709679 577.5,561.8709677419356 360,561.8709677419356 Z" fill="var(--l-intent)" class="rib"><title>How much → uniswap-labs · 1 flow</title></path>
+<path d="M360,561.8709677419356 C577.5,561.8709677419356 577.5,794.5000000000001 795,794.5000000000001 L795,796.1903225806453 C577.5,796.1903225806453 577.5,563.5612903225808 360,563.5612903225808 Z" fill="var(--l-intent)" class="rib"><title>How much → pimlico · 1 flow</title></path>
+<path d="M360,563.5612903225808 C577.5,563.5612903225808 577.5,838.3451612903226 795,838.3451612903226 L795,840.0354838709678 C577.5,840.0354838709678 577.5,565.251612903226 360,565.251612903226 Z" fill="var(--l-intent)" class="rib"><title>How much → rainbow-rpc · 1 flow</title></path>
+<path d="M360,565.251612903226 C577.5,565.251612903226 577.5,883.0354838709678 795,883.0354838709678 L795,884.725806451613 C577.5,884.725806451613 577.5,566.9419354838712 360,566.9419354838712 Z" fill="var(--l-intent)" class="rib"><title>How much → ambire-relayer · 1 flow</title></path>
+<path d="M360,566.9419354838712 C577.5,566.9419354838712 577.5,925.1903225806452 795,925.1903225806452 L795,926.8806451612904 C577.5,926.8806451612904 577.5,568.6322580645165 360,568.6322580645165 Z" fill="var(--l-intent)" class="rib"><title>How much → ambire-rpc · 1 flow</title></path>
+<path d="M360,581.6322580645161 C577.5,581.6322580645161 577.5,309.15483870967734 795,309.15483870967734 L795,322.6774193548386 C577.5,322.6774193548386 577.5,595.1548387096774 360,595.1548387096774 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → consensys-apis · 8 flows</title></path>
+<path d="M360,595.1548387096774 C577.5,595.1548387096774 577.5,494.97419354838706 795,494.97419354838706 L795,508.49677419354833 C577.5,508.49677419354833 577.5,608.6774193548387 360,608.6774193548387 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → infura · 8 flows</title></path>
+<path d="M360,608.6774193548387 C577.5,608.6774193548387 577.5,578.5870967741935 795,578.5870967741935 L795,592.1096774193547 C577.5,592.1096774193547 577.5,622.1999999999999 360,622.1999999999999 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → blockaid · 8 flows</title></path>
+<path d="M360,622.1999999999999 C577.5,622.1999999999999 577.5,712.7258064516132 795,712.7258064516132 L795,714.4161290322584 C577.5,714.4161290322584 577.5,623.8903225806451 360,623.8903225806451 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → rabby · 1 flow</title></path>
+<path d="M360,623.8903225806451 C577.5,623.8903225806451 577.5,796.1903225806453 795,796.1903225806453 L795,797.8806451612905 C577.5,797.8806451612905 577.5,625.5806451612904 360,625.5806451612904 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → pimlico · 1 flow</title></path>
+<path d="M360,625.5806451612904 C577.5,625.5806451612904 577.5,840.0354838709678 795,840.0354838709678 L795,841.725806451613 C577.5,841.725806451613 577.5,627.2709677419356 360,627.2709677419356 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → rainbow-rpc · 1 flow</title></path>
+<path d="M360,627.2709677419356 C577.5,627.2709677419356 577.5,884.725806451613 795,884.725806451613 L795,886.4161290322583 C577.5,886.4161290322583 577.5,628.9612903225808 360,628.9612903225808 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → ambire-relayer · 1 flow</title></path>
+<path d="M360,628.9612903225808 C577.5,628.9612903225808 577.5,926.8806451612904 795,926.8806451612904 L795,928.5709677419356 C577.5,928.5709677419356 577.5,630.651612903226 360,630.651612903226 Z" fill="var(--l-addr)" class="rib"><title>The whole unsigned tx → ambire-rpc · 1 flow</title></path>
+<path d="M360,643.6516129032258 C577.5,643.6516129032258 577.5,37.35806451612903 795,37.35806451612903 L795,55.95161290322581 C577.5,55.95161290322581 577.5,662.2451612903226 360,662.2451612903226 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → builders · 11 flows</title></path>
+<path d="M360,662.2451612903226 C577.5,662.2451612903226 577.5,409.6709677419354 795,409.6709677419354 L795,423.19354838709666 C577.5,423.19354838709666 577.5,675.7677419354839 360,675.7677419354839 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → servo · 8 flows</title></path>
+<path d="M360,675.7677419354839 C577.5,675.7677419354839 577.5,714.4161290322584 795,714.4161290322584 L795,716.1064516129036 C577.5,716.1064516129036 577.5,677.4580645161291 360,677.4580645161291 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → rabby · 1 flow</title></path>
+<path d="M360,677.4580645161291 C577.5,677.4580645161291 577.5,841.725806451613 795,841.725806451613 L795,843.4161290322583 C577.5,843.4161290322583 577.5,679.1483870967743 360,679.1483870967743 Z" fill="var(--l-signed)" class="rib"><title>THE SIGNED TX → rainbow-rpc · 1 flow</title></path>
+<path d="M360,692.1483870967742 C577.5,692.1483870967742 577.5,110.80645161290323 795,110.80645161290323 L795,127.70967741935485 C577.5,127.70967741935485 577.5,709.0516129032258 360,709.0516129032258 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → etherscan · 10 flows</title></path>
+<path d="M360,709.0516129032258 C577.5,709.0516129032258 577.5,423.19354838709666 795,423.19354838709666 L795,436.7161290322579 C577.5,436.7161290322579 577.5,722.574193548387 360,722.574193548387 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → servo · 8 flows</title></path>
+<path d="M360,722.574193548387 C577.5,722.574193548387 577.5,508.49677419354833 795,508.49677419354833 L795,522.0193548387097 C577.5,522.0193548387097 577.5,736.0967741935483 360,736.0967741935483 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → infura · 8 flows</title></path>
+<path d="M360,736.0967741935483 C577.5,736.0967741935483 577.5,716.1064516129036 795,716.1064516129036 L795,717.7967741935488 C577.5,717.7967741935488 577.5,737.7870967741935 360,737.7870967741935 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → rabby · 1 flow</title></path>
+<path d="M360,737.7870967741935 C577.5,737.7870967741935 577.5,754.0354838709679 795,754.0354838709679 L795,755.7258064516132 C577.5,755.7258064516132 577.5,739.4774193548387 360,739.4774193548387 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → uniswap-labs · 1 flow</title></path>
+<path d="M360,739.4774193548387 C577.5,739.4774193548387 577.5,797.8806451612905 795,797.8806451612905 L795,799.5709677419358 C577.5,799.5709677419358 577.5,741.167741935484 360,741.167741935484 Z" fill="var(--l-hash)" class="rib"><title>The tx hash → pimlico · 1 flow</title></path>
+<rect x="235" y="34" width="125" height="133.53548387096774" fill="var(--l-ip)"/>
+<text x="227" y="104.76774193548387" text-anchor="end" class="dl">Your IP address</text>
+<rect x="235" y="180.53548387096774" width="125" height="64.23225806451613" fill="var(--l-addr)"/>
+<text x="227" y="216.6516129032258" text-anchor="end" class="dl">Your address</text>
+<rect x="235" y="257.76774193548385" width="125" height="30.425806451612907" fill="var(--l-jwt)"/>
+<text x="227" y="276.9806451612903" text-anchor="end" class="dl">ALL your addresses</text>
+<rect x="235" y="301.19354838709677" width="125" height="27.045161290322582" fill="var(--l-jwt)"/>
+<text x="227" y="318.71612903225804" text-anchor="end" class="dl">Your login token</text>
+<rect x="235" y="341.23870967741937" width="125" height="13.522580645161291" fill="var(--l-jwt)"/>
+<text x="227" y="352.0" text-anchor="end" class="dl">Your tracking ID</text>
+<rect x="235" y="367.76129032258063" width="125" height="5.070967741935484" fill="var(--l-jwt)"/>
+<text x="227" y="374.2967741935484" text-anchor="end" class="dl">Your device ID</text>
+<rect x="235" y="385.8322580645161" width="125" height="16.903225806451616" fill="var(--muted)"/>
+<text x="227" y="398.2838709677419" text-anchor="end" class="dl">Cookies</text>
+<rect x="235" y="415.73548387096776" width="125" height="13.522580645161291" fill="var(--l-hold)"/>
+<text x="227" y="426.4967741935484" text-anchor="end" class="dl">Which tokens you hold</text>
+<rect x="235" y="442.258064516129" width="125" height="6.7612903225806456" fill="var(--l-hold)"/>
+<text x="227" y="449.63870967741934" text-anchor="end" class="dl">Your balances</text>
+<rect x="235" y="462.01935483870966" width="125" height="1.6903225806451614" fill="var(--muted)"/>
+<text x="227" y="466.86451612903227" text-anchor="end" class="dl">Which dapp you&#x27;re on</text>
+<rect x="235" y="476.7096774193548" width="125" height="1.6903225806451614" fill="var(--l-ens)"/>
+<text x="227" y="481.5548387096774" text-anchor="end" class="dl">The name you typed</text>
+<rect x="235" y="491.4" width="125" height="35.49677419354839" fill="var(--l-rcpt)"/>
+<text x="227" y="513.1483870967742" text-anchor="end" class="dl">Who you&#x27;re paying</text>
+<rect x="235" y="539.8967741935484" width="125" height="28.735483870967744" fill="var(--l-intent)"/>
+<text x="227" y="558.2645161290322" text-anchor="end" class="dl">How much</text>
+<rect x="235" y="581.6322580645161" width="125" height="49.01935483870968" fill="var(--l-addr)"/>
+<text x="227" y="610.141935483871" text-anchor="end" class="dl">The whole unsigned tx</text>
+<rect x="235" y="643.6516129032258" width="125" height="35.49677419354839" fill="var(--l-signed)"/>
+<text x="227" y="665.4" text-anchor="end" class="dl">THE SIGNED TX</text>
+<rect x="235" y="692.1483870967742" width="125" height="49.01935483870968" fill="var(--l-hash)"/>
+<text x="227" y="720.658064516129" text-anchor="end" class="dl">The tx hash</text>
+<rect x="795" y="34" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="52.0" class="cn">Builders · relays</text>
+<text x="1139" y="52.0" text-anchor="end" class="ct dim">12/13</text>
+<rect x="795" y="77" width="355" height="50.70967741935484" rx="6" class="co zob-painful"/>
+<text x="807" y="106.85483870967742" class="cn">Etherscan</text>
+<text x="1139" y="106.85483870967742" text-anchor="end" class="ct dim">10/13</text>
+<rect x="795" y="143.70967741935485" width="355" height="27" rx="6" class="co zob-local"/>
+<text x="807" y="161.70967741935485" class="cn">Sentry</text>
+<text x="1139" y="161.70967741935485" text-anchor="end" class="ct dim">10/13</text>
+<rect x="795" y="186.70967741935485" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="204.70967741935485" class="cn">Google · Web Store</text>
+<text x="1139" y="204.70967741935485" text-anchor="end" class="ct dim">10/13</text>
+<rect x="795" y="229.70967741935485" width="355" height="96.3483870967742" rx="6" class="co zob-none"/>
+<text x="807" y="282.3838709677419" class="cn">Consensys · MM APIs</text>
+<text x="1139" y="282.3838709677419" text-anchor="end" class="ct dim">9/13</text>
+<rect x="795" y="342.05806451612904" width="355" height="94.65806451612903" rx="6" class="co zob-painful"/>
+<text x="807" y="393.88709677419354" class="cn">Consensys · SERVO relay</text>
+<text x="1139" y="393.88709677419354" text-anchor="end" class="ct dim">8/13</text>
+<rect x="795" y="452.7161290322581" width="355" height="69.30322580645162" rx="6" class="co zob-painful"/>
+<text x="807" y="491.8677419354839" class="cn">Consensys · Infura</text>
+<text x="1139" y="491.8677419354839" text-anchor="end" class="ct dim">8/13</text>
+<rect x="795" y="538.0193548387097" width="355" height="55.78064516129032" rx="6" class="co zob-local"/>
+<text x="807" y="570.4096774193548" class="cn">Blockaid</text>
+<text x="1139" y="570.4096774193548" text-anchor="end" class="ct dim">8/13</text>
+<rect x="795" y="609.8" width="355" height="27.045161290322582" rx="6" class="co zob-local"/>
+<text x="807" y="627.8225806451612" class="cn">Segment</text>
+<text x="1139" y="627.8225806451612" text-anchor="end" class="ct dim">8/13</text>
+<rect x="795" y="652.8451612903225" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="670.8451612903225" class="cn">GitHub</text>
+<text x="1139" y="670.8451612903225" text-anchor="end" class="ct dim">2/13</text>
+<rect x="795" y="695.8451612903225" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="713.8451612903225" class="cn">Rabby · DeBank API</text>
+<text x="1139" y="713.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+<rect x="795" y="738.8451612903225" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="756.8451612903225" class="cn">Uniswap Labs</text>
+<text x="1139" y="756.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+<rect x="795" y="781.8451612903225" width="355" height="27" rx="6" class="co zob-none"/>
+<text x="807" y="799.8451612903225" class="cn">Pimlico bundler</text>
+<text x="1139" y="799.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+<rect x="795" y="824.8451612903225" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="842.8451612903225" class="cn">Rainbow · RPC proxy</text>
+<text x="1139" y="842.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+<rect x="795" y="867.8451612903225" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="885.8451612903225" class="cn">Ambire · relayer</text>
+<text x="1139" y="885.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+<rect x="795" y="910.8451612903225" width="355" height="27" rx="6" class="co zob-painful"/>
+<text x="807" y="928.8451612903225" class="cn">Ambire · invictus RPC</text>
+<text x="1139" y="928.8451612903225" text-anchor="end" class="ct dim">1/13</text>
+</svg></div>
+</section>
+
 <!-- ================= ACCESS VECTORS ================= -->
 <section class="view" id="view-vectors">
   <a class="back" href="#/">← ALL MAPS</a>
@@ -2142,7 +2515,7 @@ const tpl=document.getElementById('legend-tpl');
 document.querySelectorAll('.legend-slot').forEach(s=>s.appendChild(tpl.content.cloneNode(true)));
 
 // router
-const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','m4','mt','ap','on','br','night','vectors','gadgets','center','fixes','index','how'];
+const views=['home','m1','r1','m2','m0','m3','rb1','ab1','u1','m4','mt','ap','on','br','night','leverage','vectors','gadgets','center','fixes','index','how'];
 function route(){
  const r=(location.hash.replace(/^#\/?/,'')||'home');
  const v=views.includes(r)?r:'home';
