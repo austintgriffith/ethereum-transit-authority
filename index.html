@@ -1910,7 +1910,9 @@ function render(target, J, caption, mini){
  const SKYH=(J.gadgets&&!mini)?150:0;   // skyline band: gadget BUILDINGS across the top
  const topPad=(mini?64:252)+SKYH;
  const maxSlot=Math.max(J.eth?J.eth.slot:0, J.through?J.through.slot+0.9:0, ...J.calls.map(c=>c.slot));
- const W=PADL+(maxSlot+(mini?1.2:2.1))*SLOT, H=topPad+(L.length-1)*laneGap+glyphPad+(mini?8:34)+((J.zones&&J.zones.length&&!mini)?30:0);
+ let W=PADL+(maxSlot+(mini?1.2:2.1))*SLOT;
+ if(J.gadgets&&!mini) W=Math.max(W, 10+J.gadgets.length*150+24);   // fit the whole skyline
+ const H=topPad+(L.length-1)*laneGap+glyphPad+(mini?8:34)+((J.zones&&J.zones.length&&!mini)?30:0);
  const svg=el('svg',{viewBox:'0 0 '+W+' '+H, 'font-family':'Barlow Semi Condensed, Barlow, sans-serif'});
  // mini gets half-scale dimensions (capped by max-width:100%) so density compares across cards
  if(mini){svg.setAttribute('aria-hidden','true');svg.setAttribute('width',Math.round(W/2));svg.setAttribute('height',Math.round(H/2));}
@@ -1931,18 +1933,19 @@ function render(target, J, caption, mini){
  // frame = you run it yourself (Mountain Man); grey = a company runs it; red
  // dashed = MISSING (no self-sovereign option). Names are baked into the art.
  if(J.gadgets&&!mini){
-  const bw=150, bh=104, by=16, n=J.gadgets.length, stripW=n*bw;
+  const bw=150, bh=104, by=16, x0=10, n=J.gadgets.length, stripW=n*bw;
   // one coherent cream strip (matches the building art's background) so the
-  // buildings read as a single continuous row — a street, not separate cards.
-  el('rect',{x:PADL-14,y:by,width:stripW,height:bh,fill:'#F1E3DA'},svg);
-  let bx=PADL-14;
+  // buildings read as a single continuous row — a street starting at the left.
+  el('rect',{x:x0,y:by,width:stripW,height:bh,fill:'#F1E3DA'},svg);
+  let bx=x0;
   J.gadgets.forEach(g=>{
     const p=g.provision;
+    const faded=(p==='na'||p==='missing');   // absent for this user → show through
     const col=p==='missing'?'var(--l-addr)':p==='self'?'var(--self)':p==='outsourced'?'var(--tunnel)':'var(--muted)';
     if(g.img){
-      el('image',{href:g.img,x:bx,y:by,width:bw,height:bh,preserveAspectRatio:'xMidYMax meet',opacity:p==='na'?0.32:1},svg);
+      el('image',{href:g.img,x:bx,y:by,width:bw,height:bh,preserveAspectRatio:'xMidYMax meet',opacity:faded?0.28:1},svg);
     }else{
-      txt(svg,bx+bw/2,by+bh/2,g.label,{'text-anchor':'middle','font-size':13,'font-weight':700,fill:col,opacity:p==='na'?0.4:1});
+      txt(svg,bx+bw/2,by+bh/2,g.label,{'text-anchor':'middle','font-size':13,'font-weight':700,fill:col,opacity:faded?0.4:1});
     }
     // provision GROUND-BAR under each building (colour = who runs it) — keeps the
     // strip coherent instead of framing each building.
