@@ -33,7 +33,8 @@
         "status": "reference",
         "ref": "call 2026-08-20, ~52:30"
       },
-      "tx_input": "gate"
+      "tx_input": "gate",
+      "gadget": "rpc"
     },
     {
       "id": "construct-local",
@@ -59,7 +60,8 @@
         "status": "reference",
         "ref": "same reads as M1, served locally"
       },
-      "tx_input": "field"
+      "tx_input": "field",
+      "gadget": "rpc"
     },
     {
       "id": "sign-airgap",
@@ -109,7 +111,8 @@
       "provenance": {
         "status": "reference",
         "ref": "devp2p"
-      }
+      },
+      "gadget": "relay-broadcast"
     },
     {
       "id": "inclusion",
@@ -136,7 +139,8 @@
       },
       "fixed_by": [
         "cr-broadcast"
-      ]
+      ],
+      "gadget": "builder"
     },
     {
       "id": "receipt-local",
@@ -159,7 +163,8 @@
       "provenance": {
         "status": "reference",
         "ref": "local RPC"
-      }
+      },
+      "gadget": "rpc"
     },
     {
       "id": "otterscan",
@@ -182,7 +187,8 @@
       "provenance": {
         "status": "reference",
         "ref": "call 2026-08-20, ~50:52"
-      }
+      },
+      "gadget": "verification-explorer"
     }
   ]
 }
