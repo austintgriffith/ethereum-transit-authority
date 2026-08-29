@@ -1626,7 +1626,7 @@ h1 a{color:inherit;text-decoration:none}
 <section class="view" id="view-leverage">
   <a class="back" href="#/">← ALL MAPS</a>
   <h2>Where's the leverage?</h2>
-  <p class="section-sub">Every flow's leak, summed across all 13 mapped journeys — five ways to look at the same data, to open the conversation about what's worth attacking first. Weight = how many of the 13 flows carry that data to that place (not raw request count — so one heavily-mapped wallet can't skew it).</p>
+  <p class="section-sub">Every flow's leak, summed across all 13 mapped journeys — five ways to look at the same data, to open the conversation about what's worth attacking first. Weight = how many of the 13 flows carry that data to that place, not raw request count. One honest caveat: 9 of the 13 journeys ride MetaMask, so "reach" partly reflects what we've mapped so far — treat the counts as an initial signal, weight later by real transaction volume.</p>
 
   <h3 class="lkh">1 · What leaks widest</h3>
   <p class="section-sub">Which of your data reaches the most different companies. Your IP is the tell — it rides almost everything.</p>
@@ -1656,7 +1656,7 @@ h1 a{color:inherit;text-decoration:none}
   <p class="ebhead">Only <strong>21%</strong> of what leaves your machine has a self-sovereign escape today. <strong>79%</strong> does not — and <strong>23%</strong> has no alternative at all.</p><div class="ebbar"><div class="ebseg" style="flex:81;background:var(--l-addr)"><span class="ebpct">23%</span><span class="eblbl">NO ESCAPE</span></div><div class="ebseg" style="flex:195;background:var(--l-hold)"><span class="ebpct">56%</span><span class="eblbl">ESCAPE IS PAINFUL</span></div><div class="ebseg" style="flex:73;background:var(--self)"><span class="ebpct">21%</span><span class="eblbl">SELF-RUN EXISTS</span></div></div>
 
   <h3 class="lkh">3 · Attack priority — reach × harm</h3>
-  <p class="section-sub">Reach alone isn't the whole story. Here every gadget type is placed by how <strong>wide</strong> it reaches (→) against how much <strong>harm</strong> it can do (↑ block you, lie to you, rewrite your tx). Bubble = number of companies; color = escape (<span class="zolg zob-none">none</span> / <span class="zolg zob-painful">painful</span> / <span class="zolg zob-local">exists</span>). Top-right is where the damage and the reach overlap.</p>
+  <p class="section-sub">Reach alone isn't the whole story. Here every gadget type is placed by how <strong>wide</strong> it reaches (→) against how much <strong>active harm</strong> it can do if it turns evil (↑ block you, lie to you, rewrite your tx). Bubble = number of companies; color = escape (<span class="zolg zob-none">none</span> / <span class="zolg zob-painful">painful</span> / <span class="zolg zob-local">exists</span>). Top-right is where the damage and the reach overlap. Surveillance isn't on this axis — analytics sits low here yet collects the most; that's what chart 1 measures.</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 500" width="100%" style="max-width:1180px;display:block">
 <rect x="120" y="52" width="780" height="418" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
 <line x1="481.0769230769231" y1="52" x2="481.0769230769231" y2="470" stroke="var(--rule)" stroke-dasharray="4 4"/>
@@ -1899,7 +1899,7 @@ h1 a{color:inherit;text-decoration:none}
 </svg></div>
 
   <h3 class="lkh">5 · By company — who specifically</h3>
-  <p class="section-sub">The same leaks, named. "The node provider" is one throat — but it's a different company per wallet.</p>
+  <p class="section-sub">The same leaks, named — the 16 widest-reaching of the 39 companies that receive something. "The node provider" is one throat — but it's a different company per wallet.</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 973.8451612903225" width="100%" style="max-width:1180px;display:block">
 <text x="227" y="22" text-anchor="end" class="axl">YOUR DATA</text>
 <text x="795" y="22" class="axl">WHICH COMPANY GETS IT</text>
