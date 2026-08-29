@@ -62,6 +62,16 @@
 .lktrack{flex:1;min-width:0;display:flex}
 .lkbar{display:block;height:15px;border-radius:2px;min-width:3px}
 .lkn{flex:none;color:var(--muted);font-size:12px;white-space:nowrap}
+/* leverage: no-escape part-to-whole bar */
+.ebhead{font-size:15px;margin:0 0 8px}
+.ebbar{display:flex;gap:2px;height:52px;border:2px solid var(--ink);border-radius:4px;overflow:hidden}
+.ebseg{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;min-width:0;overflow:hidden}
+.ebpct{font-family:Jost;font-weight:700;font-size:20px;line-height:1}
+.eblbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+/* leverage: reach×harm quadrant */
+.leak .qq{font-family:Jost;font-weight:700;font-size:11px;letter-spacing:.04em;fill:var(--ink)}
+.leak .qq.dim{fill:var(--muted);font-weight:600}
+.leak .ql{font-size:11.5px;font-weight:600;fill:var(--ink)} .leak .ql .dim{fill:var(--muted);font-weight:400}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;line-height:1.5}
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 
@@ -1616,7 +1626,7 @@ h1 a{color:inherit;text-decoration:none}
 <section class="view" id="view-leverage">
   <a class="back" href="#/">← ALL MAPS</a>
   <h2>Where's the leverage?</h2>
-  <p class="section-sub">Every flow's leak, summed across all 13 mapped journeys. A ribbon's thickness = how many of the 13 flows carry that data to that place (not raw request count — so one heavily-mapped wallet can't skew it). The question this opens: fix the biggest sink, or the one with no escape?</p>
+  <p class="section-sub">Every flow's leak, summed across all 13 mapped journeys — five ways to look at the same data, to open the conversation about what's worth attacking first. Weight = how many of the 13 flows carry that data to that place (not raw request count — so one heavily-mapped wallet can't skew it).</p>
 
   <h3 class="lkh">1 · What leaks widest</h3>
   <p class="section-sub">Which of your data reaches the most different companies. Your IP is the tell — it rides almost everything.</p>
@@ -1641,8 +1651,88 @@ h1 a{color:inherit;text-decoration:none}
 <div class="lkrow"><span class="lklbl">Which dapp you&#x27;re on</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--muted)"></span></span><span class="lkn">1 company · 1 flow</span></div>
 <div class="lkrow"><span class="lklbl">Swap route + quote (path, amountOut, minOut, Universal Router calldata)</span><span class="lktrack"><span class="lkbar" style="width:2.6%;background:var(--l-intent)"></span></span><span class="lkn">1 company · 1 flow</span></div></div>
 
-  <h3 class="lkh">2 · By gadget type — the leverage cut</h3>
-  <p class="section-sub">Actors folded into categories (Infura = Alchemy = RPC), sorted by reach. Box border = is there a self-sovereign escape? <span class="zolg zob-none">red = none</span> (highest leverage to build), <span class="zolg zob-painful">amber = painful</span>, <span class="zolg zob-local">green = already exists</span>. See the Gadget Shelf for the fix + cost.</p>
+  <h3 class="lkh">2 · How much has no escape</h3>
+  <p class="section-sub">Split all that leaked data by whether a self-sovereign alternative exists today. This is the buildability gap — the red slice is what has to be built from scratch.</p>
+  <p class="ebhead">Only <strong>21%</strong> of what leaves your machine has a self-sovereign escape today. <strong>79%</strong> does not — and <strong>23%</strong> has no alternative at all.</p><div class="ebbar"><div class="ebseg" style="flex:81;background:var(--l-addr)"><span class="ebpct">23%</span><span class="eblbl">NO ESCAPE</span></div><div class="ebseg" style="flex:195;background:var(--l-hold)"><span class="ebpct">56%</span><span class="eblbl">ESCAPE IS PAINFUL</span></div><div class="ebseg" style="flex:73;background:var(--self)"><span class="ebpct">21%</span><span class="eblbl">SELF-RUN EXISTS</span></div></div>
+
+  <h3 class="lkh">3 · Attack priority — reach × harm</h3>
+  <p class="section-sub">Reach alone isn't the whole story. Here every gadget type is placed by how <strong>wide</strong> it reaches (→) against how much <strong>harm</strong> it can do (↑ block you, lie to you, rewrite your tx). Bubble = number of companies; color = escape (<span class="zolg zob-none">none</span> / <span class="zolg zob-painful">painful</span> / <span class="zolg zob-local">exists</span>). Top-right is where the damage and the reach overlap.</p>
+  <div class="mapbox leak"><svg viewBox="0 0 1180 500" width="100%" style="max-width:1180px;display:block">
+<rect x="120" y="52" width="780" height="418" fill="none" stroke="var(--rule)" stroke-width="1.5"/>
+<line x1="481.0769230769231" y1="52" x2="481.0769230769231" y2="470" stroke="var(--rule)" stroke-dasharray="4 4"/>
+<line x1="120" y1="273.0" x2="900" y2="273.0" stroke="var(--rule)" stroke-dasharray="4 4"/>
+<text x="493.0769230769231" y="68" class="qq">ATTACK FIRST →</text>
+<text x="128" y="464" class="qq dim">lower priority</text>
+<text x="510.0" y="494" text-anchor="middle" class="axl">REACH — how many of 13 flows →</text>
+<text x="112" y="46" text-anchor="start" class="axl">↑ HARM — block · lie · writes your tx</text>
+<circle cx="828.2" cy="92.0" r="12.2" fill="var(--l-addr)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Wallet backend · 12/13 flows · harm 5 · 5 companies</title></circle>
+<circle cx="770.3" cy="92.0" r="12.2" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>RPC — chain reads · 11/13 flows · harm 5 · 5 companies</title></circle>
+<circle cx="770.3" cy="164.4" r="11.4" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Tx broadcast / relay · 11/13 flows · harm 4 · 4 companies</title></circle>
+<circle cx="712.5" cy="164.4" r="9.5" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Wallet / code dist. · 10/13 flows · harm 4 · 2 companies</title></circle>
+<circle cx="654.6" cy="164.4" r="10.5" fill="var(--self)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Tx / address screening · 9/13 flows · harm 4 · 3 companies</title></circle>
+<circle cx="307.5" cy="92.0" r="12.2" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Indexer — balances · 3/13 flows · harm 5 · 5 companies</title></circle>
+<circle cx="307.5" cy="164.4" r="10.5" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Prices &amp; market data · 3/13 flows · harm 4 · 3 companies</title></circle>
+<circle cx="828.2" cy="381.6" r="8.2" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Block builders · 12/13 flows · harm 1 · 1 companies</title></circle>
+<circle cx="249.7" cy="92.0" r="9.5" fill="var(--self)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Name resolution (ENS) · 2/13 flows · harm 5 · 2 companies</title></circle>
+<circle cx="258.7" cy="92.0" r="10.5" fill="var(--l-addr)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Hosted dApp frontend · 2/13 flows · harm 5 · 3 companies</title></circle>
+<circle cx="712.5" cy="381.6" r="8.2" fill="var(--l-hold)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Block explorer · 10/13 flows · harm 1 · 1 companies</title></circle>
+<circle cx="191.8" cy="92.0" r="8.2" fill="var(--l-addr)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>ERC-4337 bundler · 1/13 flows · harm 5 · 1 companies</title></circle>
+<circle cx="191.8" cy="309.2" r="8.2" fill="var(--self)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Tx simulation · 1/13 flows · harm 2 · 1 companies</title></circle>
+<circle cx="200.8" cy="309.2" r="9.5" fill="var(--l-addr)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Fiat on/off-ramp · 1/13 flows · harm 2 · 2 companies</title></circle>
+<circle cx="712.5" cy="454.0" r="13.5" fill="var(--self)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Analytics / telemetry · 10/13 flows · harm 0 · 7 companies</title></circle>
+<circle cx="191.8" cy="454.0" r="8.2" fill="var(--self)" fill-opacity="0.82" stroke="var(--ink)" stroke-width="1.5"><title>Avatars &amp; images · 1/13 flows · harm 0 · 1 companies</title></circle>
+<line x1="828.2" y1="92.0" x2="946" y2="92.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="92.0" r="3" fill="var(--l-addr)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="95.5" class="ql">Wallet backend <tspan class="dim">12·h5</tspan></text>
+<line x1="770.3" y1="92.0" x2="946" y2="106.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="106.0" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="109.5" class="ql">RPC — chain reads <tspan class="dim">11·h5</tspan></text>
+<line x1="307.5" y1="92.0" x2="946" y2="120.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="120.0" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="123.5" class="ql">Indexer — balances <tspan class="dim">3·h5</tspan></text>
+<line x1="249.7" y1="92.0" x2="946" y2="134.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="134.0" r="3" fill="var(--self)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="137.5" class="ql">Name resolution (ENS) <tspan class="dim">2·h5</tspan></text>
+<line x1="258.7" y1="92.0" x2="946" y2="148.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="148.0" r="3" fill="var(--l-addr)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="151.5" class="ql">Hosted dApp frontend <tspan class="dim">2·h5</tspan></text>
+<line x1="191.8" y1="92.0" x2="946" y2="162.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="162.0" r="3" fill="var(--l-addr)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="165.5" class="ql">ERC-4337 bundler <tspan class="dim">1·h5</tspan></text>
+<line x1="770.3" y1="164.4" x2="946" y2="176.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="176.0" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="179.5" class="ql">Tx broadcast / relay <tspan class="dim">11·h4</tspan></text>
+<line x1="712.5" y1="164.4" x2="946" y2="190.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="190.0" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="193.5" class="ql">Wallet / code dist. <tspan class="dim">10·h4</tspan></text>
+<line x1="654.6" y1="164.4" x2="946" y2="204.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="204.0" r="3" fill="var(--self)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="207.5" class="ql">Tx / address screening <tspan class="dim">9·h4</tspan></text>
+<line x1="307.5" y1="164.4" x2="946" y2="218.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="218.0" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="221.5" class="ql">Prices &amp; market data <tspan class="dim">3·h4</tspan></text>
+<line x1="191.8" y1="309.2" x2="946" y2="309.2" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="309.2" r="3" fill="var(--self)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="312.7" class="ql">Tx simulation <tspan class="dim">1·h2</tspan></text>
+<line x1="200.8" y1="309.2" x2="946" y2="323.2" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="323.2" r="3" fill="var(--l-addr)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="326.7" class="ql">Fiat on/off-ramp <tspan class="dim">1·h2</tspan></text>
+<line x1="828.2" y1="381.6" x2="946" y2="381.6" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="381.6" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="385.1" class="ql">Block builders <tspan class="dim">12·h1</tspan></text>
+<line x1="712.5" y1="381.6" x2="946" y2="395.6" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="395.6" r="3" fill="var(--l-hold)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="399.1" class="ql">Block explorer <tspan class="dim">10·h1</tspan></text>
+<line x1="712.5" y1="454.0" x2="946" y2="454.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="454.0" r="3" fill="var(--self)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="457.5" class="ql">Analytics / telemetry <tspan class="dim">10·h0</tspan></text>
+<line x1="191.8" y1="454.0" x2="946" y2="468.0" stroke="var(--rule)" stroke-width="1"/>
+<circle cx="950" cy="468.0" r="3" fill="var(--self)" stroke="var(--ink)" stroke-width="1"/>
+<text x="958" y="471.5" class="ql">Avatars &amp; images <tspan class="dim">1·h0</tspan></text>
+</svg></div>
+
+  <h3 class="lkh">4 · By gadget type — the flows</h3>
+  <p class="section-sub">The actual data ribbons, actors folded into categories (Infura = Alchemy = RPC), sorted by reach. Box border = escape: <span class="zolg zob-none">red = none</span>, <span class="zolg zob-painful">amber = painful</span>, <span class="zolg zob-local">green = exists</span>. See the Gadget Shelf for the fix + cost.</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 1032.8" width="100%" style="max-width:1180px;display:block">
 <text x="227" y="22" text-anchor="end" class="axl">YOUR DATA</text>
 <text x="795" y="22" class="axl">WHICH GADGET GETS IT</text>
@@ -1808,7 +1898,7 @@ h1 a{color:inherit;text-decoration:none}
 <text x="1139" y="987.8" text-anchor="end" class="ct dim">1/13 · 1co</text>
 </svg></div>
 
-  <h3 class="lkh">3 · By company — who specifically</h3>
+  <h3 class="lkh">5 · By company — who specifically</h3>
   <p class="section-sub">The same leaks, named. "The node provider" is one throat — but it's a different company per wallet.</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 973.8451612903225" width="100%" style="max-width:1180px;display:block">
 <text x="227" y="22" text-anchor="end" class="axl">YOUR DATA</text>
