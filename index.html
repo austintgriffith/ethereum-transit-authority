@@ -68,6 +68,16 @@
 .ebseg{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;min-width:0;overflow:hidden}
 .ebpct{font-family:Jost;font-weight:700;font-size:20px;line-height:1}
 .eblbl{font-size:10.5px;font-weight:700;letter-spacing:.05em;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+/* leverage: CROPS-counterfactual list */
+.fxlist{display:flex;flex-direction:column;gap:8px}
+.fxrow{border:2px solid var(--rule);border-left-width:6px;background:var(--panel);padding:8px 14px;border-radius:4px}
+.fxrow.zob-none{border-left-color:var(--l-addr)} .fxrow.zob-painful{border-left-color:var(--l-hold)} .fxrow.zob-local{border-left-color:var(--self)}
+.fxhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.fxmv{font-family:Jost;font-weight:700;font-size:10.5px;letter-spacing:.06em;padding:1px 7px;border-radius:3px;border:1.5px solid var(--ink)}
+.fxmv-open{border-style:dashed;color:var(--l-addr);border-color:var(--l-addr)}
+.fxmv-exists{color:var(--self);border-color:var(--self)}
+.fxstat{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.fxwhat{margin:3px 0 0;font-size:13.5px}
 /* leverage: reach×harm quadrant */
 .leak .qq{font-family:Jost;font-weight:700;font-size:11px;letter-spacing:.04em;fill:var(--ink)}
 .leak .qq.dim{fill:var(--muted);font-weight:600}
@@ -2058,6 +2068,26 @@ h1 a{color:inherit;text-decoration:none}
 <text x="807" y="928.8451612903225" class="cn">Ambire · invictus RPC</text>
 <text x="1139" y="928.8451612903225" text-anchor="end" class="ct dim">1/13</text>
 </svg></div>
+
+  <h3 class="lkh">6 · What the CROPS version looks like</h3>
+  <p class="section-sub">For each gadget, the move that creates the self-sovereign counterfactual. Once the counterfactual exists, every hosted version has to explain why it doesn't work that way. Sorted by leverage: no escape first, widest reach first.</p>
+  <div class="fxlist">    <div class="fxrow zob-none"><div class="fxhead"><strong>Wallet backend</strong><span class="fxmv fxmv-off">TURN IT OFF</span><span class="fxstat">12/13 flows</span></div><p class="fxwhat">Ship flags, token lists and defaults signed inside the release. The counterfactual: a wallet that boots making zero calls home.</p></div>
+    <div class="fxrow zob-none"><div class="fxhead"><strong>Hosted dApp frontend</strong><span class="fxmv fxmv-example">BUILD THE EXAMPLE</span><span class="fxstat">2/13 flows</span></div><p class="fxwhat">Pin the frontend to IPFS/ENS. The test is binary: does the dApp work with nothing hosted?</p></div>
+    <div class="fxrow zob-none"><div class="fxhead"><strong>ERC-4337 bundler</strong><span class="fxmv fxmv-replace">RUN A REPLACEMENT</span><span class="fxstat">1/13 flows</span></div><p class="fxwhat">Self-bundle: wrap your own UserOp and submit it through your node.</p></div>
+    <div class="fxrow zob-none"><div class="fxhead"><strong>Fiat on/off-ramp</strong><span class="fxmv fxmv-open">OPEN PROBLEM</span><span class="fxstat">1/13 flows</span></div><p class="fxwhat">No self-sovereign fiat rail exists; peer-to-peer is the only escape and it&#x27;s thin. The open problem.</p></div>
+    <div class="fxrow zob-none"><div class="fxhead"><strong>TLS edge / CDN</strong><span class="fxmv fxmv-open">OPEN PROBLEM</span><span class="fxstat">fronts the rest</span></div><p class="fxwhat">Falls away only when what&#x27;s behind it (frontends, backends) becomes self-hostable.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Block builders</strong><span class="fxmv fxmv-standard">SET A STANDARD</span><span class="fxstat">12/13 flows</span></div><p class="fxwhat">Protocol-level: forced-inclusion lists (FOCIL) so no builder can keep a tx out.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>RPC — chain reads</strong><span class="fxmv fxmv-example">BUILD THE EXAMPLE</span><span class="fxstat">11/13 flows</span></div><p class="fxwhat">A wallet that ships with a light client (Helios) — reads verified against consensus, not trusted. Full escape stays your own node.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Tx broadcast / relay</strong><span class="fxmv fxmv-example">BUILD THE EXAMPLE</span><span class="fxstat">11/13 flows</span></div><p class="fxwhat">Wallet-native p2p broadcast: hand the signed tx to the public mempool from your own machine.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Block explorer</strong><span class="fxmv fxmv-example">BUILD THE EXAMPLE</span><span class="fxstat">10/13 flows</span></div><p class="fxwhat">Otterscan on your own node today; &#x27;your own etherscan&#x27; is an AI-buildable afternoon.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Wallet / code dist.</strong><span class="fxmv fxmv-standard">SET A STANDARD</span><span class="fxstat">10/13 flows</span></div><p class="fxwhat">Reproducible builds signed by the team, verifiable outside the store.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Indexer — balances</strong><span class="fxmv fxmv-replace">RUN A REPLACEMENT</span><span class="fxstat">3/13 flows</span></div><p class="fxwhat">Local indexing derived from your own node, behind the same wallet UI.</p></div>
+    <div class="fxrow zob-painful"><div class="fxhead"><strong>Prices &amp; market data</strong><span class="fxmv fxmv-replace">RUN A REPLACEMENT</span><span class="fxstat">3/13 flows</span></div><p class="fxwhat">Read prices onchain (DEX TWAPs) — or go without fiat values.</p></div>
+    <div class="fxrow zob-local"><div class="fxhead"><strong>Analytics / telemetry</strong><span class="fxmv fxmv-off">TURN IT OFF</span><span class="fxstat">10/13 flows</span></div><p class="fxwhat">Nothing to build. Default it to off.</p></div>
+    <div class="fxrow zob-local"><div class="fxhead"><strong>Tx / address screening</strong><span class="fxmv fxmv-standard">SET A STANDARD</span><span class="fxstat">9/13 flows</span></div><p class="fxwhat">A signed public risk-list any wallet pulls and checks locally — no server sees the query.</p></div>
+    <div class="fxrow zob-local"><div class="fxhead"><strong>Name resolution (ENS)</strong><span class="fxmv fxmv-exists">ALREADY EXISTS</span><span class="fxstat">2/13 flows</span></div><p class="fxwhat">Your node already resolves ENS with one eth_call.</p></div>
+    <div class="fxrow zob-local"><div class="fxhead"><strong>Tx simulation</strong><span class="fxmv fxmv-exists">ALREADY EXISTS</span><span class="fxstat">1/13 flows</span></div><p class="fxwhat">Local simulation against your own node works today — make it the default.</p></div>
+    <div class="fxrow zob-local"><div class="fxhead"><strong>Avatars &amp; images</strong><span class="fxmv fxmv-off">TURN IT OFF</span><span class="fxstat">1/13 flows</span></div><p class="fxwhat">Skip it, or fetch onchain art through your node.</p></div></div>
 </section>
 
 <!-- ================= ACCESS VECTORS ================= -->
