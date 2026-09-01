@@ -1,0 +1,157 @@
+<meta charset="utf-8"><title>lab run 20260901-140427-sell-metamask</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260901-140427-sell-metamask</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260901-140427-sell-metamask
+action: sell-metamask
+guest_ip: 192.168.64.4
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>sell-metamask: ext canglmpflkjehkfaioejbblmakepelcl · off-ramp quote for 0.01 ETH (capture only, never selling)
+  [popup] new page: about:blank
+  [popup] new page: chrome-extension://canglmpflkjehkfaioejbblmakepelcl/home.html
+  fill unlock-pw: unlock-password
+  click unlock: unlock-submit
+  skip open-sell (not present)
+  click open-asset: text:Ethereum
+  skip asset-sell (not present)
+  click open-ramp: text:Buy
+  [popup] new page: https://app.metamask.io/buy?metamaskEntry=ext_buy_sell_button&amp;chainId=1&amp;metametr
+  skip sell-toggle (not present)
+  following ramp popup: https://app.metamask.io/buy?metamaskEntry=ext_buy_sell_button&amp;chainId=1&amp;metametricsId=0xc6e4cbee6ec6
+  skip get-quotes (not present)
+sell-metamask: reached the off-ramp provider/quote surface — STOPPING (no KYC, no bank, nothing signed)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260901-140427-sell-metamask
+
+action: sell-metamask · guest 192.168.64.4 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 344 requests · 80 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| tron-mainnet.infura.io | 36 | GET/OPTIONS/POST | — |
+| app.metamask.io | 30 | GET | cookie |
+| on-ramp-cache.api.cx.metamask.io | 16 | GET/OPTIONS | authorization |
+| app.launchdarkly.com | 16 | GET/OPTIONS | — |
+| sentry.io | 14 | POST | — |
+| gas.api.cx.metamask.io | 12 | GET/OPTIONS | — |
+| bitcoin-mainnet.infura.io | 11 | GET | — |
+| api.segment.io | 10 | POST | — |
+| js.intercomcdn.com | 10 | GET | — |
+| solana-mainnet.infura.io | 9 | GET/OPTIONS/POST | — |
+| price.api.cx.metamask.io | 9 | GET | authorization |
+| mainnet.infura.io | 8 | OPTIONS/POST | — |
+| authentication.api.cx.metamask.io | 8 | GET/OPTIONS/POST/PUT | authorization |
+| accounts.api.cx.metamask.io | 7 | GET | authorization |
+| static.cx.metamask.io | 7 | GET | cookie |
+| metamask.github.io | 6 | GET | — |
+| user-storage.api.cx.metamask.io | 6 | GET | authorization |
+| tokens.api.cx.metamask.io | 5 | GET | authorization |
+| android.clients.google.com | 5 | POST | authorization |
+| events.launchdarkly.com | 5 | OPTIONS/POST | — |
+| px.ads.linkedin.com | 5 | GET/POST | cookie |
+| cma.itunes.apple.com | 5 | POST | — |
+| cdn.contentful.com | 4 | GET/OPTIONS | authorization |
+| cdn.segment.com | 4 | GET | — |
+| on-ramp.api.cx.metamask.io | 4 | GET/OPTIONS | authorization |
+| pancake.apple.com | 4 | GET | — |
+| token.api.cx.metamask.io | 3 | GET | — |
+| monad-mainnet.infura.io | 3 | POST | — |
+| subscription.api.cx.metamask.io | 3 | GET | authorization |
+| www.googletagmanager.com | 3 | GET | — |
+| o1377931.ingest.sentry.io | 3 | POST | — |
+| api-iam.intercom.io | 3 | POST | — |
+| bag.itunes.apple.com | 3 | GET | — |
+| www.google.com | 2 | GET/POST | — |
+| acl.execution.metamask.io | 2 | GET | — |
+| bridge.api.cx.metamask.io | 2 | GET | — |
+| api.merkl.xyz | 2 | GET | — |
+| base-mainnet.infura.io | 2 | POST | — |
+| bsc-mainnet.infura.io | 2 | POST | — |
+| polygon-mainnet.infura.io | 2 | POST | — |
+| arbitrum-mainnet.infura.io | 2 | POST | — |
+| optimism-mainnet.infura.io | 2 | POST | — |
+| linea-mainnet.infura.io | 2 | POST | — |
+| carrot.megaeth.com | 2 | POST | cookie |
+| testnet-rpc.monad.xyz | 2 | POST | — |
+| linea-sepolia.infura.io | 2 | POST | — |
+| sepolia.infura.io | 2 | POST | — |
+| oidc.api.cx.metamask.io | 2 | POST | — |
+| notification.api.cx.metamask.io | 2 | POST | authorization |
+| www.google-analytics.com | 2 | POST | — |
+| js.hs-banner.com | 2 | GET | — |
+| track.hubspot.com | 2 | GET | — |
+| snap.licdn.com | 2 | GET | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| geolocation.api.cx.metamask.io | 1 | GET | — |
+| chainid.network | 1 | GET | — |
+| client-config.api.cx.metamask.io | 1 | GET | — |
+| rewards.api.cx.metamask.io | 1 | POST | — |
+| phishing-detection.api.cx.metamask.io | 1 | GET | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
+| defiadapters.api.cx.metamask.io | 1 | GET | — |
+| images.ctfassets.net | 1 | GET | — |
+| gateway.api.cx.metamask.io | 1 | GET | — |
+| ad.doubleclick.net | 1 | POST | — |
+| js.hs-scripts.com | 1 | GET | — |
+| fonts.googleapis.com | 1 | GET | — |
+| js.hsadspixel.net | 1 | GET | — |
+| js.hs-analytics.net | 1 | GET | — |
+| js.hubspot.com | 1 | GET | — |
+| api.hubapi.com | 1 | GET | — |
+| cta-service-cms2.hubspot.com | 1 | GET | — |
+| staking.api.cx.metamask.io | 1 | GET | — |
+| content-autofill.googleapis.com | 1 | GET | — |
+| perf-na1.hsforms.com | 1 | GET | — |
+| www.linkedin.com | 1 | GET | cookie |
+| widget.intercom.io | 1 | GET | — |
+| nexus-websocket-a.intercom.io | 1 | GET | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 3401 proxied pkts · 5 BYPASS dst · 1 QUIC dst · 341 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 184.29.110.158 (no DNS seen) · 52 pkts
+- 23.217.76.214 (?) · 47 pkts
+- 184.29.110.33 (?) · 24 pkts
+- 199.232.67.6 (no DNS seen) · 5 pkts
+- 184.29.111.12 (no DNS seen) · 4 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (no DNS seen) · 43 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 18 pkts
+- 23.11.32.159:80 (no DNS seen) · 8 pkts
+- 172.64.149.23:80 (no DNS seen) · 4 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+
+</pre>

@@ -7,10 +7,15 @@
     "network": "mainnet",
     "settings": "defaults",
     "version": "web/5.157.3",
-    "observed": "2026-08-31",
-    "captures": []
+    "observed": "2026-09-01",
+    "captures": [
+      {
+        "run": "20260901-140427-sell-metamask",
+        "note": "PARTIAL live capture. Reached the off-ramp FRONT surface live: geolocation resolved the exit to region us-co, and MetaMask pulled the region-gated provider/payments catalog (~25KB). Key finding the code map missed: MetaMask's Buy/Sell is NOT in the extension — it opens a hosted web app in a NEW TAB (app.metamask.io/buy), carrying a persistent metametricsId in the URL, and loads third-party AD + analytics trackers (LinkedIn ad pixel, HubSpot CRM, Intercom, LaunchDarkly, Sentry) before you do anything. The Sell-specific legs (provider quote, MoonPay KYC + bank, the signed public exit tx, AML payout) were NOT reached — they sit behind a MetaMetrics/marketing-cookie consent wall and then KYC, which this capture-only run deliberately does not cross. Nothing signed, no KYC, no bank entered."
+      }
+    ]
   },
-  "_comment": "The EXIT — turning crypto back into fiat, and the mirror of the on-ramp (ON). NOT live-captured: code-traced from MetaMask's Sell / ramp aggregator (on-ramp.api.cx.metamask.io, same API family as Buy) and the MoonPay/Coinbase sell providers, with the bank-payout + AML legs inferred (they sit behind the provider). Two things make the off-ramp WORSE than the on-ramp. First, you must hand over a BANK ACCOUNT to RECEIVE the wire — full legal identity plus a payout destination. Second, and unique to the exit: you SIGN and broadcast an on-chain transaction sending your crypto to the provider, which permanently and PUBLICLY links that address to your KYC'd identity — anyone reading the chain can tie the two together forever. And because the crypto leaves your custody BEFORE the fiat arrives, the provider can freeze the payout (an AML flag, a sanctions hit, a bad region) after you have already given up the coins. The zero-option question is even starker than the on-ramp: there is essentially no private fiat exit through these rails — the only 'zero option' is to spend crypto directly or sell peer-to-peer for cash, both thin. Provenance: code/inferred, no purchase or KYC or payment ever entered — this flow needs a live capture to confirm (it is on the Evidence validation queue).",
+  "_comment": "The EXIT — turning crypto back into fiat, and the mirror of the on-ramp (ON). PARTIALLY live-captured Sep 1 2026 (run 20260901-140427): the geolocation + region gate + tracker surface are observed; the KYC/bank/sign-exit/AML legs remain code/inferred because they sit behind a consent wall and KYC that the capture-only run does not cross. Two things make the off-ramp WORSE than the on-ramp. First, you must hand over a BANK ACCOUNT to RECEIVE the wire — full legal identity plus a payout destination. Second, and unique to the exit: you SIGN and broadcast an on-chain transaction sending your crypto to the provider, which permanently and PUBLICLY links that address to your KYC'd identity — anyone reading the chain can tie the two together forever. And because the crypto leaves your custody BEFORE the fiat arrives, the provider can freeze the payout (an AML flag, a sanctions hit, a bad region) after you have already given up the coins. The capture ALSO surfaced something the code trace missed entirely: the ramp is a hosted, marketing-instrumented web app (app.metamask.io) opened in a new tab with a persistent metametricsId in the URL, loading a LinkedIn ad pixel + HubSpot + Intercom + LaunchDarkly + Sentry the moment it opens. The zero-option question is even starker than the on-ramp: there is essentially no private fiat exit through these rails — the only 'zero option' is to spend crypto directly or sell peer-to-peer for cash, both thin.",
   "steps": [
     {
       "id": "sell-geolocation",
@@ -36,9 +41,37 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "MetaMask Sell uses the same ramp aggregator as Buy (on-ramp.api.cx.metamask.io/geolocation, observed on the Buy capture); the Sell path itself was NOT captured"
+        "status": "observed",
+        "ref": "20260901-140427-sell-metamask — geolocation.api.cx.metamask.io/v2/geolocation fired live on the ramp surface and resolved the exit to region us-co, which gates the provider list. Same geolocation+region endpoint serves both Buy and Sell."
       },
+      "notes": "Observed live: the moment the ramp opens, MetaMask geolocates you and resolves a region (us-co here) before you type anything. New finding vs the code map: the ramp is not in the extension — it opens a HOSTED web app (app.metamask.io) in a new tab, with a persistent metametricsId in the URL.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "ramp-trackers",
+      "phase": "discover",
+      "name": "app.metamask.io · ad + analytics trackers load",
+      "host": "px.ads.linkedin.com",
+      "actor": "linkedin-ads",
+      "purpose": "The hosted ramp web app loads third-party ad, CRM, and telemetry trackers the instant it opens",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "nothing you need — this is pure instrumentation of your visit to the off-ramp",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260901-140427-sell-metamask — on opening app.metamask.io the page loaded a LinkedIn ad pixel (px.ads.linkedin.com, www.linkedin.com), HubSpot marketing/CRM (js.hubspot.com, track.hubspot.com, api.hubapi.com, hs-analytics, hsforms), Intercom (widget.intercom.io, api-iam, nexus-websocket), LaunchDarkly (app+events.launchdarkly.com), and Sentry (o1377931.ingest.sentry.io)."
+      },
+      "notes": "The finding the code map missed: MetaMask's off-ramp entry is a marketing-instrumented web app. Before any Sell action, it fires an advertising conversion pixel (LinkedIn) plus HubSpot CRM, Intercom support-chat, LaunchDarkly flags, and Sentry — and gates entry behind a MetaMetrics + Error-Tracing + marketing-cookie consent modal. Attributed here to the LinkedIn ad pixel as the sharpest recipient; the full tracker set is in the provenance ref.",
       "fixed_by": [
         "indie-frontends"
       ]
@@ -66,10 +99,10 @@
       "removable_by": "none",
       "repeat": "on every Sell open",
       "provenance": {
-        "status": "inferred",
-        "ref": "mirrors the Buy region/provider endpoint for the sell direction; exact sell path not captured"
+        "status": "observed",
+        "ref": "20260901-140427-sell-metamask — on-ramp-cache.api.cx.metamask.io/v2/regions/us-co/providers returned a ~25KB region-gated provider catalog, plus /payments and /topTokens for the region. Live-confirmed the jurisdiction gate; the sell-direction quote (amount + selected provider) sits one screen deeper, behind the consent wall, and was not captured."
       },
-      "notes": "The amount you're cashing out is part of the request — the provider list is jurisdiction-gated exactly like the on-ramp.",
+      "notes": "Live-confirmed: the provider list is jurisdiction-gated by your detected region (us-co) exactly like the on-ramp. The specific sell quote (the amount you're cashing out) is entered on the next screen, which this capture-only run stops short of.",
       "fixed_by": [
         "indie-frontends"
       ]
