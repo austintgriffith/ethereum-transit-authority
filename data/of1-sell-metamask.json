@@ -1,0 +1,226 @@
+{
+  "id": "of1-sell-metamask",
+  "title": "The Fiat Off-Ramp",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-31",
+    "captures": []
+  },
+  "_comment": "The EXIT — turning crypto back into fiat, and the mirror of the on-ramp (ON). NOT live-captured: code-traced from MetaMask's Sell / ramp aggregator (on-ramp.api.cx.metamask.io, same API family as Buy) and the MoonPay/Coinbase sell providers, with the bank-payout + AML legs inferred (they sit behind the provider). Two things make the off-ramp WORSE than the on-ramp. First, you must hand over a BANK ACCOUNT to RECEIVE the wire — full legal identity plus a payout destination. Second, and unique to the exit: you SIGN and broadcast an on-chain transaction sending your crypto to the provider, which permanently and PUBLICLY links that address to your KYC'd identity — anyone reading the chain can tie the two together forever. And because the crypto leaves your custody BEFORE the fiat arrives, the provider can freeze the payout (an AML flag, a sanctions hit, a bad region) after you have already given up the coins. The zero-option question is even starker than the on-ramp: there is essentially no private fiat exit through these rails — the only 'zero option' is to spend crypto directly or sell peer-to-peer for cash, both thin. Provenance: code/inferred, no purchase or KYC or payment ever entered — this flow needs a live capture to confirm (it is on the Evidence validation queue).",
+  "steps": [
+    {
+      "id": "sell-geolocation",
+      "phase": "discover",
+      "name": "MetaMask sell · geolocation",
+      "host": "on-ramp.api.cx.metamask.io/geolocation",
+      "actor": "consensys-apis",
+      "purpose": "Geolocate you the moment Sell opens, to decide your region",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "births": [
+        "kyc"
+      ],
+      "returns": "your region — which gates which providers can pay you out",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no region → no off-ramp providers offered",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the region it assigns decides who is allowed to buy your crypto and wire you fiat"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MetaMask Sell uses the same ramp aggregator as Buy (on-ramp.api.cx.metamask.io/geolocation, observed on the Buy capture); the Sell path itself was NOT captured"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "sell-region-quote",
+      "phase": "discover",
+      "name": "MetaMask sell · region-gated providers + quote",
+      "host": "on-ramp-cache.api.cx.metamask.io/v2/regions/{region}/providers",
+      "actor": "consensys-apis",
+      "purpose": "Return the sell providers, payout methods, and a quote allowed in your jurisdiction",
+      "need": "T",
+      "carries": [
+        "ip",
+        "holdings"
+      ],
+      "returns": "the list of providers permitted to pay you out, and how much fiat you'd get",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "empty list in an unsupported region → you cannot cash out at all",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "your jurisdiction decides who can pay you; the quote also frames what you accept"
+      },
+      "removable_by": "none",
+      "repeat": "on every Sell open",
+      "provenance": {
+        "status": "inferred",
+        "ref": "mirrors the Buy region/provider endpoint for the sell direction; exact sell path not captured"
+      },
+      "notes": "The amount you're cashing out is part of the request — the provider list is jurisdiction-gated exactly like the on-ramp.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "provider-kyc-bank",
+      "phase": "confirm",
+      "name": "MoonPay · KYC + bank for payout",
+      "host": "api.moonpay.com",
+      "actor": "moonpay",
+      "purpose": "The chosen provider runs full KYC and takes a BANK ACCOUNT to wire the fiat to",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "kyc"
+      ],
+      "returns": "clearance to sell — once it has your legal identity AND a payout bank account",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "fail KYC, or an unsupported bank/region → no payout",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the provider holds your identity, your bank link, and the on/off switch on your exit from crypto"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "api.moonpay.com (real host, seen on the Buy side); the sell KYC + bank collection sits behind the provider and was NOT entered"
+      },
+      "notes": "The identity + bank SINK. Worse than the on-ramp: the on-ramp took a card to CHARGE you; the off-ramp takes a bank account to PAY you — a durable financial link, plus tax reporting.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "provider-deposit-address",
+      "phase": "confirm",
+      "name": "MoonPay · deposit address",
+      "host": "api.moonpay.com",
+      "actor": "moonpay",
+      "purpose": "The provider returns the address you must send your crypto to",
+      "need": "T",
+      "carries": [
+        "selected_address"
+      ],
+      "returns": "the provider's deposit address — now tied to your KYC record",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a swapped deposit address sends your crypto to an attacker; you have no recourse"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "standard sell flow: the provider issues a per-order deposit address; not captured"
+      },
+      "notes": "The moment your address is bound to your legal identity in the provider's records — before anything is even sent.",
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "sign-send-crypto",
+      "phase": "broadcast",
+      "name": "Send crypto to the provider · RPC broadcast",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "You sign and broadcast an on-chain tx moving your crypto to the provider's address",
+      "need": "R",
+      "carries": [
+        "signed_tx",
+        "recipient",
+        "amount",
+        "selected_address"
+      ],
+      "returns": "a public, permanent on-chain record linking your address to the provider (and your KYC)",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "the RPC can withhold your broadcast",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "the broadcast node can drop or delay the tx; your crypto is committed to the provider once it lands"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "standard eth_sendRawTransaction via the default MetaMask RPC (Infura); identical to the send leg on every other map"
+      },
+      "notes": "UNIQUE to the off-ramp: unlike the on-ramp (no signing, crypto arrives to you), here you SIGN a public tx. That transaction ties this address to your KYC'd identity forever, readable by anyone.",
+      "fixed_by": [
+        "private-rpc",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "offramp-inclusion",
+      "phase": "broadcast",
+      "name": "Block builder · inclusion",
+      "host": "(builder / relay)",
+      "actor": "builders",
+      "purpose": "A builder includes your send-to-provider tx in a block",
+      "need": "R",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "your exit tx, public in a block",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "every mainnet tx passes a builder/relay; inclusion inferred from protocol, not a wallet call"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "aml-payout",
+      "phase": "confirm",
+      "name": "MoonPay · AML screen + bank wire",
+      "host": "api.moonpay.com",
+      "actor": "moonpay",
+      "purpose": "The provider screens the payout, then wires fiat to your bank — after it already holds your crypto",
+      "need": "T",
+      "carries": [
+        "kyc",
+        "amount"
+      ],
+      "returns": "fiat in your bank — or a frozen payout",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "an AML/sanctions flag can freeze the payout after you've sent the crypto",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "the crypto left your custody BEFORE the fiat arrives; the provider can hold or claw the payout"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "AML screening + bank wire + tax reporting sit behind the provider and the banking rails; not observable from the client"
+      },
+      "notes": "The asymmetry that defines the off-ramp: you give up custody first, the fiat comes second, and a screen sits in between. Tax authorities are reported to here too.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    }
+  ]
+}
