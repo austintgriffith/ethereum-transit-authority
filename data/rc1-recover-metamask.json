@@ -8,7 +8,12 @@
     "settings": "defaults",
     "version": "web/5.157.3",
     "observed": "2026-08-31",
-    "captures": []
+    "captures": [
+      {
+        "run": "20260831-213515-recover-metamask",
+        "note": "live recovery capture — fresh device, re-imported the throwaway SRP under mitmproxy, then recorded the re-sync. 289 decrypted requests / 48 hosts. Nothing signed or sent. PROVES the seed stayed local: 0 seed bytes appeared in any request body."
+      }
+    ]
   },
   "_comment": "What happens when the device is gone — or when YOU are gone (the call's 'what if you vanish from the face of the earth?'). This maps the honest core: restoring a self-custody wallet on a new device. The good news is stark and real — the recovery act itself is LOCAL and private: you re-enter your Secret Recovery Phrase, the key is re-derived on the device, and it never touches the network. Zero third parties. But that is the ONLY self-sovereign recovery, and it has no safety net: lose the phrase and the funds are gone forever — there is no protocol-level recovery-from-loss and no protocol-level inheritance. Every EASIER option hands the recovery switch to someone else: social recovery needs guardians plus a relay service; a cloud backup puts an (encrypted) key share behind Google or Apple, who become the gate to your funds; a custodian 'recovers' you by re-running KYC because they hold the keys. And even the private path re-exposes you: the moment your restored wallet re-syncs, the RPC (Infura) links your addresses to a new device and IP again. Provenance: code / reference, NOT live-captured — the install + RPC legs re-use infrastructure observed on other maps; on the Evidence validation queue.",
   "steps": [
@@ -61,24 +66,24 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "reference",
-        "ref": "MetaMask 'Import using Secret Recovery Phrase' — key derivation is local, no network call"
+        "status": "observed",
+        "ref": "20260831-213515-recover-metamask — CONFIRMED local: across 289 decrypted requests, 0 seed words appeared in any body. The phrase re-derives the key on-device with no network call."
       },
       "notes": "The one self-sovereign recovery, and its whole catch. It works only if you still have the phrase. Lose it and the funds are gone — there is no reset. If YOU vanish, no one recovers these funds without this phrase: there is no protocol-level inheritance, and a custodian would demand probate. The easier alternatives all add a third party: guardians + a recovery service (social recovery), or an encrypted key share behind Google/Apple (cloud backup), or a custodian who holds the keys and re-KYCs you."
     },
     {
       "id": "recover-rpc-resync",
       "phase": "discover",
-      "name": "Infura · re-sync balances + nonce",
+      "name": "Infura · multichain re-sync (12 chains)",
       "host": "mainnet.infura.io",
       "actor": "infura",
-      "purpose": "The restored wallet asks the RPC for the balances and nonce of your addresses",
+      "purpose": "The restored wallet re-queries the RPC for balances/nonce — and does it across a dozen chains, not just Ethereum",
       "need": "R",
       "carries": [
         "ip",
         "selected_address"
       ],
-      "returns": "your balances — and, to the RPC, a fresh link from your addresses to a new device + IP",
+      "returns": "your balances — and, to the RPC, a fresh link from your addresses to a new device + IP, on every chain",
       "can_block": true,
       "on_failure": "degrade",
       "worst_lie": {
@@ -87,10 +92,10 @@
       },
       "removable_by": "custom_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "identical eth_getBalance / eth_getTransactionCount re-sync as the send and night-service maps (default Infura RPC)"
+        "status": "observed",
+        "ref": "20260831-213515-recover-metamask — mainnet.infura.io (21) plus tron/solana/bitcoin/linea/polygon/arbitrum/optimism/base/bsc/monad-mainnet.infura.io. One RPC provider sees your addresses across ~12 chains on restore."
       },
-      "notes": "Recovery is private at the seed step, but the instant the wallet reconnects, the RPC re-links these addresses to you on a new machine.",
+      "notes": "Bigger than the code-traced map assumed: recovery fans out to ~12 Infura chain endpoints at once (Tron, Solana, Bitcoin included), so a single provider re-links these addresses to you on a new machine across every chain, the instant the wallet reconnects.",
       "fixed_by": [
         "private-rpc",
         "verifiable-rpc"
@@ -99,10 +104,10 @@
     {
       "id": "recover-token-resync",
       "phase": "background",
-      "name": "MetaMask APIs · re-discover tokens + positions",
+      "name": "MetaMask APIs · re-discover tokens, positions, prices",
       "host": "accounts.api.cx.metamask.io",
       "actor": "consensys-apis",
-      "purpose": "The wallet re-fetches your token list and positions to rebuild the portfolio view",
+      "purpose": "The wallet re-fetches your token list, positions and prices to rebuild the portfolio view",
       "need": "T",
       "carries": [
         "ip",
@@ -117,10 +122,36 @@
       },
       "removable_by": "basic_functionality_off",
       "provenance": {
-        "status": "code",
-        "ref": "same MetaMask account/portfolio APIs as the other MetaMask maps; re-runs on restore"
+        "status": "observed",
+        "ref": "20260831-213515-recover-metamask — accounts.api / token.api / tokens.api / price.api.cx.metamask.io re-query your holdings on restore (several carry an authorization header)"
       },
       "notes": "The recovered wallet re-broadcasts what you hold to the wallet backend, exactly as a fresh unlock does."
+    },
+    {
+      "id": "recover-profile-sync",
+      "phase": "background",
+      "name": "MetaMask · re-authenticate + profile sync",
+      "host": "authentication.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "On restore the wallet signs back in to MetaMask's backend and pulls your synced profile",
+      "need": "T",
+      "carries": [
+        "ip",
+        "auth_token",
+        "all_addresses"
+      ],
+      "returns": "a session token and your cloud-synced profile — re-linking this new device to your MetaMask identity",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260831-213515-recover-metamask — authentication.api.cx.metamask.io (GET/POST/PUT) + user-storage.api.cx.metamask.io, both with authorization headers; also notification/subscription/rewards APIs"
+      },
+      "notes": "A finding the code-traced map missed entirely: recovery isn't just keys + balances. MetaMask re-authenticates you to its own backend and restores a CLOUD-SYNCED PROFILE (user-storage), so 'self-custody' recovery still re-attaches your new device to a MetaMask account identity with a durable auth token."
     }
   ]
 }
