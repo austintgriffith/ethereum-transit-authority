@@ -1,0 +1,126 @@
+{
+  "id": "rc1-recover-metamask",
+  "title": "The Recovery",
+  "context": {
+    "wallet": "MetaMask extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "web/5.157.3",
+    "observed": "2026-08-31",
+    "captures": []
+  },
+  "_comment": "What happens when the device is gone — or when YOU are gone (the call's 'what if you vanish from the face of the earth?'). This maps the honest core: restoring a self-custody wallet on a new device. The good news is stark and real — the recovery act itself is LOCAL and private: you re-enter your Secret Recovery Phrase, the key is re-derived on the device, and it never touches the network. Zero third parties. But that is the ONLY self-sovereign recovery, and it has no safety net: lose the phrase and the funds are gone forever — there is no protocol-level recovery-from-loss and no protocol-level inheritance. Every EASIER option hands the recovery switch to someone else: social recovery needs guardians plus a relay service; a cloud backup puts an (encrypted) key share behind Google or Apple, who become the gate to your funds; a custodian 'recovers' you by re-running KYC because they hold the keys. And even the private path re-exposes you: the moment your restored wallet re-syncs, the RPC (Infura) links your addresses to a new device and IP again. Provenance: code / reference, NOT live-captured — the install + RPC legs re-use infrastructure observed on other maps; on the Evidence validation queue.",
+  "steps": [
+    {
+      "id": "reinstall-wallet",
+      "phase": "discover",
+      "name": "Google Web Store · re-install the wallet",
+      "host": "clients2.google.com",
+      "actor": "google",
+      "purpose": "Recovery starts by re-installing the wallet code on the new device",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "the wallet code — which you must trust before typing your phrase into it",
+      "can_block": true,
+      "on_failure": "blocks",
+      "failure_note": "no store access → no wallet to recover into",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "a malicious build is where your recovery phrase would be stolen the instant you type it — recovery re-runs the same code-trust as a fresh install"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "same code-distribution gate as every other map (Web Store install); the recovery path re-uses it"
+      }
+    },
+    {
+      "id": "enter-seed",
+      "phase": "construct",
+      "name": "Enter your Secret Recovery Phrase · local",
+      "host": "(on device)",
+      "actor": "self",
+      "purpose": "You type your 12/24 words; the key is re-derived on the device and never sent",
+      "need": "C",
+      "carries": [
+        "selected_address"
+      ],
+      "births": [
+        "selected_address"
+      ],
+      "returns": "your wallet, rebuilt — with no third party involved",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "nothing leaves the device here; the phrase re-derives the key locally"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "reference",
+        "ref": "MetaMask 'Import using Secret Recovery Phrase' — key derivation is local, no network call"
+      },
+      "notes": "The one self-sovereign recovery, and its whole catch. It works only if you still have the phrase. Lose it and the funds are gone — there is no reset. If YOU vanish, no one recovers these funds without this phrase: there is no protocol-level inheritance, and a custodian would demand probate. The easier alternatives all add a third party: guardians + a recovery service (social recovery), or an encrypted key share behind Google/Apple (cloud backup), or a custodian who holds the keys and re-KYCs you."
+    },
+    {
+      "id": "recover-rpc-resync",
+      "phase": "discover",
+      "name": "Infura · re-sync balances + nonce",
+      "host": "mainnet.infura.io",
+      "actor": "infura",
+      "purpose": "The restored wallet asks the RPC for the balances and nonce of your addresses",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "your balances — and, to the RPC, a fresh link from your addresses to a new device + IP",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the RPC can show wrong balances on restore, e.g. hiding funds so you think recovery failed"
+      },
+      "removable_by": "custom_rpc",
+      "provenance": {
+        "status": "code",
+        "ref": "identical eth_getBalance / eth_getTransactionCount re-sync as the send and night-service maps (default Infura RPC)"
+      },
+      "notes": "Recovery is private at the seed step, but the instant the wallet reconnects, the RPC re-links these addresses to you on a new machine.",
+      "fixed_by": [
+        "private-rpc",
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "recover-token-resync",
+      "phase": "background",
+      "name": "MetaMask APIs · re-discover tokens + positions",
+      "host": "accounts.api.cx.metamask.io",
+      "actor": "consensys-apis",
+      "purpose": "The wallet re-fetches your token list and positions to rebuild the portfolio view",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "holdings"
+      ],
+      "returns": "your portfolio view, rebuilt",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "basic_functionality_off",
+      "provenance": {
+        "status": "code",
+        "ref": "same MetaMask account/portfolio APIs as the other MetaMask maps; re-runs on restore"
+      },
+      "notes": "The recovered wallet re-broadcasts what you hold to the wallet backend, exactly as a fresh unlock does."
+    }
+  ]
+}
