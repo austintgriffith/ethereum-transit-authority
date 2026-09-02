@@ -55,6 +55,12 @@
       "name": "app.metamask.io · ad + analytics trackers load",
       "host": "px.ads.linkedin.com",
       "actor": "linkedin-ads",
+      "via": [
+        "hubspot",
+        "intercom",
+        "launchdarkly",
+        "sentry"
+      ],
       "purpose": "The hosted ramp web app loads third-party ad, CRM, and telemetry trackers the instant it opens",
       "need": "T",
       "carries": [
@@ -71,7 +77,7 @@
         "status": "observed",
         "ref": "20260901-140427-sell-metamask — on opening app.metamask.io the page loaded a LinkedIn ad pixel (px.ads.linkedin.com, www.linkedin.com), HubSpot marketing/CRM (js.hubspot.com, track.hubspot.com, api.hubapi.com, hs-analytics, hsforms), Intercom (widget.intercom.io, api-iam, nexus-websocket), LaunchDarkly (app+events.launchdarkly.com), and Sentry (o1377931.ingest.sentry.io)."
       },
-      "notes": "The finding the code map missed: MetaMask's off-ramp entry is a marketing-instrumented web app. Before any Sell action, it fires an advertising conversion pixel (LinkedIn) plus HubSpot CRM, Intercom support-chat, LaunchDarkly flags, and Sentry — and gates entry behind a MetaMetrics + Error-Tracing + marketing-cookie consent modal. Attributed here to the LinkedIn ad pixel as the sharpest recipient; the full tracker set is in the provenance ref.",
+      "notes": "The finding the code map missed: MetaMask's off-ramp entry is a marketing-instrumented web app. Before any Sell action, it fires an advertising conversion pixel (LinkedIn — the primary actor) plus HubSpot CRM, Intercom support-chat, LaunchDarkly flags, and Sentry (all carried as via-recipients, so each counts in the aggregates) — and gates entry behind a MetaMetrics + Error-Tracing + marketing-cookie consent modal.",
       "fixed_by": [
         "indie-frontends"
       ]
