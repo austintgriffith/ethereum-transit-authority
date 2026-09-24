@@ -831,5 +831,181 @@
         "local-indexing"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-171025-send-eth-localnode",
+      "20260924-141711-send-eth-localnode"
+    ],
+    "steps": {
+      "ext-update": {
+        "state": "unseen",
+        "ref": "clients2.google.com seen before the switch only; not reached again after restart"
+      },
+      "feature-flags": {
+        "state": "out",
+        "ref": "client-config.api.cx.metamask.io · 1 req after switch"
+      },
+      "phishing-list": {
+        "state": "unseen",
+        "ref": "phishing-detection.api.cx.metamask.io seen before the switch only; not reached again after restart"
+      },
+      "c2-list": {
+        "state": "unseen",
+        "ref": "client-side-detection.api.cx.metamask.io seen before the switch only; not reached again after restart"
+      },
+      "token-list": {
+        "state": "out",
+        "ref": "token.api.cx.metamask.io · 1 req after switch"
+      },
+      "spot-prices": {
+        "state": "out",
+        "ref": "price.api.cx.metamask.io · 14 req after switch · /v3/spot-prices"
+      },
+      "fiat-rates": {
+        "state": "unseen",
+        "ref": "price.api.cx.metamask.io still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "accounts-balances": {
+        "state": "out",
+        "ref": "accounts.api.cx.metamask.io · 15 req after switch · /v4/multiaccount/balances"
+      },
+      "balance-fallback": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; mainnet.infura.io got 0 after switch"
+      },
+      "nft-detection": {
+        "state": "unseen",
+        "ref": "nft.api.cx.metamask.io seen before the switch only; not reached again after restart"
+      },
+      "defi-positions": {
+        "state": "unseen",
+        "ref": "defiadapters.api.cx.metamask.io seen before the switch only; not reached again after restart"
+      },
+      "icons": {
+        "state": "unseen",
+        "ref": "static.cx.metamask.io seen before the switch only; not reached again after restart"
+      },
+      "block-poll": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_blockNumber; mainnet.infura.io got 0 after switch"
+      },
+      "segment": {
+        "state": "out",
+        "ref": "api.segment.io · 8 req after switch"
+      },
+      "sentry": {
+        "state": "out",
+        "ref": "sentry.io · 40 req after switch"
+      },
+      "screen-recipient": {
+        "state": "out",
+        "ref": "security-alerts.api.cx.metamask.io · 4 req after switch · /address/evm/scan"
+      },
+      "nonce": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getTransactionCount; mainnet.infura.io got 0 after switch"
+      },
+      "gas-fees": {
+        "state": "out",
+        "ref": "gas.api.cx.metamask.io · 4 req after switch · suggestedgasfees"
+      },
+      "estimate-gas": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_estimateGas; mainnet.infura.io got 0 after switch"
+      },
+      "simulation": {
+        "state": "out",
+        "ref": "tx-sentinel-ethereum-mainnet.api.cx.metamask.io · 12 req after switch"
+      },
+      "security-alert": {
+        "state": "out",
+        "ref": "security-alerts.api.cx.metamask.io · 4 req after switch · /validate"
+      },
+      "stx-broadcast": {
+        "state": "gone",
+        "ref": "real send 0x1fbd9383… went out via 192.168.68.54; transaction.api.cx.metamask.io got 0 req"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-status": {
+        "state": "gone",
+        "ref": "real send 0x1fbd9383… went out via 192.168.68.54; transaction.api.cx.metamask.io got 0 req"
+      },
+      "receipt-poll": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getTransactionReceipt; mainnet.infura.io got 0 after switch"
+      },
+      "etherscan-check": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balance-refresh": {
+        "state": "unseen",
+        "ref": "accounts.api.cx.metamask.io still contacted (15 req) but this exact call wasn't singled out"
+      }
+    },
+    "tx": "0x1fbd93830d48f4b5a4f27a6d9f5699db9d447bb11c9cb9acc35afb70d32c238f",
+    "unmapped": [
+      "tron-mainnet.infura.io",
+      "bitcoin-mainnet.infura.io",
+      "solana-mainnet.infura.io",
+      "user-storage.api.cx.metamask.io",
+      "subscription.api.cx.metamask.io",
+      "monad-mainnet.infura.io",
+      "tokens.api.cx.metamask.io",
+      "api.merkl.xyz",
+      "base-mainnet.infura.io",
+      "bsc-mainnet.infura.io",
+      "polygon-mainnet.infura.io",
+      "optimism-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "authentication.api.cx.metamask.io",
+      "notification.api.cx.metamask.io",
+      "cdn.contentful.com",
+      "carrot.megaeth.com",
+      "testnet-rpc.monad.xyz",
+      "sepolia.infura.io",
+      "linea-sepolia.infura.io",
+      "geolocation.api.cx.metamask.io",
+      "on-ramp-cache.api.cx.metamask.io",
+      "metamask.github.io",
+      "gateway.api.cx.metamask.io"
+    ],
+    "add": [
+      {
+        "id": "broadcast-own-node",
+        "phase": "broadcast",
+        "name": "Your node · broadcast",
+        "host": "your node (eth_sendRawTransaction)",
+        "actor": "self",
+        "gadget": "relay-broadcast",
+        "purpose": "With a custom RPC, MetaMask skips its Smart Transactions relay and hands the signed tx to your node",
+        "need": "W",
+        "carries": [
+          "signed_tx",
+          "selected_address",
+          "recipient",
+          "amount"
+        ],
+        "returns": "tx hash",
+        "can_block": false,
+        "on_failure": "blocks",
+        "worst_lie": {
+          "outcome": "none",
+          "note": "your own node"
+        },
+        "removable_by": "none",
+        "provenance": {
+          "status": "observed",
+          "ref": "20260924-141711-send-eth-localnode · eth_sendRawTransaction → 192.168.68.54, tx 0x1fbd9383…238f"
+        },
+        "notes": "Your node then passes it to its peers; that hop happens outside the lab VM and is not captured."
+      }
+    ]
+  }
 }

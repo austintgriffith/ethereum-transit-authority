@@ -1,0 +1,452 @@
+{
+  "id": "pw1-send-plain",
+  "title": "The Plain Wallet Send",
+  "context": {
+    "wallet": "Plain Wallet 0.1.8",
+    "platform": "Chrome extension (unpacked, built from source)",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "backmeupplz/plainwallet@236dfce (MIT, ~1.4k lines); built bundle at ~/ef/crops-lab/wallet/plain",
+    "observed": "2026-09-24",
+    "captures": [
+      {
+        "run": "20260924-135055-send-eth-plain",
+        "tx": "0x7215ce9ea612e54b952706b821604867ac9a52d9da42bfe1567c5f5456023063"
+      },
+      {
+        "run": "20260924-133441-send-eth-plain",
+        "note": "dry: unlock → balances → Review slip; stopped before Send"
+      }
+    ]
+  },
+  "toggles": [
+    "plain_custom_rpc"
+  ],
+  "_comment": "One host. The dry capture saw 5 wallet requests, all POST ethereum.reth.rs/rpc (Cloudflare edge, x-upstream-id reth-*); every other flow was Chromium/macOS background. Broadcast run: 22 requests, all to ethereum.reth.rs (fill, nonce, sendRaw, receipt polling via blockNumber/getBlockByNumber/getTransactionReceipt/getTransactionByHash, balance refresh). Default RPC = viem 2.56.8 mainnet.rpcUrls.default (viem PR #4850). The dapp path (EIP-1193 provider, approval window) is not part of this send.",
+  "steps": [
+    {
+      "id": "source",
+      "phase": "background",
+      "name": "GitHub · source + build",
+      "host": "github.com",
+      "actor": "github",
+      "purpose": "No store listing: you clone the repo and run npm run build (npm pulls viem, @scure/bip39, @noble/hashes), then Load unpacked",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the code that runs",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "you run whatever the repo and npm served at build time; nothing updates it after"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "backmeupplz/plainwallet@236dfce README.md:33-42"
+      },
+      "notes": "No update_url: an unpacked build never updates itself, so no Google step and no silent update — but no security fixes either until you pull and rebuild.",
+      "fixed_by": [
+        "indie-frontends"
+      ]
+    },
+    {
+      "id": "rpc-balance",
+      "phase": "discover",
+      "name": "Reth RPC · ETH balance",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_getBalance(your address, latest) on unlock",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "device_id"
+      ],
+      "returns": "ETH balance",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "wrong balance on screen; the send itself doesn't depend on it"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · chain.ts:168 balances()"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "device_id = the Origin header, chrome-extension://<id>. An unpacked extension's id is a hash of its folder path, so it is per-install, not shared by every user like a Web Store id."
+    },
+    {
+      "id": "rpc-tokens",
+      "phase": "discover",
+      "name": "Reth RPC · token balances (multicall)",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "One eth_call to Multicall3 aggregate3: balanceOf(you) on USDC, USDT, DAI, WETH, WBTC",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "device_id"
+      ],
+      "returns": "token balances",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · chain.ts:163-172 · Multicall3 0xcA11…CA11"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "The token list is hardcoded in lib/store.ts, not fetched. No token-list, price or indexer service."
+    },
+    {
+      "id": "rpc-chainid",
+      "phase": "construct",
+      "name": "Reth RPC · which chain are you?",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_chainId on Review, in parallel with the fill",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "the chain the RPC serves; must equal the network you picked or the send stops",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "the chain id is signed from the local network setting; a mismatch only refuses"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · chain.ts:135-136 prepare()"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "rpc-fill",
+      "phase": "construct",
+      "name": "Reth RPC · fill the transaction",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_fillTransaction {from, to, value}: the node returns nonce, gas limit and fees in one call (viem uses it when the RPC implements it)",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "device_id"
+      ],
+      "returns": "nonce, gas limit, max fee — shown as Max fee on the slip, then signed as-is",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "an inflated fee is visible on the slip before you click; a stale nonce is refreshed after the click"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · chain.ts:135 prepareTransactionRequest"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "tx_input": "field",
+      "notes": "The whole intent (who, to whom, how much) reaches the RPC before you approve. Same as every wallet here — but here it's the only party."
+    },
+    {
+      "id": "rpc-l1fee",
+      "phase": "construct",
+      "name": "Reth RPC · OP-stack L1 fee probe",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_call to 0x4200…000F (GasPriceOracle) with the serialized unsigned tx. On mainnet no contract lives there; the call returns nothing and adds 0",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx",
+        "device_id"
+      ],
+      "returns": "L1 data fee (0 on mainnet)",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake fee only changes the Max fee shown"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · chain.ts:139 estimateL1Fee"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "Runs on every chain so Base/Optimism fees are right. On mainnet it's a wasted call that re-sends the full unsigned tx to the same RPC."
+    },
+    {
+      "id": "rpc-nonce",
+      "phase": "broadcast",
+      "name": "Reth RPC · fresh nonce",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_getTransactionCount(you, pending) after you click Send",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "device_id"
+      ],
+      "returns": "the nonce written into the signed tx",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong nonce leaves the tx unmined or replaces a pending one"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · lib/chain.ts:147"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "tx_input": "field"
+    },
+    {
+      "id": "rpc-send-raw",
+      "phase": "broadcast",
+      "name": "Reth RPC · broadcast",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "eth_sendRawTransaction — signed locally in the background worker, then handed to the RPC",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount",
+        "device_id"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "can drop the tx and return a hash anyway; cannot alter it"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · lib/chain.ts:149"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "No private relay, no Smart Transactions, no simulation first. Only eth_/net_/web3_ reads and this call are ever forwarded."
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "consensus checks the block; they can only exclude or reorder"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MEV-Boost relays"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "rpc-receipt",
+      "phase": "confirm",
+      "name": "Reth RPC · receipt",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "viem waitForTransactionReceipt: eth_getTransactionReceipt until the hash is in a block (10-minute timeout)",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "device_id"
+      ],
+      "returns": "Confirmed / Failed on the slip",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a fake receipt is a fake confirmation"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · lib/chain.ts:153-157"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "repeat": "↻ until mined"
+    },
+    {
+      "id": "rpc-refresh",
+      "phase": "confirm",
+      "name": "Reth RPC · balances after mining",
+      "host": "ethereum.reth.rs",
+      "actor": "reth-rpc",
+      "purpose": "The mined hash lands in storage.session; open views re-run the balance + multicall reads",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "device_id"
+      ],
+      "returns": "updated balances",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "plain_custom_rpc",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-135055-send-eth-plain · README 'refreshed … when your transaction is mined'"
+      },
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "debank-history",
+      "phase": "confirm",
+      "name": "DeBank · history (only if clicked)",
+      "host": "debank.com",
+      "actor": "debank",
+      "purpose": "View on DeBank opens debank.com/profile/<address>/history in a tab",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "cookies"
+      ],
+      "returns": "human confirmation",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "backmeupplz/plainwallet@236dfce entrypoints/popup/main.ts:26"
+      },
+      "notes": "The wallet has no built-in history. Nothing reaches DeBank unless you click.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-173059-send-eth-plain-localnode"
+    ],
+    "steps": {
+      "source": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "rpc-balance": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getBalance; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-tokens": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-chainid": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_chainId; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-fill": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_fillTransaction; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-l1fee": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-nonce": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getTransactionCount; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-send-raw": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_sendRawTransaction; ethereum.reth.rs got 0 after switch"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "rpc-receipt": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getTransactionReceipt; ethereum.reth.rs got 0 after switch"
+      },
+      "rpc-refresh": {
+        "state": "unseen",
+        "ref": "ethereum.reth.rs seen before the switch only, not after"
+      },
+      "debank-history": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      }
+    },
+    "tx": "0x0b22755ade2a7df21b1a16e61311bf140befec8020c4c425e08967206de5edb0"
+  }
+}

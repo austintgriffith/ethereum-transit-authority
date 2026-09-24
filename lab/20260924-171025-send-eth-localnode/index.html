@@ -1,0 +1,139 @@
+<meta charset="utf-8"><title>lab run 20260924-171025-send-eth-localnode</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260924-171025-send-eth-localnode</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260924-171025-send-eth-localnode
+action: send-eth-localnode
+guest_ip: 192.168.64.2
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>send-eth: extension id canglmpflkjehkfaioejbblmakepelcl -&gt; send 0.0002 ETH to 0x34aa3f359a9d614239015126635ce7732c18fdf3
+  fill unlock-pw: unlock-password
+  click unlock: unlock-submit
+[t=1790291495.623] rpc-edit: start -&gt; http://192.168.68.54:8545
+[t=1790291495.727]   rpc open-networks: clicked
+[t=1790291496.725]   rpc manage-networks: clicked
+[t=1790291499.235]   rpc eth-options: clicked
+[t=1790291500.229]   rpc edit: clicked
+[t=1790291501.217]   rpc rpc-dropdown: clicked
+[t=1790291502.226]   rpc add-rpc: clicked
+[t=1790291504.789]   rpc add-url: clicked
+[t=1790291505.780]   rpc save: clicked
+[t=1790291512.216] rpc-edit: done — browser restarted; everything after this is on the local node setting
+  fill unlock-pw-2: unlock-password
+  click unlock-2: unlock-submit
+  click send: eth-overview-send
+  pick-eth: clicked ETH row
+  fill recipient: recipient-address-input
+  fill amount: input[placeholder=&quot;0&quot;]
+  continue: clicked
+send-eth: DRY run — stopped at confirm screen, NOT broadcasting (set SEND_BROADCAST=1 to submit)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260924-171025-send-eth-localnode
+
+action: send-eth-localnode · guest 192.168.64.2 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 353 requests · 56 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| tron-mainnet.infura.io | 48 | GET/OPTIONS/POST | — |
+| sentry.io | 39 | POST | — |
+| 192.168.68.54 | 34 | POST | — |
+| solana-mainnet.infura.io | 18 | GET/OPTIONS/POST | — |
+| accounts.api.cx.metamask.io | 13 | GET | authorization |
+| bitcoin-mainnet.infura.io | 13 | GET | — |
+| user-storage.api.cx.metamask.io | 12 | GET | authorization |
+| price.api.cx.metamask.io | 12 | GET | authorization |
+| metamask.github.io | 7 | GET | — |
+| api.segment.io | 7 | POST | — |
+| tokens.api.cx.metamask.io | 7 | GET | authorization |
+| monad-mainnet.infura.io | 6 | POST | — |
+| authentication.api.cx.metamask.io | 6 | GET/POST/PUT | authorization |
+| subscription.api.cx.metamask.io | 6 | GET | authorization |
+| tx-sentinel-ethereum-mainnet.api.cx.metamask.io | 6 | GET/POST | authorization |
+| mainnet.infura.io | 5 | POST | — |
+| static.cx.metamask.io | 5 | GET | — |
+| android.clients.google.com | 5 | POST | authorization |
+| pancake.apple.com | 5 | GET | — |
+| cma.itunes.apple.com | 5 | POST | — |
+| www.google.com | 4 | GET | — |
+| on-ramp-cache.api.cx.metamask.io | 4 | GET | — |
+| api.merkl.xyz | 4 | GET | — |
+| bsc-mainnet.infura.io | 4 | POST | — |
+| optimism-mainnet.infura.io | 4 | POST | — |
+| carrot.megaeth.com | 4 | POST | cookie |
+| base-mainnet.infura.io | 4 | POST | — |
+| arbitrum-mainnet.infura.io | 4 | POST | — |
+| linea-mainnet.infura.io | 4 | POST | — |
+| polygon-mainnet.infura.io | 4 | POST | — |
+| sepolia.infura.io | 4 | POST | — |
+| linea-sepolia.infura.io | 4 | POST | — |
+| testnet-rpc.monad.xyz | 4 | POST | — |
+| notification.api.cx.metamask.io | 4 | POST | authorization |
+| bag.itunes.apple.com | 3 | GET | — |
+| client-config.api.cx.metamask.io | 3 | GET | — |
+| cdn.contentful.com | 3 | GET | — |
+| accounts.google.com | 2 | POST | — |
+| geolocation.api.cx.metamask.io | 2 | GET | — |
+| token.api.cx.metamask.io | 2 | GET | — |
+| phishing-detection.api.cx.metamask.io | 2 | GET | — |
+| acl.execution.metamask.io | 2 | GET | — |
+| images.ctfassets.net | 2 | GET | — |
+| nft.api.cx.metamask.io | 2 | GET | — |
+| gateway.api.cx.metamask.io | 2 | GET | cookie |
+| gas.api.cx.metamask.io | 2 | GET | — |
+| security-alerts.api.cx.metamask.io | 2 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| chainid.network | 1 | GET | — |
+| client-side-detection.api.cx.metamask.io | 1 | GET | — |
+| bridge.api.cx.metamask.io | 1 | GET | — |
+| rewards.api.cx.metamask.io | 1 | POST | — |
+| defiadapters.api.cx.metamask.io | 1 | GET | — |
+| oidc.api.cx.metamask.io | 1 | POST | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 5521 proxied pkts · 3 BYPASS dst · 2 QUIC dst · 903 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.64.99.186 (?) · 84 pkts
+- 23.47.200.181 (?) · 47 pkts
+- 23.37.97.92 (?) · 39 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (no DNS seen) · 60 pkts
+- 199.232.65.64 (?) · 13 pkts
+
+### other egress (non-443, non-DNS)
+- 23.11.33.159:80 (no DNS seen) · 22 pkts
+- 192.168.64.255:137 (no DNS seen) · 18 pkts
+- 172.64.149.23:80 (no DNS seen) · 4 pkts
+- 224.0.0.251:5353 (no DNS seen) · 3 pkts
+
+</pre>

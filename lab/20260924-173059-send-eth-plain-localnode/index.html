@@ -1,0 +1,81 @@
+<meta charset="utf-8"><title>lab run 20260924-173059-send-eth-plain-localnode</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260924-173059-send-eth-plain-localnode</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260924-173059-send-eth-plain-localnode
+action: send-eth-plain-localnode
+guest_ip: 192.168.64.4
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm-plain
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1790292716.924] send-eth-plain: extension id difjajjaaelocoiiplpkppfognbohioh -&gt; send 0.0002 ETH to 0x34aa3f359a9d614239015126635ce7732c18fdf3
+[t=1790292718.762]   fill unlock-pw: input[type=password]
+[t=1790292718.807]   click unlock: role:Unlock (click)
+[t=1790292719.414]   unlock: done
+[t=1790292725.545]   click manage-networks: button[title=&#x27;Manage networks&#x27;] (click)
+[t=1790292726.763]   rpc before: https://ethereum.reth.rs/rpc
+[t=1790292726.888]   click save-network: dialog[open] button:text-is(&quot;Save network&quot;) (click)
+[t=1790292732.246] rpc-edit: done — browser restarted; everything after this is on http://192.168.68.54:8545
+[t=1790292733.410]   fill unlock-pw-2: input[type=password]
+[t=1790292733.451]   click unlock-2: role:Unlock (click)
+[t=1790292739.226]   click send: role:Send (click)
+[t=1790292740.690]   fill recipient: input[placeholder=&#x27;0x…&#x27;]
+[t=1790292740.754]   fill amount: input[placeholder=&#x27;0.0&#x27;]
+[t=1790292740.852]   click review: role:Review (click)
+[t=1790292743.618]   click confirm: dialog[open] button.primary:text-is(&quot;Send&quot;) (click)
+[t=1790292744.224]   submitted: 0x0b22755ade2a7df21b1a16e61311bf140befec8020c4c425e08967206de5edb0
+[t=1790292828.369] send-eth-plain: done
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260924-173059-send-eth-plain-localnode
+
+action: send-eth-plain-localnode · guest 192.168.64.4 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 80 requests · 13 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| 192.168.68.54 | 52 | POST | — |
+| pancake.apple.com | 5 | GET | — |
+| www.google.com | 4 | GET | — |
+| android.clients.google.com | 4 | POST | authorization |
+| cma.itunes.apple.com | 4 | POST | — |
+| accounts.google.com | 2 | POST | — |
+| ethereum.reth.rs | 2 | POST | — |
+| bag.itunes.apple.com | 2 | GET | — |
+| gsp57-ssl-background.ls.apple.com | 1 | POST | — |
+| iadsdk.apple.com | 1 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 3068 proxied pkts · 0 BYPASS dst · 0 QUIC dst · 290 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 18 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+
+</pre>

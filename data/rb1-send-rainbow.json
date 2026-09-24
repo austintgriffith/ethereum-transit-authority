@@ -663,5 +663,107 @@
         "local-indexing"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "127.0.0.1 (same computer)",
+    "runs": [
+      "20260924-173927-send-eth-rainbow-localnode"
+    ],
+    "steps": {
+      "ext-update": {
+        "state": "unseen",
+        "ref": "clients2.google.com seen before the switch only, not after"
+      },
+      "networks": {
+        "state": "unseen",
+        "ref": "metadata.p.rainbow.me still contacted (3 req) but this exact call wasn't singled out"
+      },
+      "firebase-install": {
+        "state": "unseen",
+        "ref": "firebaseinstallations.googleapis.com seen before the switch only, not after"
+      },
+      "firebase-config": {
+        "state": "unseen",
+        "ref": "firebaseremoteconfig.googleapis.com seen before the switch only, not after"
+      },
+      "sentry": {
+        "state": "out",
+        "ref": "o331974.ingest.sentry.io · 8 req after switch"
+      },
+      "rudderstack": {
+        "state": "out",
+        "ref": "rainbowjiumask.dataplane.rudderstack.com · 13 req after switch · /v1/batch"
+      },
+      "platform-tx-list": {
+        "state": "out",
+        "ref": "platform.p.rainbow.me · 9 req after switch · /v1/transactions/listtransactions"
+      },
+      "ens-avatar": {
+        "state": "unseen",
+        "ref": "metadata.p.rainbow.me still contacted (3 req) but this exact call wasn't singled out"
+      },
+      "platform-assets": {
+        "state": "out",
+        "ref": "platform.p.rainbow.me · 9 req after switch · /v1/assets/getassetupdates"
+      },
+      "rpc-ens-self": {
+        "state": "unseen",
+        "ref": "rpc.rainbow.me seen before the switch only, not after"
+      },
+      "rpc-ens-recipient": {
+        "state": "unseen",
+        "ref": "rpc.rainbow.me seen before the switch only, not after"
+      },
+      "meteorology": {
+        "state": "out",
+        "ref": "metadata.p.rainbow.me · 3 req after switch · /meteorology/v1/gas/mainnet"
+      },
+      "rpc-estimate-gas": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_estimateGas; rpc.rainbow.me got 0 after switch"
+      },
+      "rpc-block-code": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getBlockByNumber/eth_getCode; rpc.rainbow.me got 0 after switch"
+      },
+      "rpc-nonce": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getTransactionCount; rpc.rainbow.me got 0 after switch"
+      },
+      "rpc-blocknumber": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_blockNumber; rpc.rainbow.me got 0 after switch"
+      },
+      "rpc-send-raw": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_sendRawTransaction; rpc.rainbow.me got 0 after switch"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "rudderstack-send": {
+        "state": "unseen",
+        "ref": "rainbowjiumask.dataplane.rudderstack.com still contacted (13 req) but this exact call wasn't singled out"
+      },
+      "platform-tx-by-hash": {
+        "state": "out",
+        "ref": "platform.p.rainbow.me · 9 req after switch · /v1/transactions/gettransactionbyhash/gettransactionbyhash"
+      },
+      "platform-refresh": {
+        "state": "unseen",
+        "ref": "platform.p.rainbow.me still contacted (9 req) but this exact call wasn't singled out"
+      },
+      "etherscan-link": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      }
+    },
+    "tx": "0x3e05f7574cc43eea28147e655d189f1a008f292132901ddaebc5e012fffb88c8",
+    "unmapped": [
+      "rainbow.imgix.net",
+      "euc.li"
+    ],
+    "note": "A node elsewhere on your home network doesn't work: Rainbow's own security settings block it (lab run 20260924-173443). This test used a node on the same computer."
+  }
 }

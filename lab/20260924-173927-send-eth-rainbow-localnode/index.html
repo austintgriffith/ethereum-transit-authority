@@ -1,0 +1,113 @@
+<meta charset="utf-8"><title>lab run 20260924-173927-send-eth-rainbow-localnode</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20260924-173927-send-eth-rainbow-localnode</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20260924-173927-send-eth-rainbow-localnode
+action: send-eth-rainbow-localnode
+guest_ip: 192.168.64.7
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm-rainbow
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1790293219.577] forwarder: 127.0.0.1:8545 -&gt; http://192.168.68.54:8545 via lab proxy
+[t=1790293222.000] send-eth-rainbow: extension id pkhkkapgbigcelohhfkmkpjcekohieej -&gt; send 0.0002 ETH to 0x34aa3f359a9d614239015126635ce7732c18fdf3
+[t=1790293224.867]   fill unlock-pw: password-input
+[t=1790293224.937]   click unlock: unlock-button (click)
+[t=1790293225.539]   unlock: submitted
+[t=1790293228.041] rpc-edit: start -&gt; http://127.0.0.1:8545
+[t=1790293230.756]   click eth-network: text:Ethereum (click)
+[t=1790293233.035]   click add-rpc: custom-rpc-button (click)
+[t=1790293235.821]   fill rpc-url: custom-network-rpc-url
+[t=1790293239.063]   skip rpc-name (not present)
+[t=1790293242.242]   click add-rpc-submit: add-rpc-button (click)
+[t=1790293248.762] rpc-edit: done — browser restarted; everything after this is on http://127.0.0.1:8545
+[t=1790293252.758]   fill unlock-pw: password-input
+[t=1790293252.803]   click unlock: unlock-button (click)
+[t=1790293253.404]   unlock: submitted
+[t=1790293264.144]   click send: header-link-send (click)
+[t=1790293267.565]   fill recipient: to-address-input
+[t=1790293269.737]   click open-token-picker: token-input (click)
+[t=1790293271.524]   click pick-eth: text:Ethereum (click)
+[t=1790293273.967]   fill amount: send-input-mask
+[t=1790293276.198]   click review: send-review-button (click)
+[t=1790293280.388]   click confirm: review-confirm-button (click)
+[t=1790293280.991]   confirm: clicked
+[t=1790293316.403] send-eth-rainbow: submitted
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20260924-173927-send-eth-rainbow-localnode
+
+action: send-eth-rainbow-localnode · guest 192.168.64.7 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 153 requests · 25 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| rainbowme-res.cloudinary.com | 25 | GET | — |
+| rainbowjiumask.dataplane.rudderstack.com | 24 | POST | authorization |
+| 192.168.68.54 | 22 | POST | — |
+| o331974.ingest.sentry.io | 20 | POST | — |
+| rainbow.imgix.net | 13 | GET | — |
+| platform.p.rainbow.me | 12 | GET | authorization |
+| android.clients.google.com | 6 | POST | authorization |
+| metadata.p.rainbow.me | 5 | GET/POST | authorization |
+| www.google.com | 4 | GET | — |
+| radarsubmissions.apple.com | 4 | POST | — |
+| accounts.google.com | 2 | POST | — |
+| firebaseremoteconfig.googleapis.com | 2 | POST | — |
+| rpc.rainbow.me | 2 | POST | — |
+| cf.iadsdk.apple.com | 1 | POST | — |
+| iadsdk.apple.com | 1 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| firebaseinstallations.googleapis.com | 1 | POST | authorization |
+| addys.p.rainbow.me | 1 | POST | authorization |
+| bag.itunes.apple.com | 1 | GET | — |
+| token.safebrowsing.apple | 1 | GET | — |
+| calendars.icloud.com | 1 | GET | — |
+| euc.li | 1 | GET | — |
+| init.itunes.apple.com | 1 | GET | — |
+| chromewebstore.googleapis.com | 1 | POST | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 1834 proxied pkts · 5 BYPASS dst · 2 QUIC dst · 1404 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.37.106.14 (no DNS seen) · 58 pkts
+- 23.37.97.92 (?) · 44 pkts
+- 199.232.67.6 (?) · 15 pkts
+- 23.47.200.181 (?) · 14 pkts
+- 23.64.99.186 (no DNS seen) · 2 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (?) · 102 pkts
+- 199.232.65.64 (?) · 14 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 20 pkts
+- 23.11.33.159:80 (no DNS seen) · 12 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+- 104.18.38.233:80 (no DNS seen) · 2 pkts
+
+</pre>
