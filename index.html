@@ -80,7 +80,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Barlow,system
 .wrap{max-width:1200px;margin:0 auto;padding:0 24px 80px}
 
 /* masthead */
-.ownnode{margin-left:auto;display:inline-flex;gap:8px;align-items:center;font:600 14px/1 Jost,sans-serif;padding:8px 12px;border:2px solid var(--ink);border-radius:999px;cursor:pointer;background:var(--panel)}
+.ownnode{margin:14px 0 0;display:inline-flex;gap:8px;align-items:center;font:600 14px/1 Jost,sans-serif;padding:8px 12px;border:2px solid var(--ink);border-radius:999px;cursor:pointer;background:var(--panel)}
 .ownnode:has(input:checked){background:var(--self);border-color:var(--self);color:#fff}
 .ownnode input{accent-color:var(--self);margin:0}
 .ownnote{margin:10px 0 12px;padding:10px 14px;border-left:4px solid var(--self);background:var(--panel);font-size:15px;line-height:1.5;max-width:900px}
@@ -214,7 +214,6 @@ h1 a{color:inherit;text-decoration:none}
 <header>
   <div class="roundel"><span>ETA</span></div>
   <div><h1><a href="#/">Ethereum Transit Authority</a></h1></div>
-  <label class="ownnode"><input type="checkbox" id="ownnode"> I run my own Ethereum node</label>
   <nav class="hlinks"><a href="https://github.com/austintgriffith/ethereum-transit-authority">code</a><a href="https://github.com/austintgriffith/crops-lab">sandbox</a></nav>
 </header>
 
@@ -370,8 +369,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-addr)">M1</span>The Normie Send</h2>
   <p class="section-sub">MetaMask extension · mainnet · defaults · address pasted in.</p>
   <p class="labline">⚗ lab run <a href="lab/20260821-193024-send-eth/">20260821-193024-send-eth</a> · <a href="https://etherscan.io/tx/0xf6bd63559134c01b43e2a84ac9a740e84ceab7009f418500b77c9fa02a4692c1">mainnet tx 0xf6bd6355…92c1 ↗</a> · <a href="data/m1-send-metamask.json">route JSON</a></p>
-  <p class="ownnote" id="own-m1" hidden></p>
   <div class="mapbox"><figure id="map-m1"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-m1" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 884.5" width="100%" style="max-width:1180px;display:block">
@@ -479,8 +479,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-rcpt)">R1</span>The Rabby Send</h2>
   <p class="section-sub">Same send as M1, in Rabby (v0.94.3) · mainnet · defaults · address pasted in. The contrast route: one open-source client, one backend.</p>
   <p class="labline"><a href="data/r1-send-rabby.json">route JSON</a></p>
-  <p class="ownnote" id="own-r1" hidden></p>
   <div class="mapbox"><figure id="map-r1"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-r1" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 532.0" width="100%" style="max-width:1180px;display:block">
@@ -553,8 +554,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-ens)">M2</span>The ENS Send</h2>
   <p class="section-sub">M1, but you type tim.eth.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-191831-send-ens-mainnet/">20260824-191831-send-ens-mainnet</a> · <a href="https://etherscan.io/tx/0x8ef0a2289537d3b378b168e10a1fff9086ebc52d5ebc5cddf176c5c87288a3cf">mainnet tx 0x8ef0a228…a3cf ↗</a> · <a href="data/m2-send-ens.json">route JSON</a></p>
-  <p class="ownnote" id="own-m2" hidden></p>
   <div class="mapbox"><figure id="map-m2"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-m2" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 1041.0" width="100%" style="max-width:1180px;display:block">
@@ -677,8 +679,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--self)">M0</span>The Mountain Man</h2>
   <p class="section-sub">He owns every step against his own node — but &quot;clean&quot; hides the cost. HIS SHELF (below) shows the gadgets he must self-run to match the centralized players (green, with cost) and the ones that are simply MISSING (red). The self-run map was lying by omission.</p>
   <p class="labline"><a href="data/m0-mountain-man.json">route JSON</a></p>
-  <p class="ownnote" id="own-m0" hidden></p>
   <div class="mapbox"><figure id="map-m0"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-m0" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 213.5" width="100%" style="max-width:1180px;display:block">
@@ -704,8 +707,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--blue)">M3</span>The Aave Deposit</h2>
   <p class="section-sub">app.aave.com + MetaMask · deposit ETH. The dApp&#x27;s stations, then the M1 track.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-203044-deposit-aave/">20260824-203044-deposit-aave</a> · <a href="https://etherscan.io/tx/0x84fa74dddca2546d3c70289e18bd3a6be6f43ce70f24216d846e81b621098db6">mainnet tx 0x84fa74dd…8db6 ↗</a> · <a href="data/m3-aave-deposit.json">route JSON</a></p>
-  <p class="ownnote" id="own-m3" hidden></p>
   <div class="mapbox"><figure id="map-m3"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-m3" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 1601.5" width="100%" style="max-width:1180px;display:block">
@@ -872,8 +876,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-hash)">PW</span>The Plain Wallet Send</h2>
   <p class="section-sub">Same send as M1, in Plain Wallet (0.1.8) · mainnet · defaults · address pasted in. One RPC, and nothing else.</p>
   <p class="labline">⚗ lab run <a href="lab/20260924-135055-send-eth-plain/">20260924-135055-send-eth-plain</a> · <a href="https://etherscan.io/tx/0x7215ce9ea612e54b952706b821604867ac9a52d9da42bfe1567c5f5456023063">mainnet tx 0x7215ce9e…3063 ↗</a> · ⚗ lab run <a href="lab/20260924-133441-send-eth-plain/">20260924-133441-send-eth-plain</a> <span class="labnote">— dry: unlock → balances → Review slip; stopped before Send</span> · <a href="data/pw1-send-plain.json">route JSON</a></p>
-  <p class="ownnote" id="own-pw" hidden></p>
   <div class="mapbox"><figure id="map-pw"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-pw" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 456.0" width="100%" style="max-width:1180px;display:block">
@@ -935,8 +940,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-ens)">RB1</span>The Rainbow Send</h2>
   <p class="section-sub">Same send as M1, in Rainbow (1.6.11) · mainnet · defaults · address pasted in. One vendor owns the RPC, the balances and the confirmation; nothing is simulated or screened.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-192602-send-eth-rainbow/">20260824-192602-send-eth-rainbow</a> · <a href="https://etherscan.io/tx/0xf2954ed16ba6de8afaeb24477f7a6edb28bccde4d7a53109fc54d43cfcdb068b">mainnet tx 0xf2954ed1…068b ↗</a> · <a href="data/rb1-send-rainbow.json">route JSON</a></p>
-  <p class="ownnote" id="own-rb1" hidden></p>
   <div class="mapbox"><figure id="map-rb1"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-rb1" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 739.0" width="100%" style="max-width:1180px;display:block">
@@ -1023,8 +1029,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-hold)">AB1</span>The Ambire Send</h2>
   <p class="section-sub">The same send, in Ambire (6.18.7) · mainnet · defaults · address pasted in. Not an EOA tx — a 4337 UserOperation: Ambire&#x27;s relayer co-signs it as paymaster, Pimlico bundles it, and every hop terminates at Cloudflare.</p>
   <p class="labline"><a href="data/ab1-send-ambire.json">route JSON</a></p>
-  <p class="ownnote" id="own-ab1" hidden></p>
   <div class="mapbox"><figure id="map-ab1"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-ab1" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 702.5" width="100%" style="max-width:1180px;display:block">
@@ -1107,8 +1114,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-intent)">U1</span>The Uniswap Swap</h2>
   <p class="section-sub">app.uniswap.org + MetaMask · swap ETH→USDC. One company computes the route AND the calldata you sign; then the M1 wallet track.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-095240-swap-uniswap/">20260824-095240-swap-uniswap</a> <span class="labnote">— dry — reached the swap confirm; wallet connect click failed silently, portfolio legs missing</span> · <a href="data/u1-swap-uniswap.json">route JSON</a></p>
-  <p class="ownnote" id="own-u1" hidden></p>
   <div class="mapbox"><figure id="map-u1"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-u1" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 1107.5" width="100%" style="max-width:1180px;display:block">
@@ -1238,8 +1246,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-intent)">M4</span>The MetaMask Swap</h2>
   <p class="section-sub">MetaMask&#x27;s built-in Swap · ETH→mUSD. One MetaMask API computes the route, the minimum-out, AND the calldata you sign — then takes a 0.875% fee. The rest is the M1 wallet backbone.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-222054-swap-metamask/">20260824-222054-swap-metamask</a> · <a href="https://etherscan.io/tx/0x407247a9e2133843416136d9c42c6537ee174dc36a2283e71fed3cf4acc4196f">mainnet tx 0x407247a9…196f ↗</a> · <a href="data/m4-swap-metamask.json">route JSON</a></p>
-  <p class="ownnote" id="own-m4" hidden></p>
   <div class="mapbox"><figure id="map-m4"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-m4" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 923.0" width="100%" style="max-width:1180px;display:block">
@@ -1351,8 +1360,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-rcpt)">MT</span>The Token Send</h2>
   <p class="section-sub">MetaMask · send an ERC-20 token (mUSD). Same backbone as the ETH send, but the tx you sign goes to the TOKEN CONTRACT — your recipient is buried in calldata — and Blockaid scans the token too.</p>
   <p class="labline">⚗ lab run <a href="lab/20260824-223756-send-token/">20260824-223756-send-token</a> · <a href="https://etherscan.io/tx/0xfda8cdbb4c36f7a99420d14c2c8fcd9bc16f9f3f2f2f2d3e2320569a2b8382cd">mainnet tx 0xfda8cdbb…82cd ↗</a> · <a href="data/mt1-send-token.json">route JSON</a></p>
-  <p class="ownnote" id="own-mt" hidden></p>
   <div class="mapbox"><figure id="map-mt"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-mt" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 884.5" width="100%" style="max-width:1180px;display:block">
@@ -1460,8 +1470,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-signed)">AP</span>The Token Approval</h2>
   <p class="section-sub">MetaMask · swap a token back to ETH. The dangerous part isn&#x27;t a transaction — it&#x27;s a Permit2 SIGNATURE that grants the router permission to move your token. The signature that drains wallets.</p>
   <p class="labline">⚗ lab run <a href="lab/20260825-094249-approve-swap/">20260825-094249-approve-swap</a> · <a href="https://etherscan.io/tx/0x0befcc214f5a3a82a816913c5b0248c356ba7f770ee7174cd5df90e178e2ed48">mainnet tx 0x0befcc21…ed48 ↗</a> · <a href="data/ap1-approve-swap.json">route JSON</a></p>
-  <p class="ownnote" id="own-ap" hidden></p>
   <div class="mapbox"><figure id="map-ap"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-ap" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 923.0" width="100%" style="max-width:1180px;display:block">
@@ -1573,8 +1584,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-kyc)">ON</span>The Fiat On-Ramp</h2>
   <p class="section-sub">MetaMask · Buy (fiat on-ramp). The entry to everything — and where you hand over the MOST. No signing here: it&#x27;s all identity. You&#x27;re geolocated, jurisdiction-gated, then handed to a KYC provider who takes your legal ID and bank.</p>
   <p class="labline">⚗ lab run <a href="lab/20260825-124239-buy-metamask/">20260825-124239-buy-metamask</a> <span class="labnote">— capture-only — drove MetaMask&#x27;s Buy to the aggregator surface and STOPPED; no purchase, no KYC, no payment ever entered</span> · <a href="data/on1-buy-metamask.json">route JSON</a></p>
-  <p class="ownnote" id="own-on" hidden></p>
   <div class="mapbox"><figure id="map-on"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-on" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 366" width="100%" style="max-width:1180px;display:block">
@@ -1612,8 +1624,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-ens)">BR</span>The L2 Bridge</h2>
   <p class="section-sub">MetaMask · bridge ETH from Ethereum to Base. Same closed engine as the swap, now cross-chain — and it stacks new trust: a bridge operator you can&#x27;t see, plus Base&#x27;s sequencer. The convenient path is NOT the escape hatch.</p>
   <p class="labline">⚗ lab run <a href="lab/20260826-185312-bridge-metamask/">20260826-185312-bridge-metamask</a> <span class="labnote">— dry — driven to the quoted Ethereum→Base bridge screen (ETH→ETH on Base), not broadcast</span> · <a href="data/br1-bridge-base.json">route JSON</a></p>
-  <p class="ownnote" id="own-br" hidden></p>
   <div class="mapbox"><figure id="map-br"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-br" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 912.0" width="100%" style="max-width:1180px;display:block">
@@ -1725,8 +1738,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-kyc)">OF</span>The Fiat Off-Ramp</h2>
   <p class="section-sub">MetaMask · Sell (fiat off-ramp). The exit — and the mirror of the on-ramp. You hand over legal identity AND a bank account, then SIGN a public tx that ties your address to your KYC forever. Crypto leaves before fiat arrives, so the provider can freeze the payout.</p>
   <p class="labline">⚗ lab run <a href="lab/20260901-140427-sell-metamask/">20260901-140427-sell-metamask</a> <span class="labnote">— PARTIAL live capture. Reached the off-ramp FRONT surface live: geolocation resolved the exit to region us-co, and MetaMask pulled the region-gated provider/payments catalog (~25KB). Key finding the code map missed: MetaMask&#x27;s Buy/Sell is NOT in the extension — it opens a hosted web app in a NEW TAB (app.metamask.io/buy), carrying a persistent metametricsId in the URL, and loads third-party AD + analytics trackers (LinkedIn ad pixel, HubSpot CRM, Intercom, LaunchDarkly, Sentry) before you do anything. The Sell-specific legs (provider quote, MoonPay KYC + bank, the signed public exit tx, AML payout) were NOT reached — they sit behind a MetaMetrics/marketing-cookie consent wall and then KYC, which this capture-only run deliberately does not cross. Nothing signed, no KYC, no bank entered.</span> · <a href="data/of1-sell-metamask.json">route JSON</a></p>
-  <p class="ownnote" id="own-of" hidden></p>
   <div class="mapbox"><figure id="map-of"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-of" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 460.5" width="100%" style="max-width:1180px;display:block">
@@ -1782,8 +1796,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--self)">RC</span>The Recovery</h2>
   <p class="section-sub">MetaMask · recover on a new device. The one good story on these maps: the recovery act is LOCAL — your phrase re-derives the key on-device, zero third parties. The catch: it works only if you kept the phrase, there is no recovery from loss and no inheritance, and every easier option hands the switch to Google, a guardian service, or a custodian.</p>
   <p class="labline">⚗ lab run <a href="lab/20260831-213515-recover-metamask/">20260831-213515-recover-metamask</a> <span class="labnote">— live recovery capture — fresh device, re-imported the throwaway SRP under mitmproxy, then recorded the re-sync. 289 decrypted requests / 48 hosts. Nothing signed or sent. PROVES the seed stayed local: 0 seed bytes appeared in any request body.</span> · <a href="data/rc1-recover-metamask.json">route JSON</a></p>
-  <p class="ownnote" id="own-rc" hidden></p>
   <div class="mapbox"><figure id="map-rc"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-rc" hidden></p>
   <div class="legend-slot"></div>
   <div class="leakwrap"><p class="sub-h">Where your data goes</p>
   <div class="mapbox leak"><svg viewBox="0 0 1180 380.5" width="100%" style="max-width:1180px;display:block">
@@ -1829,8 +1844,9 @@ h1 a{color:inherit;text-decoration:none}
   <h2><span class="bullet" style="background:var(--l-hold)">N</span>Night Service</h2>
   <p class="section-sub">Runs whenever MetaMask is unlocked. No send required.</p>
   <p class="labline">⚗ lab run <a href="lab/20260821-193024-send-eth/">20260821-193024-send-eth</a> <span class="labnote">— the background traffic recorded during the M1 capture</span></p>
-  <p class="ownnote" id="own-night" hidden></p>
   <div class="mapbox"><figure id="map-night"></figure></div>
+  <label class="ownnode"><input type="checkbox" class="ownbox"> I run my own Ethereum node</label>
+  <p class="ownnote" id="own-night" hidden></p>
   <div class="legend-slot"></div>
 
 </section>
@@ -2913,9 +2929,11 @@ function drawMaps(){
   p.innerHTML=''; render(p, OWN&&c.own?c.own.city:c, '', true);
  });
 }
-const ownBox=document.getElementById('ownnode');
-ownBox.checked=OWN;
-ownBox.addEventListener('change',()=>{OWN=ownBox.checked; try{localStorage.setItem('ownNode',OWN?'1':'0')}catch(e){} drawMaps();});
+// one checkbox under every map, all in sync
+const ownBoxes=[...document.querySelectorAll('.ownbox')];
+ownBoxes.forEach(b=>{ b.checked=OWN; b.addEventListener('change',()=>{
+  OWN=b.checked; ownBoxes.forEach(x=>x.checked=OWN);
+  try{localStorage.setItem('ownNode',OWN?'1':'0')}catch(e){} drawMaps(); }); });
 drawMaps();
 
 // home previews: unlabeled mini render per city — see the shape of the leak, click for the names
