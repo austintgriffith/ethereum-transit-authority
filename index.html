@@ -237,6 +237,7 @@ h1 a{color:inherit;text-decoration:none}
   <a class="pill" href="#/of" data-r="of"><span class="b" style="background:var(--l-kyc)">OF</span>Fiat Off-Ramp <small>· 8 stops</small></a>
   <a class="pill" href="#/rc" data-r="rc"><span class="b" style="background:var(--self)">RC</span>Recovery <small>· 3 stops, 1 at home</small></a>
   <a class="pill" href="#/night" data-r="night"><span class="b" style="background:var(--l-hold)">N</span>Night Service <small>· 9 stops</small></a>
+  <a class="pill" href="#/gaps" data-r="gaps"><span class="b" style="background:var(--l-addr)">!</span>Top Gaps</a>
   <a class="pill" href="#/ownnode" data-r="ownnode"><span class="b" style="background:var(--self)">◉</span>Your Own Node</a>
   <a class="pill" href="#/leverage" data-r="leverage"><span class="b" style="background:var(--l-ip)">⇉</span>Leverage</a>
   <a class="pill" href="#/evidence" data-r="evidence"><span class="b" style="background:var(--self)">✓</span>Evidence</a>
@@ -318,6 +319,7 @@ h1 a{color:inherit;text-decoration:none}
     <div class="prev" data-city="night"></div>
   </a>
   <div class="cities">
+    <a class="cityln" href="#/gaps"><span class="b" style="background:var(--l-addr)">!</span><strong>Top Gaps</strong><span>the dependencies you can't route around today, one at a time: who, what they see, what would have to exist</span><span class="go">→</span></a>
     <a class="cityln" href="#/ownnode"><span class="b" style="background:var(--self)">◉</span><strong>Your Own Node</strong><span>each wallet pointed at your node: what your node answers, what still leaves</span><span class="go">→</span></a>
     <a class="cityln" href="#/leverage"><span class="b" style="background:var(--l-ip)">⇉</span><strong>Leverage</strong><span>all flows' leaks summed — which gadget & which company sees the most, and where there's no escape</span><span class="go">→</span></a>
     <a class="cityln" href="#/evidence"><span class="b" style="background:var(--self)">✓</span><strong>Evidence</strong><span>how much of the map is live-observed vs code-traced — and what still needs a capture</span><span class="go">→</span></a>
@@ -2325,6 +2327,51 @@ h1 a{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- ================= TOP GAPS ================= -->
+<section class="view" id="view-gaps">
+  <a class="back" href="#/">← ALL MAPS</a>
+  <h2><span class="bullet" style="background:var(--l-addr)">!</span>Top Gaps</h2>
+  <p class="section-sub">The categories from <a href="#/vectors">Access Vectors</a> you can't route around today (NONE), plus RPC (PAINFUL), taken one at a time. Who holds each position, what it sees, what it can do, what you can do now, and what would have to exist. Counts come from the route data (a stop shared by several maps counts once per map); the own-node lines come from lab runs with the RPC set in each wallet (<a href="#/ownnode">Your Own Node</a>).</p>
+  <div class="citylist">
+    <div class="cityrow"><div class="rank">1</div><div class="cbody" style="flex:1">
+      <strong>TLS edge / CDN</strong> <span class="zo zo-none">zero option: NONE</span>
+      <span class="host">217 stops on 15 of 16 maps · 70% live-observed</span>
+      <p><strong>Who holds it:</strong> Cloudflare edge (190), AWS CloudFront (27)</p>
+      <p><strong>What it sees:</strong> Signed raw tx, Full unsigned tx, All account addresses, Selected address, Recipient address, Amount, Balances + positions</p>
+      <p><strong>What it can do:</strong> block 83 of these stops, 31 of them with no setting to turn off; give 26 answers where a lie costs funds or ships code; link your IP to your addresses over time.</p>
+      <p><strong>What you can do today:</strong> Unavoidable when using any hosted service. With your own node set in the wallet: <strong>17 of 99</strong> tested stops in this category moved off it; 82 still went to it.</p>
+      <p><strong>What would have to exist:</strong> Falls away only when what&#x27;s behind it (frontends, backends) becomes self-hostable. Fixes that retire the most of these stops: <strong>Local or verifiable indexing</strong> (46); <strong>Local address-risk checks</strong> (37); <strong>Verifiable RPC reads</strong> (34).</p>
+    </div></div>
+    <div class="cityrow"><div class="rank">2</div><div class="cbody" style="flex:1">
+      <strong>Wallet&#x27;s own backend (flags, config, prices)</strong> <span class="zo zo-none">zero option: NONE</span>
+      <span class="host">138 stops on 14 of 16 maps · 73% live-observed</span>
+      <p><strong>Who holds it:</strong> Consensys · MM APIs (114), Rabby · DeBank API (20), Google · Firebase (2), WalletConnect (1), Ambire · monitor (1)</p>
+      <p><strong>What it sees:</strong> Signed raw tx, Full unsigned tx, All account addresses, Selected address, Recipient address, Amount, Balances + positions</p>
+      <p><strong>What it can do:</strong> block 32 of these stops, 14 of them with no setting to turn off; give 13 answers where a lie costs funds or ships code; link your IP to your addresses over time.</p>
+      <p><strong>What you can do today:</strong> Use a wallet that has no phone-home backend. With your own node set in the wallet: <strong>2 of 68</strong> tested stops in this category moved off it; 66 still went to it.</p>
+      <p><strong>What would have to exist:</strong> Ship flags and defaults signed in the release; pull updates as signed public lists anyone can mirror — no per-user queries. What breaks: the vendor&#x27;s instant kill-switch and A/B tests. Not your sends. Fixes that retire the most of these stops: <strong>Local or verifiable indexing</strong> (35); <strong>Local address-risk checks</strong> (19); <strong>Independently hosted frontends</strong> (16).</p>
+    </div></div>
+    <div class="cityrow"><div class="rank">3</div><div class="cbody" style="flex:1">
+      <strong>Hosted dApp frontend</strong> <span class="zo zo-none">zero option: NONE</span>
+      <span class="host">14 stops on 2 of 16 maps · 50% live-observed</span>
+      <p><strong>Who holds it:</strong> Uniswap Labs (12), Avara · app.aave.com (1), Family (1)</p>
+      <p><strong>What it sees:</strong> Selected address, Amount, Balances + positions, Tx hash, Swap route + quote (path, amountOut, minOut, Universal Router calldata), Swap token pair (tokenIn/tokenOut), IP address</p>
+      <p><strong>What it can do:</strong> block 9 of these stops, 9 of them with no setting to turn off; give 3 answers where a lie costs funds or ships code; link your IP to your addresses over time.</p>
+      <p><strong>What you can do today:</strong> Sometimes: self-host the UI or call the contract directly — often NOT possible. With your own node set in the wallet: <strong>0 of 6</strong> tested stops in this category moved off it; 6 still went to it.</p>
+      <p><strong>What would have to exist:</strong> Pin the frontend to IPFS/ENS. The test is binary: does the dApp work with nothing hosted? Fixes that retire the most of these stops: <strong>Independently hosted frontends</strong> (2); <strong>Local or verifiable indexing</strong> (2); <strong>Verifiable RPC reads</strong> (1).</p>
+    </div></div>
+    <div class="cityrow"><div class="rank">4</div><div class="cbody" style="flex:1">
+      <strong>RPC — chain reads &amp; writes</strong> <span class="zo zo-painful">zero option: PAINFUL</span>
+      <span class="host">65 stops on 13 of 16 maps · 89% live-observed</span>
+      <p><strong>Who holds it:</strong> Consensys · Infura (44), Reth · public RPC (9), Rainbow · RPC proxy (7), Ambire · invictus RPC (4), Alchemy (1)</p>
+      <p><strong>What it sees:</strong> Signed raw tx, Full unsigned tx, All account addresses, Selected address, Recipient address, Amount, Balances + positions</p>
+      <p><strong>What it can do:</strong> block 47 of these stops, 2 of them with no setting to turn off; give 22 answers where a lie costs funds or ships code; link your IP to your addresses over time.</p>
+      <p><strong>What you can do today:</strong> Run your own full node and point the wallet at it. Cost: Sync + run a full node — disk, time, upkeep. With your own node set in the wallet: <strong>35 of 37</strong> tested stops in this category moved off it; 2 still went to it.</p>
+      <p><strong>What would have to exist:</strong> A wallet that ships with a light client (Helios) — reads verified against consensus, not trusted. Full escape stays your own node. Fixes that retire the most of these stops: <strong>Private RPC access</strong> (63); <strong>Verifiable RPC reads</strong> (53); <strong>Open simulation</strong> (9).</p>
+    </div></div>
+  </div>
+</section>
+
 <!-- ================= OWN NODE ================= -->
 <section class="view" id="view-ownnode">
   <a class="back" href="#/">← ALL MAPS</a>
@@ -2986,7 +3033,7 @@ const tpl=document.getElementById('legend-tpl');
 document.querySelectorAll('.legend-slot').forEach(s=>s.appendChild(tpl.content.cloneNode(true)));
 
 // router
-const views=['home','m1','r1','m2','m0','m3','pw','rb1','ab1','u1','m4','mt','ap','on','br','of','rc','night','ownnode','leverage','evidence','vectors','gadgets','center','fixes','index','how'];
+const views=['home','m1','r1','m2','m0','m3','pw','rb1','ab1','u1','m4','mt','ap','on','br','of','rc','night','gaps','ownnode','leverage','evidence','vectors','gadgets','center','fixes','index','how'];
 function route(){
  const r=(location.hash.replace(/^#\/?/,'')||'home');
  const v=views.includes(r)?r:'home';
