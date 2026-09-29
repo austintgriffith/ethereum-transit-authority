@@ -8,6 +8,11 @@
     "settings": "defaults (tracking on, no custom RPC)",
     "captures": [
       {
+        "run": "20260929-162946-send-eth-rabby-localnode",
+        "tx": "0xf7b2131a80e805b0eefba4490bf7c99e0063d5490abee82aba92703f8bc0d5fd",
+        "note": "real send with Ethereum set to your node in Rabby's UI"
+      },
+      {
         "run": "20260924-212508-send-eth-rabby",
         "note": "dry, Rabby 0.94.6: unlock → Send → sign bar; stopped before Confirm"
       }
@@ -785,16 +790,17 @@
   "own_node": {
     "node": "192.168.68.54",
     "runs": [
-      "20260924-212305-send-eth-rabby-localnode"
+      "20260924-212305-send-eth-rabby-localnode",
+      "20260929-162946-send-eth-rabby-localnode"
     ],
     "steps": {
       "static-config": {
         "state": "out",
-        "ref": "static.debank.com · 2 req after switch"
+        "ref": "static.debank.com · 5 req after switch"
       },
       "chainrpc": {
         "state": "out",
-        "ref": "api.rabby.io · 36 req after switch · /v1/chainrpc"
+        "ref": "api.rabby.io · 85 req after switch · /v1/chainrpc"
       },
       "feature-switches": {
         "state": "unseen",
@@ -802,19 +808,19 @@
       },
       "currency-rates": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "whitelist-lookup": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "matomo-daily": {
         "state": "out",
-        "ref": "matomo.debank.com · 15 req after switch"
+        "ref": "matomo.debank.com · 32 req after switch"
       },
       "ga4-daily": {
         "state": "out",
-        "ref": "www.google-analytics.com · 22 req after switch"
+        "ref": "www.google-analytics.com · 46 req after switch"
       },
       "sentry-rabby": {
         "state": "unseen",
@@ -822,63 +828,63 @@
       },
       "balances-tokens": {
         "state": "out",
-        "ref": "api.rabby.io · 36 req after switch · /price_change//v1/user/total_balance"
+        "ref": "api.rabby.io · 85 req after switch · /price_change//v1/user/total_balance"
       },
       "hyperliquid-perps": {
         "state": "out",
-        "ref": "api.hyperliquid.xyz · 18 req after switch · /info"
+        "ref": "api.hyperliquid.xyz · 36 req after switch · /info"
       },
       "sanctions-recipient": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "recipient-risk": {
         "state": "out",
-        "ref": "api.rabby.io · 36 req after switch · /v2/engine/addr/has_transfer"
+        "ref": "api.rabby.io · 85 req after switch · /v2/engine/addr/has_transfer"
       },
       "gas-market": {
         "state": "out",
-        "ref": "api.rabby.io · 36 req after switch · /v2/wallet/gas_market"
+        "ref": "api.rabby.io · 85 req after switch · /v2/wallet/gas_market"
       },
       "rpc-proxy-construct": {
         "state": "local",
         "ref": "192.168.68.54 · eth_getBlockByNumber/eth_getTransactionCount; api.rabby.io got none of these methods after switch"
       },
       "parse-tx": {
-        "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "state": "out",
+        "ref": "api.rabby.io · 85 req after switch · /v1/engine/action/parse_tx"
       },
       "pre-exec": {
         "state": "out",
-        "ref": "api.rabby.io · 36 req after switch · /v1/wallet/pre_exec_tx"
+        "ref": "api.rabby.io · 85 req after switch · /v1/wallet/pre_exec_tx"
       },
       "sanctions-both": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "rule-log": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "gasless-check": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       },
       "submit-tx": {
-        "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "state": "gone",
+        "ref": "real send 0xf7b2131a… went out via 192.168.68.54 (eth_sendRawTransaction); api.rabby.io got none of this step's calls"
       },
       "festats": {
-        "state": "unseen",
-        "ref": "festats.debank.com seen before the switch only, not after"
+        "state": "out",
+        "ref": "festats.debank.com · 5 req after switch · signedtransaction/submittransaction"
       },
       "inclusion": {
         "state": "unseen",
         "ref": "not in these runs"
       },
       "receipt-poll": {
-        "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "state": "out",
+        "ref": "api.rabby.io · 85 req after switch · eth_getTransactionReceipt"
       },
       "etherscan-check": {
         "state": "unseen",
@@ -886,8 +892,41 @@
       },
       "balance-refresh": {
         "state": "unseen",
-        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+        "ref": "api.rabby.io still contacted (85 req) but this exact call wasn't singled out"
       }
-    }
+    },
+    "tx": "0xf7b2131a80e805b0eefba4490bf7c99e0063d5490abee82aba92703f8bc0d5fd",
+    "add": [
+      {
+        "id": "broadcast-own-node",
+        "phase": "broadcast",
+        "name": "Your node · broadcast",
+        "host": "your node (eth_sendRawTransaction)",
+        "actor": "self",
+        "gadget": "relay-broadcast",
+        "purpose": "With a custom RPC for Ethereum, Rabby hands the signed tx to your node instead of POST /v2/wallet/submit_tx",
+        "need": "W",
+        "carries": [
+          "signed_tx",
+          "selected_address",
+          "recipient",
+          "amount"
+        ],
+        "returns": "tx hash",
+        "can_block": false,
+        "on_failure": "blocks",
+        "worst_lie": {
+          "outcome": "none",
+          "note": "your own node"
+        },
+        "removable_by": "none",
+        "provenance": {
+          "status": "observed",
+          "ref": "20260929-162946-send-eth-rabby-localnode · eth_sendRawTransaction → 192.168.68.54, tx 0xf7b2131a…d5fd (block 26086145)"
+        },
+        "notes": "Rabby still learns the tx: receipt polling stays on api.rabby.io (eth_getTransactionReceipt with the hash), and festats.debank.com gets sign/submit/complete events. Your node then passes it to its peers; that hop is not captured."
+      }
+    ],
+    "note": "Rabby's custom RPC moves the broadcast to your node (real send, tx 0xf7b2131a…d5fd), but receipt polling stays on Rabby's server, so Rabby still gets your tx hash seconds after you send."
   }
 }
