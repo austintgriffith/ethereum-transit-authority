@@ -435,5 +435,221 @@
         "local-indexing"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-214539-swap-uniswap-localnode"
+    ],
+    "steps": {
+      "frontend": {
+        "state": "unseen",
+        "ref": "app.uniswap.org still contacted (799 req) but this exact call wasn't singled out"
+      },
+      "statsig": {
+        "state": "out",
+        "ref": "app.uniswap.org · 799 req after switch · /config"
+      },
+      "datadog": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "amplitude": {
+        "state": "out",
+        "ref": "metrics.interface.gateway.uniswap.org · 17 req after switch · /v1/amplitude-proxy"
+      },
+      "graphql-data": {
+        "state": "unseen",
+        "ref": "interface.gateway.uniswap.org still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "token-logos": {
+        "state": "out",
+        "ref": "raw.githubusercontent.com · 4 req after switch · /assets"
+      },
+      "session": {
+        "state": "out",
+        "ref": "entry-gateway.backend-prod.api.uniswap.org · 116 req after switch · sessionservice"
+      },
+      "portfolio": {
+        "state": "unseen",
+        "ref": "interface.gateway.uniswap.org still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "unirpc": {
+        "state": "out",
+        "ref": "entry-gateway.backend-prod.api.uniswap.org · 116 req after switch · eth_call"
+      },
+      "swappable-tokens": {
+        "state": "out",
+        "ref": "entry-gateway.backend-prod.api.uniswap.org · 116 req after switch · /swappable_tokens"
+      },
+      "quote": {
+        "state": "out",
+        "ref": "entry-gateway.backend-prod.api.uniswap.org · 116 req after switch · /quote"
+      },
+      "check-approval": {
+        "state": "unseen",
+        "ref": "interface.gateway.uniswap.org still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "swap-calldata": {
+        "state": "unseen",
+        "ref": "interface.gateway.uniswap.org still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "activity-status": {
+        "state": "unseen",
+        "ref": "interface.gateway.uniswap.org still contacted (14 req) but this exact call wasn't singled out"
+      },
+      "ext-update": {
+        "state": "unseen",
+        "ref": "clients2.google.com seen before the switch only, not after"
+      },
+      "feature-flags": {
+        "state": "out",
+        "ref": "client-config.api.cx.metamask.io · 1 req after switch"
+      },
+      "phishing-list": {
+        "state": "unseen",
+        "ref": "phishing-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "c2-list": {
+        "state": "unseen",
+        "ref": "client-side-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "token-list": {
+        "state": "out",
+        "ref": "token.api.cx.metamask.io · 1 req after switch"
+      },
+      "spot-prices": {
+        "state": "out",
+        "ref": "price.api.cx.metamask.io · 5 req after switch · /v3/spot-prices"
+      },
+      "fiat-rates": {
+        "state": "unseen",
+        "ref": "price.api.cx.metamask.io still contacted (5 req) but this exact call wasn't singled out"
+      },
+      "accounts-balances": {
+        "state": "out",
+        "ref": "accounts.api.cx.metamask.io · 4 req after switch · /v4/multiaccount/balances"
+      },
+      "balance-fallback": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; mainnet.infura.io got 0 after switch"
+      },
+      "nft-detection": {
+        "state": "unseen",
+        "ref": "nft.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "defi-positions": {
+        "state": "unseen",
+        "ref": "defiadapters.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "icons": {
+        "state": "unseen",
+        "ref": "static.cx.metamask.io seen before the switch only, not after"
+      },
+      "block-poll": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_blockNumber; mainnet.infura.io got 0 after switch"
+      },
+      "segment": {
+        "state": "out",
+        "ref": "api.segment.io · 5 req after switch"
+      },
+      "sentry": {
+        "state": "out",
+        "ref": "sentry.io · 17 req after switch"
+      },
+      "screen-recipient": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "nonce": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "gas-fees": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "estimate-gas": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "simulation": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "security-alert": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-broadcast": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-status": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "receipt-poll": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "etherscan-check": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balance-refresh": {
+        "state": "unseen",
+        "ref": "accounts.api.cx.metamask.io still contacted (4 req) but this exact call wasn't singled out"
+      }
+    },
+    "unmapped": [
+      "tron-mainnet.infura.io",
+      "privy.app.uniswap.org",
+      "bitcoin-mainnet.infura.io",
+      "user-storage.api.cx.metamask.io",
+      "solana-mainnet.infura.io",
+      "monad-mainnet.infura.io",
+      "base-mainnet.infura.io",
+      "bsc-mainnet.infura.io",
+      "polygon-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "optimism-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "subscription.api.cx.metamask.io",
+      "notification.api.cx.metamask.io",
+      "api.merkl.xyz",
+      "testnet-rpc.monad.xyz",
+      "sepolia.infura.io",
+      "linea-sepolia.infura.io",
+      "carrot.megaeth.com",
+      "challenges.cloudflare.com",
+      "gateway.api.cx.metamask.io",
+      "auth.privy.io",
+      "content-autofill.googleapis.com",
+      "nbstream.binance.com",
+      "coin-images.coingecko.com",
+      "geolocation.api.cx.metamask.io",
+      "chainid.network",
+      "on-ramp-cache.api.cx.metamask.io",
+      "tokens.api.cx.metamask.io",
+      "authentication.api.cx.metamask.io",
+      "metamask.github.io",
+      "cdn.contentful.com",
+      "explorer-api.walletconnect.com",
+      "tokens.coingecko.com",
+      "nbstream.binance.info",
+      "didcmo2jyrnku.cloudfront.net",
+      "api.web3modal.org",
+      "nbstream.yshyqxx.com",
+      "pulse.walletconnect.org",
+      "assets.coingecko.com",
+      "token-icons.s3.amazonaws.com",
+      "token.safebrowsing.apple"
+    ]
+  }
 }

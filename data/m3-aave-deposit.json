@@ -403,5 +403,216 @@
       },
       "notes": "DSN HARDCODED in sentry.client.config.ts — no env gate, no opt-out in the UI. A self-hosted build still fires Sentry unless stripped from source. (On a static IPFS host the /monitoring tunnel rewrite is missing, so delivery likely fails silently — unverified.)"
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-213413-deposit-aave-localnode"
+    ],
+    "steps": {
+      "frontend": {
+        "state": "unseen",
+        "ref": "app.aave.com still contacted (177 req) but this exact call wasn't singled out"
+      },
+      "compliance": {
+        "state": "out",
+        "ref": "app.aave.com · 177 req after switch · /api/preflight-compliance"
+      },
+      "amplitude": {
+        "state": "out",
+        "ref": "api2.amplitude.com · 2 req after switch"
+      },
+      "rpc-proxy": {
+        "state": "out",
+        "ref": "app.aave.com · 177 req after switch · /api/rpc-proxy"
+      },
+      "ens-reverse": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "merit": {
+        "state": "out",
+        "ref": "apps.aavechan.com · 2 req after switch"
+      },
+      "prices-family": {
+        "state": "unseen",
+        "ref": "app.aave.com still contacted (177 req) but this exact call wasn't singled out"
+      },
+      "walletconnect": {
+        "state": "out",
+        "ref": "relay.walletconnect.org · 1 req after switch"
+      },
+      "subgraph": {
+        "state": "unseen",
+        "ref": "app.aave.com still contacted (177 req) but this exact call wasn't singled out"
+      },
+      "coingecko-categories": {
+        "state": "out",
+        "ref": "app.aave.com · 177 req after switch · /api/coingecko-categories"
+      },
+      "coingecko-icons": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "github-metadata": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "merkl": {
+        "state": "out",
+        "ref": "api.merkl.xyz · 8 req after switch"
+      },
+      "sentry-aave": {
+        "state": "out",
+        "ref": "o4508407151525888.ingest.de.sentry.io · 1 req after switch"
+      },
+      "ext-update": {
+        "state": "unseen",
+        "ref": "clients2.google.com seen before the switch only, not after"
+      },
+      "feature-flags": {
+        "state": "out",
+        "ref": "client-config.api.cx.metamask.io · 1 req after switch"
+      },
+      "phishing-list": {
+        "state": "unseen",
+        "ref": "phishing-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "c2-list": {
+        "state": "unseen",
+        "ref": "client-side-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "token-list": {
+        "state": "unseen",
+        "ref": "token.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "spot-prices": {
+        "state": "out",
+        "ref": "price.api.cx.metamask.io · 24 req after switch · /v3/spot-prices"
+      },
+      "fiat-rates": {
+        "state": "unseen",
+        "ref": "price.api.cx.metamask.io still contacted (24 req) but this exact call wasn't singled out"
+      },
+      "accounts-balances": {
+        "state": "out",
+        "ref": "accounts.api.cx.metamask.io · 6 req after switch · /v4/multiaccount/balances"
+      },
+      "balance-fallback": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; mainnet.infura.io got 0 after switch"
+      },
+      "nft-detection": {
+        "state": "unseen",
+        "ref": "nft.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "defi-positions": {
+        "state": "unseen",
+        "ref": "defiadapters.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "icons": {
+        "state": "unseen",
+        "ref": "static.cx.metamask.io seen before the switch only, not after"
+      },
+      "block-poll": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_blockNumber; mainnet.infura.io got 0 after switch"
+      },
+      "segment": {
+        "state": "out",
+        "ref": "api.segment.io · 6 req after switch"
+      },
+      "sentry": {
+        "state": "out",
+        "ref": "sentry.io · 33 req after switch"
+      },
+      "screen-recipient": {
+        "state": "out",
+        "ref": "security-alerts.api.cx.metamask.io · 3 req after switch · /address/evm/scan"
+      },
+      "nonce": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "gas-fees": {
+        "state": "out",
+        "ref": "gas.api.cx.metamask.io · 6 req after switch · suggestedgasfees"
+      },
+      "estimate-gas": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "simulation": {
+        "state": "out",
+        "ref": "tx-sentinel-ethereum-mainnet.api.cx.metamask.io · 27 req after switch"
+      },
+      "security-alert": {
+        "state": "out",
+        "ref": "security-alerts.api.cx.metamask.io · 3 req after switch · /validate"
+      },
+      "stx-broadcast": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-status": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "receipt-poll": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "etherscan-check": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balance-refresh": {
+        "state": "unseen",
+        "ref": "accounts.api.cx.metamask.io still contacted (6 req) but this exact call wasn't singled out"
+      }
+    },
+    "unmapped": [
+      "app.family.co",
+      "tron-mainnet.infura.io",
+      "bitcoin-mainnet.infura.io",
+      "user-storage.api.cx.metamask.io",
+      "api.v3.aave.com",
+      "subscription.api.cx.metamask.io",
+      "solana-mainnet.infura.io",
+      "data-api.fun.xyz",
+      "authentication.api.cx.metamask.io",
+      "cca-lite.coinbase.com",
+      "monad-mainnet.infura.io",
+      "notification.api.cx.metamask.io",
+      "browser-intake-datadoghq.com",
+      "optimism-mainnet.infura.io",
+      "polygon-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "bsc-mainnet.infura.io",
+      "base-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "mainnet.gateway.tenderly.co",
+      "tokens.api.cx.metamask.io",
+      "carrot.megaeth.com",
+      "testnet-rpc.monad.xyz",
+      "sepolia.infura.io",
+      "linea-sepolia.infura.io",
+      "sr-client-cfg.amplitude.com",
+      "cdn.contentful.com",
+      "geolocation.api.cx.metamask.io",
+      "gateway.api.cx.metamask.io",
+      "metamask.github.io",
+      "content-autofill.googleapis.com",
+      "static.cloudflareinsights.com",
+      "sdk-cdn.fun.xyz",
+      "verify.walletconnect.org",
+      "dapp-scanning.api.cx.metamask.io",
+      "api.moonpay.com",
+      "www.4byte.directory"
+    ]
+  }
 }

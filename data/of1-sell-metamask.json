@@ -261,5 +261,104 @@
         "indie-frontends"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-214902-sell-metamask-localnode"
+    ],
+    "steps": {
+      "sell-geolocation": {
+        "state": "out",
+        "ref": "on-ramp.api.cx.metamask.io · 4 req after switch · /geolocation"
+      },
+      "ramp-trackers": {
+        "state": "out",
+        "ref": "px.ads.linkedin.com · 4 req after switch"
+      },
+      "sell-region-quote": {
+        "state": "out",
+        "ref": "on-ramp-cache.api.cx.metamask.io · 14 req after switch · /providers//v2/regions"
+      },
+      "provider-kyc-bank": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "provider-deposit-address": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "sign-send-crypto": {
+        "state": "unseen",
+        "ref": "not reached (capture-only run). The 2 mainnet.infura.io calls after the switch were eth_chainId under a different Infura key from an origin-null page, not MetaMask's send"
+      },
+      "offramp-inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "aml-payout": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      }
+    },
+    "unmapped": [
+      "tron-mainnet.infura.io",
+      "app.metamask.io",
+      "app.launchdarkly.com",
+      "api.segment.io",
+      "gas.api.cx.metamask.io",
+      "bitcoin-mainnet.infura.io",
+      "sentry.io",
+      "solana-mainnet.infura.io",
+      "user-storage.api.cx.metamask.io",
+      "price.api.cx.metamask.io",
+      "accounts.api.cx.metamask.io",
+      "authentication.api.cx.metamask.io",
+      "cdn.segment.com",
+      "events.launchdarkly.com",
+      "monad-mainnet.infura.io",
+      "subscription.api.cx.metamask.io",
+      "cdn.contentful.com",
+      "www.googletagmanager.com",
+      "o1377931.ingest.sentry.io",
+      "carrot.megaeth.com",
+      "testnet-rpc.monad.xyz",
+      "sepolia.infura.io",
+      "linea-sepolia.infura.io",
+      "api.merkl.xyz",
+      "bsc-mainnet.infura.io",
+      "base-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "polygon-mainnet.infura.io",
+      "optimism-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "notification.api.cx.metamask.io",
+      "static.cx.metamask.io",
+      "www.google-analytics.com",
+      "js.hs-banner.com",
+      "snap.licdn.com",
+      "track.hubspot.com",
+      "geolocation.api.cx.metamask.io",
+      "client-config.api.cx.metamask.io",
+      "tokens.api.cx.metamask.io",
+      "metamask.github.io",
+      "gateway.api.cx.metamask.io",
+      "token.api.cx.metamask.io",
+      "ad.doubleclick.net",
+      "js.hs-scripts.com",
+      "js.hsadspixel.net",
+      "js.hs-analytics.net",
+      "js.hubspot.com",
+      "fonts.googleapis.com",
+      "api.hubapi.com",
+      "cta-service-cms2.hubspot.com",
+      "staking.api.cx.metamask.io",
+      "www.linkedin.com",
+      "content-autofill.googleapis.com",
+      "perf-na1.hsforms.com",
+      "oidc.api.cx.metamask.io",
+      "token.safebrowsing.apple"
+    ],
+    "note": "After the switch, 2 eth_chainId calls still hit mainnet.infura.io with a different Infura key than MetaMask's, from an origin-null page (likely the sell provider's embed). A wallet RPC setting can't reach that (run 20260924-214902)."
+  }
 }

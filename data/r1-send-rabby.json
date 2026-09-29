@@ -5,7 +5,13 @@
     "wallet": "Rabby extension v0.94.3 (b00d77e)",
     "platform": "desktop Chrome",
     "network": "mainnet",
-    "settings": "defaults (tracking on, no custom RPC)"
+    "settings": "defaults (tracking on, no custom RPC)",
+    "captures": [
+      {
+        "run": "20260924-212508-send-eth-rabby",
+        "note": "dry, Rabby 0.94.6: unlock → Send → sign bar; stopped before Confirm"
+      }
+    ]
   },
   "toggles": [
     "rabby_custom_rpc",
@@ -35,8 +41,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "service/syncChain.ts:45,70-90 · metamaskModeService.ts:43-60 · customTestnet.ts:759-767 · wallet.ts:6285-6316"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · service/syncChain.ts:45,70-90 · metamaskModeService.ts:43-60 · customTestnet.ts:759-767 · wallet.ts:6285-6316"
       },
       "notes": "Boot + unlock, 55-min throttle, hourly alarm. CloudFront + S3 (Tokyo), observed.",
       "fixed_by": [
@@ -127,8 +133,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "service/currency.ts:73,80,99 · rabby-api:1864"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · service/currency.ts:73,80,99 · rabby-api:1864"
       },
       "notes": "9-min cache, periodic."
     },
@@ -182,8 +188,8 @@
       },
       "removable_by": "rabby_tracking_off",
       "provenance": {
-        "status": "code",
-        "ref": "utils/matomo-request.ts:5,18-52 · background/index.ts:305-362,624-640"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · utils/matomo-request.ts:5,18-52 · background/index.ts:305-362,624-640"
       },
       "notes": "Once per UTC day. AWS ALB (ap-northeast-1), not CloudFront — the one Rabby host outside the CloudFront edge."
     },
@@ -209,8 +215,8 @@
       },
       "removable_by": "rabby_tracking_off",
       "provenance": {
-        "status": "code",
-        "ref": "utils/ga4.ts:5-10,28-36,95-115"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · utils/ga4.ts:5-10,28-36,95-115"
       },
       "notes": "Measurement id G-XDNGZ67KEW; api_secret hard-coded in source."
     },
@@ -264,12 +270,39 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "wallet.ts:2375-2390 · ui/utils/portfolio/tokenUtils.ts:28,50,62 · rabby-api:174-182,351-367,446"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · wallet.ts:2375-2390 · ui/utils/portfolio/tokenUtils.ts:28,50,62 · rabby-api:174-182,351-367,446"
       },
       "fixed_by": [
         "local-indexing"
       ]
+    },
+    {
+      "id": "hyperliquid-perps",
+      "phase": "discover",
+      "name": "Hyperliquid · your perp positions",
+      "host": "api.hyperliquid.xyz",
+      "actor": "hyperliquid",
+      "gadget": "indexer",
+      "purpose": "POST /info clearinghouseState, userAbstraction, userFills for your address — once per Hyperliquid perp dex (~15 calls) — plus a /ws socket",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "perps balance for the dashboard tile ($0.00)",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong perps balance on the dashboard"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · 18 req from unlock, before any Perps click · ui.js BASE_URLS.PRODUCTION"
+      },
+      "notes": "Fires for a wallet that never traded perps. Unchanged with a custom RPC (20260924-212305)."
     },
     {
       "id": "sanctions-recipient",
@@ -328,8 +361,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "useAddressRisk.ts:208,340-360 · useAddressInfo.ts:88 · SendToken/index.tsx:1112 · rabby-api:835-841,856"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · useAddressRisk.ts:208,340-360 · useAddressInfo.ts:88 · SendToken/index.tsx:1112 · rabby-api:835-841,856"
       },
       "notes": "all_addresses here = one address per request, same set. Stops at the first hit.",
       "tx_input": "gate",
@@ -361,8 +394,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "wallet.ts:6780-6835 · SendToken/index.tsx:885 · SignTx.tsx:2039 · rabby-api:292-298"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · wallet.ts:6780-6835 · SendToken/index.tsx:885 · SignTx.tsx:2039 · rabby-api:292-298"
       },
       "notes": "No eth_feeHistory path; the backend is the only gas oracle.",
       "tx_input": "field",
@@ -398,8 +431,8 @@
       },
       "removable_by": "rabby_custom_rpc",
       "provenance": {
-        "status": "code",
-        "ref": "rpc.ts:20-28,234-273 · SendToken/index.tsx:2019-2025 · walletUtils/sign.ts:79-161 · SignTx.tsx:1167-1169,1192,2347"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · rpc.ts:20-28,234-273 · SendToken/index.tsx:2019-2025 · walletUtils/sign.ts:79-161 · SignTx.tsx:1167-1169,1192,2347"
       },
       "notes": "origin=chrome-extension://<id> is sent as a query param. Non-backend methods would go to the chainrpc list first — empty for eth.",
       "tx_input": "field",
@@ -470,8 +503,8 @@
       },
       "removable_by": "none",
       "provenance": {
-        "status": "code",
-        "ref": "SignTx.tsx:1275-1289 · utils/transaction.ts:379-413 · rabby-api:235-245"
+        "status": "observed",
+        "ref": "20260924-212508-send-eth-rabby · SignTx.tsx:1275-1289 · utils/transaction.ts:379-413 · rabby-api:235-245"
       },
       "notes": "signed_tx here = your other pending raw txs, not this one. festats 'preExecTransaction' event follows (no address).",
       "tx_input": "gate",
@@ -748,5 +781,113 @@
         "local-indexing"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-212305-send-eth-rabby-localnode"
+    ],
+    "steps": {
+      "static-config": {
+        "state": "out",
+        "ref": "static.debank.com · 2 req after switch"
+      },
+      "chainrpc": {
+        "state": "out",
+        "ref": "api.rabby.io · 36 req after switch · /v1/chainrpc"
+      },
+      "feature-switches": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "currency-rates": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "whitelist-lookup": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "matomo-daily": {
+        "state": "out",
+        "ref": "matomo.debank.com · 15 req after switch"
+      },
+      "ga4-daily": {
+        "state": "out",
+        "ref": "www.google-analytics.com · 22 req after switch"
+      },
+      "sentry-rabby": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balances-tokens": {
+        "state": "out",
+        "ref": "api.rabby.io · 36 req after switch · /price_change//v1/user/total_balance"
+      },
+      "hyperliquid-perps": {
+        "state": "out",
+        "ref": "api.hyperliquid.xyz · 18 req after switch · /info"
+      },
+      "sanctions-recipient": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "recipient-risk": {
+        "state": "out",
+        "ref": "api.rabby.io · 36 req after switch · /v2/engine/addr/has_transfer"
+      },
+      "gas-market": {
+        "state": "out",
+        "ref": "api.rabby.io · 36 req after switch · /v2/wallet/gas_market"
+      },
+      "rpc-proxy-construct": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_getBlockByNumber/eth_getTransactionCount; api.rabby.io got none of these methods after switch"
+      },
+      "parse-tx": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "pre-exec": {
+        "state": "out",
+        "ref": "api.rabby.io · 36 req after switch · /v1/wallet/pre_exec_tx"
+      },
+      "sanctions-both": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "rule-log": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "gasless-check": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "submit-tx": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "festats": {
+        "state": "unseen",
+        "ref": "festats.debank.com seen before the switch only, not after"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "receipt-poll": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      },
+      "etherscan-check": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balance-refresh": {
+        "state": "unseen",
+        "ref": "api.rabby.io still contacted (36 req) but this exact call wasn't singled out"
+      }
+    }
+  }
 }

@@ -139,5 +139,89 @@
         "indie-frontends"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-215204-buy-metamask-localnode"
+    ],
+    "steps": {
+      "onramp-geolocation": {
+        "state": "out",
+        "ref": "on-ramp.api.cx.metamask.io · 4 req after switch · /geolocation"
+      },
+      "onramp-region": {
+        "state": "out",
+        "ref": "on-ramp-cache.api.cx.metamask.io · 14 req after switch · /providers//v2/regions"
+      },
+      "provider-moonpay": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "provider-coinbase": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      }
+    },
+    "unmapped": [
+      "tron-mainnet.infura.io",
+      "app.metamask.io",
+      "app.launchdarkly.com",
+      "api.segment.io",
+      "solana-mainnet.infura.io",
+      "bitcoin-mainnet.infura.io",
+      "gas.api.cx.metamask.io",
+      "sentry.io",
+      "user-storage.api.cx.metamask.io",
+      "events.launchdarkly.com",
+      "subscription.api.cx.metamask.io",
+      "authentication.api.cx.metamask.io",
+      "price.api.cx.metamask.io",
+      "cdn.segment.com",
+      "mainnet.infura.io",
+      "px.ads.linkedin.com",
+      "accounts.api.cx.metamask.io",
+      "monad-mainnet.infura.io",
+      "cdn.contentful.com",
+      "www.googletagmanager.com",
+      "o1377931.ingest.sentry.io",
+      "api.merkl.xyz",
+      "carrot.megaeth.com",
+      "testnet-rpc.monad.xyz",
+      "linea-sepolia.infura.io",
+      "sepolia.infura.io",
+      "base-mainnet.infura.io",
+      "polygon-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "optimism-mainnet.infura.io",
+      "bsc-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "notification.api.cx.metamask.io",
+      "js.hs-banner.com",
+      "www.google-analytics.com",
+      "track.hubspot.com",
+      "snap.licdn.com",
+      "geolocation.api.cx.metamask.io",
+      "token.api.cx.metamask.io",
+      "client-config.api.cx.metamask.io",
+      "tokens.api.cx.metamask.io",
+      "metamask.github.io",
+      "gateway.api.cx.metamask.io",
+      "ad.doubleclick.net",
+      "fonts.googleapis.com",
+      "js.hs-scripts.com",
+      "js.hsadspixel.net",
+      "js.hs-analytics.net",
+      "js.hubspot.com",
+      "staking.api.cx.metamask.io",
+      "static.cx.metamask.io",
+      "content-autofill.googleapis.com",
+      "cta-service-cms2.hubspot.com",
+      "api.hubapi.com",
+      "perf-na1.hsforms.com",
+      "www.linkedin.com",
+      "oidc.api.cx.metamask.io",
+      "token.safebrowsing.apple"
+    ]
+  }
 }

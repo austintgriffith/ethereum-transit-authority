@@ -88,5 +88,156 @@
         "verifiable-rpc"
       ]
     }
-  ]
+  ],
+  "own_node": {
+    "node": "192.168.68.54",
+    "runs": [
+      "20260924-214113-approve-swap-localnode"
+    ],
+    "steps": {
+      "approve-permit": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "swap-quote-out": {
+        "state": "out",
+        "ref": "bridge.api.cx.metamask.io · 2 req after switch · /getquotestream"
+      },
+      "ext-update": {
+        "state": "unseen",
+        "ref": "clients2.google.com seen before the switch only, not after"
+      },
+      "feature-flags": {
+        "state": "out",
+        "ref": "client-config.api.cx.metamask.io · 1 req after switch"
+      },
+      "phishing-list": {
+        "state": "unseen",
+        "ref": "phishing-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "c2-list": {
+        "state": "unseen",
+        "ref": "client-side-detection.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "token-list": {
+        "state": "out",
+        "ref": "token.api.cx.metamask.io · 1 req after switch"
+      },
+      "spot-prices": {
+        "state": "out",
+        "ref": "price.api.cx.metamask.io · 6 req after switch · /v3/spot-prices"
+      },
+      "fiat-rates": {
+        "state": "unseen",
+        "ref": "price.api.cx.metamask.io still contacted (6 req) but this exact call wasn't singled out"
+      },
+      "accounts-balances": {
+        "state": "out",
+        "ref": "accounts.api.cx.metamask.io · 3 req after switch · /v4/multiaccount/balances"
+      },
+      "balance-fallback": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_call; mainnet.infura.io got 0 after switch"
+      },
+      "nft-detection": {
+        "state": "unseen",
+        "ref": "nft.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "defi-positions": {
+        "state": "unseen",
+        "ref": "defiadapters.api.cx.metamask.io seen before the switch only, not after"
+      },
+      "icons": {
+        "state": "out",
+        "ref": "static.cx.metamask.io · 1 req after switch"
+      },
+      "block-poll": {
+        "state": "local",
+        "ref": "192.168.68.54 · eth_blockNumber; mainnet.infura.io got 0 after switch"
+      },
+      "segment": {
+        "state": "out",
+        "ref": "api.segment.io · 4 req after switch"
+      },
+      "sentry": {
+        "state": "out",
+        "ref": "sentry.io · 15 req after switch"
+      },
+      "screen-recipient": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "nonce": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "gas-fees": {
+        "state": "out",
+        "ref": "gas.api.cx.metamask.io · 3 req after switch · suggestedgasfees"
+      },
+      "estimate-gas": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "simulation": {
+        "state": "out",
+        "ref": "tx-sentinel-ethereum-mainnet.api.cx.metamask.io · 2 req after switch"
+      },
+      "security-alert": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-broadcast": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "inclusion": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "stx-status": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "receipt-poll": {
+        "state": "unseen",
+        "ref": "mainnet.infura.io seen before the switch only, not after"
+      },
+      "etherscan-check": {
+        "state": "unseen",
+        "ref": "not in these runs"
+      },
+      "balance-refresh": {
+        "state": "unseen",
+        "ref": "accounts.api.cx.metamask.io still contacted (3 req) but this exact call wasn't singled out"
+      }
+    },
+    "unmapped": [
+      "tron-mainnet.infura.io",
+      "solana-mainnet.infura.io",
+      "bitcoin-mainnet.infura.io",
+      "user-storage.api.cx.metamask.io",
+      "monad-mainnet.infura.io",
+      "subscription.api.cx.metamask.io",
+      "api.merkl.xyz",
+      "carrot.megaeth.com",
+      "testnet-rpc.monad.xyz",
+      "linea-sepolia.infura.io",
+      "sepolia.infura.io",
+      "polygon-mainnet.infura.io",
+      "optimism-mainnet.infura.io",
+      "bsc-mainnet.infura.io",
+      "arbitrum-mainnet.infura.io",
+      "base-mainnet.infura.io",
+      "linea-mainnet.infura.io",
+      "notification.api.cx.metamask.io",
+      "geolocation.api.cx.metamask.io",
+      "on-ramp-cache.api.cx.metamask.io",
+      "tokens.api.cx.metamask.io",
+      "authentication.api.cx.metamask.io",
+      "metamask.github.io",
+      "cdn.contentful.com",
+      "gateway.api.cx.metamask.io"
+    ]
+  }
 }
