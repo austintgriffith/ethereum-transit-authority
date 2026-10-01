@@ -1,6 +1,6 @@
 # Ethereum Transit Authority
 
-**Live map: https://austintgriffith.github.io/ethereum-transit-authority/**
+**Live map: https://ethereumtransitauthority.com**
 
 A subway map of every company your data passes through when you transact on Ethereum.
 
