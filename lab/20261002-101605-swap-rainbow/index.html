@@ -1,0 +1,104 @@
+<meta charset="utf-8"><title>lab run 20261002-101605-swap-rainbow</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20261002-101605-swap-rainbow</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20261002-101605-swap-rainbow
+action: run
+guest_ip: 192.168.64.15
+host_proxy: 192.168.64.1:8081
+base_image: crops-warm-rainbow
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1790957843.118] rainbow:swap: extension id pkhkkapgbigcelohhfkmkpjcekohieej
+[t=1790957845.913]   fill unlock-pw: password-input
+[t=1790957846.006]   click unlock: unlock-button (click)
+[t=1790957846.609]   unlock (start): submitted
+[t=1790957856.811]   click swap: header-link-swap (click)
+[t=1790957860.565]   click buy-picker: token-to-buy-search-token-input (click)
+[t=1790957862.877]   fill buy-search: token-to-buy-search-token-input
+[t=1790957866.216]   click pick-buy: text:USDC (click)
+[t=1790957868.905]   sell amount: 0.0005
+[t=1790957879.121]   click swap-review: swap-confirmation-button-ready (click)
+[t=1790957883.858]   click confirm: swap-review-execute (click)
+[t=1790957919.692] rainbow:swap: submitted
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20261002-101605-swap-rainbow
+
+action: run · guest 192.168.64.15 · proxy 192.168.64.1:8081 · action_rc 0
+
+## decrypted: 193 requests · 24 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| token-search.rainbow.me | 37 | GET | — |
+| rpc.rainbow.me | 35 | POST | — |
+| rainbow.imgix.net | 32 | GET | — |
+| platform.p.rainbow.me | 17 | GET | authorization |
+| swap.p.rainbow.me | 15 | GET | — |
+| rainbowjiumask.dataplane.rudderstack.com | 14 | POST | authorization |
+| metadata.p.rainbow.me | 9 | GET/POST | authorization |
+| o331974.ingest.sentry.io | 8 | POST | — |
+| android.clients.google.com | 5 | POST | authorization |
+| radarsubmissions.apple.com | 4 | POST | — |
+| rainbowme-res.cloudinary.com | 3 | GET | — |
+| firebaseremoteconfig.googleapis.com | 2 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| firebaseinstallations.googleapis.com | 1 | POST | authorization |
+| cf.iadsdk.apple.com | 1 | POST | — |
+| addys.p.rainbow.me | 1 | POST | authorization |
+| iadsdk.apple.com | 1 | POST | — |
+| bag.itunes.apple.com | 1 | GET | — |
+| token.safebrowsing.apple | 1 | GET | — |
+| calendars.icloud.com | 1 | GET | — |
+| init.itunes.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 1945 proxied pkts · 9 BYPASS dst · 2 QUIC dst · 1632 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.64.99.186 (?) · 89 pkts
+- 23.222.27.140 (no DNS seen) · 70 pkts
+- 23.222.27.143 (no DNS seen) · 25 pkts
+- 23.37.97.92 (?) · 21 pkts
+- 23.37.98.207 (no DNS seen) · 18 pkts
+- 23.47.200.181 (?) · 13 pkts
+- 199.232.67.6 (no DNS seen) · 11 pkts
+- 23.222.27.150 (no DNS seen) · 5 pkts
+- 54.69.185.163 (no DNS seen) · 1 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (no DNS seen) · 58 pkts
+- 172.64.69.66 (?) · 11 pkts
+
+### other egress (non-443, non-DNS)
+- 23.11.33.159:80 (no DNS seen) · 24 pkts
+- 192.168.64.255:137 (no DNS seen) · 18 pkts
+- 224.0.0.251:5353 (no DNS seen) · 5 pkts
+- 104.18.38.233:80 (no DNS seen) · 4 pkts
+
+</pre>

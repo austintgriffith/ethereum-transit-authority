@@ -1,0 +1,142 @@
+{
+  "id": "rs1-swap-rabby",
+  "title": "The Rabby Swap",
+  "extends": "r1-send-rabby",
+  "context": {
+    "wallet": "Rabby extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "0.94.6",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-101515-swap-rabby",
+        "tx": "0x735ee6e15c34d9ab78df6866ef0eaf7e00c153930f69b01823bdab657a429b0c",
+        "note": "real swap: 0.0005 ETH → 1.360864 USDC via 1inch"
+      },
+      {
+        "run": "20261002-101144-swap-rabby",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Rabby's built-in Swap, ETH→USDC (Rabby pre-fills USDC as the target). Rabby's server asks the aggregators and returns the winning quote with the calldata you sign: 1inch won, through 1inch's router 0x1111…2a65, with a 0.25% Rabby fee and 1% slippage. The browser never contacted 1inch; Rabby did. MEV Protection is on by default; the tx went out through Rabby's own submit_tx like R1. After signing, Rabby is also sent the trade record — POST api.rabby.io/v1/wallet/swap_trade carries the quote (pay/receive token and amounts, dex 1inch, fee rate) plus the full tx with your from-address — and DeBank's festats gets swapRequestQuote / swapQuoteResult events. Real mainnet tx 0x735ee6e15c34d9ab78df6866ef0eaf7e00c153930f69b01823bdab657a429b0c.",
+  "prepend_steps": [
+    {
+      "id": "swap-slippage",
+      "phase": "discover",
+      "name": "Rabby · slippage advice",
+      "host": "api.rabby.io/v1/wallet/suggest_slippage · /check_slippage",
+      "actor": "rabby",
+      "purpose": "Server suggests and checks the slippage tolerance for this pair",
+      "need": "C",
+      "carries": [
+        "ip",
+        "token_pair"
+      ],
+      "returns": "the slippage the quote is built with (1%)",
+      "tx_input": "field",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a loose tolerance lets the trade fill far below the quoted price"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101515-swap-rabby · GET api.rabby.io/v1/wallet/suggest_slippage, check_slippage"
+      }
+    },
+    {
+      "id": "swap-quote",
+      "phase": "discover",
+      "name": "Rabby swap engine · quote + calldata",
+      "host": "api.rabby.io/v1/wallet/swap_quote",
+      "actor": "rabby",
+      "purpose": "Rabby's server queries DEX aggregators and returns the winner (1inch) with minimum-out and the router calldata the wallet signs",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you accept and the exact bytes you sign",
+      "tx_input": "field",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage; the wallet can't price-check it locally"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101515-swap-rabby · GET api.rabby.io/v1/wallet/swap_quote; tx to 1inch router 0x1111…2a65"
+      },
+      "notes": "The aggregator never sees you directly: Rabby fetches quotes server-side. Rabby's fee 0.25% is shown on the swap screen.",
+      "fixed_by": [
+        "open-simulation"
+      ]
+    },
+    {
+      "id": "swap-stats",
+      "phase": "discover",
+      "name": "DeBank festats · quote events",
+      "host": "festats.debank.com/rabby/swapRequestQuote · swapQuoteResult",
+      "actor": "rabby",
+      "purpose": "Analytics pings for each quote request and result",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "nothing the wallet uses",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101515-swap-rabby · GET festats.debank.com/rabby/swapRequestQuote, swapQuoteResult"
+      },
+      "notes": "Query strings are not logged, so the fields these GETs carry are not read."
+    },
+    {
+      "id": "router-check",
+      "phase": "discover",
+      "name": "Rabby · router contract check",
+      "host": "api.rabby.io/v1/contract · /v1/engine/contract/has_interaction",
+      "actor": "rabby",
+      "purpose": "Looks up the router contract and whether you've used it before, for the sign screen's risk labels",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "'known contract / first interaction' labels on the sign bar",
+      "tx_input": "gate",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a malicious router labelled as known"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101515-swap-rabby · GET api.rabby.io/v1/contract, /v1/engine/contract/has_interaction"
+      },
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    }
+  ]
+}

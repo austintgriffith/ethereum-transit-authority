@@ -1,0 +1,116 @@
+{
+  "id": "rbs1-swap-rainbow",
+  "title": "The Rainbow Swap",
+  "extends": "rb1-send-rainbow",
+  "context": {
+    "wallet": "Rainbow extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "1.6.11",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-101605-swap-rainbow",
+        "tx": "0xa030ca7316455109ad2205f80c11bca9b40f95cbedb3c8711616412beec529f2",
+        "note": "real swap: 0.0005 ETH → 1.377901 USDC via Sprinter"
+      },
+      {
+        "run": "20261002-101234-swap-rainbow",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Rainbow's built-in Swap, ETH→USDC. The quote comes from Rainbow's swap API (swap.p.rainbow.me/v1/quote), routed 100% through Sprinter, with a Rainbow fee of 0.00000425 ETH (0.85%). THE FINDING: the swap went out as a type-4 (EIP-7702) transaction — a self-call carrying an authorization that delegates the account's code to 0x612373d7…51d3, verified on Sourcify as CaliburEntry (Calibur, Uniswap's 7702 smart-account contract). The fee line read 'Est. Smart Wallet Fee … Includes smart wallet activation'; the account was never asked in plain words. After this tx the address has code (0xef0100612373…): every later transaction from it, in any wallet, runs through that contract. Before quoting, Rainbow checked platform.p.rainbow.me/v1/wallets/delegation/WalletStatus and NetworkStatus. Same RPC as RB1 (rpc.rainbow.me). Real mainnet tx 0xa030ca7316455109ad2205f80c11bca9b40f95cbedb3c8711616412beec529f2.",
+  "prepend_steps": [
+    {
+      "id": "token-search",
+      "phase": "discover",
+      "name": "Rainbow token search",
+      "host": "token-search.rainbow.me/v3/discovery · /v3/tokens",
+      "actor": "rainbow-apis",
+      "purpose": "The swap screen's token list and the search for the token you want",
+      "need": "R",
+      "carries": [
+        "ip",
+        "token_pair"
+      ],
+      "returns": "which tokens you can pick",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a look-alike token listed as the real one"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101605-swap-rainbow · GET token-search.rainbow.me/v3/discovery/1, /v3/tokens/*"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "delegation-status",
+      "phase": "discover",
+      "name": "Rainbow · smart-wallet status",
+      "host": "platform.p.rainbow.me/v1/wallets/delegation/WalletStatus · NetworkStatus",
+      "actor": "rainbow-apis",
+      "purpose": "Checks whether your account is already delegated and whether the network supports 7702, before building the swap",
+      "need": "RT",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "whether to bundle a smart-wallet activation into your swap",
+      "tx_input": "field",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "decides what code your account gets delegated to"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101605-swap-rainbow · GET platform.p.rainbow.me/v1/wallets/delegation/WalletStatus, NetworkStatus"
+      }
+    },
+    {
+      "id": "swap-quote",
+      "phase": "discover",
+      "name": "Rainbow swap API · quote + calldata",
+      "host": "swap.p.rainbow.me/v1/quote · /v1/slippage",
+      "actor": "rainbow-apis",
+      "purpose": "Rainbow's server picks the route (Sprinter, 100%), the minimum received, its fee, and the calldata you sign",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you accept and the exact bytes you sign",
+      "tx_input": "field",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-101605-swap-rainbow · GET swap.p.rainbow.me/v1/quote, /v1/slippage; review screen: Swapping via Sprinter 100%, Rainbow fee 0.00000425 ETH"
+      },
+      "fixed_by": [
+        "open-simulation"
+      ]
+    }
+  ]
+}

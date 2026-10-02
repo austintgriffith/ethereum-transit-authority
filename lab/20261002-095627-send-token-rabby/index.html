@@ -1,0 +1,59 @@
+<meta charset="utf-8"><title>lab run 20261002-095627-send-token-rabby</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20261002-095627-send-token-rabby</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>driver.log</h2>
+<pre>[t=1790956659.480] rabby:send-token: extension id ohalidldpbnnblpakdicpoleffldpmlh
+[t=1790956663.342]   unlock (start): submitted
+[t=1790956683.298]   token: mUSD
+[t=1790956683.435]   amount field: 1
+[t=1790956691.648] rabby:send-token: DRY run — stopped at review, NOT broadcasting (SEND_BROADCAST=1 to submit)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20261002-095627-send-token-rabby
+
+action: ? · guest 192.168.64.7 · proxy  · action_rc ?
+
+## decrypted: 156 requests · 18 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| api.rabby.io | 57 | GET/POST | cookie,x-api-key |
+| static.debank.com | 23 | GET | — |
+| www.google-analytics.com | 20 | POST | — |
+| api.hyperliquid.xyz | 18 | GET/POST | — |
+| matomo.debank.com | 14 | POST | — |
+| android.clients.google.com | 5 | POST | authorization |
+| sas.pcms.apple.com | 4 | GET | — |
+| ocsp2.apple.com | 4 | GET | — |
+| iadsdk.apple.com | 2 | GET/POST | — |
+| stocks-data-service.apple.com | 1 | GET | — |
+| gsp57-ssl-background.ls.apple.com | 1 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| cf.iadsdk.apple.com | 1 | POST | — |
+| static-assets.rabby.io | 1 | GET | — |
+| pancake.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 0 proxied pkts · 0 BYPASS dst · 0 QUIC dst · 355 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### other egress (non-443, non-DNS)
+- 192.168.64.1:8080 (no DNS seen) · 1704 pkts
+- 192.168.64.255:137 (no DNS seen) · 24 pkts
+- 224.0.0.251:5353 (no DNS seen) · 2 pkts
+
+</pre>

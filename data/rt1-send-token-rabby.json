@@ -1,0 +1,58 @@
+{
+  "id": "rt1-send-token-rabby",
+  "title": "The Rabby Token Send",
+  "extends": "r1-send-rabby",
+  "context": {
+    "wallet": "Rabby extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "0.94.6",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-100425-send-token-rabby",
+        "tx": "0xf94d95699365ee5a597af944ccb8520b19cdbbdbed81cece067312a63007cd58",
+        "note": "real send: 0.5 mUSD → austingriffith.eth"
+      },
+      {
+        "run": "20261002-095627-send-token-rabby",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Rabby sending an ERC-20 (0.5 mUSD), not ETH. Same Rabby backbone as R1; the tx's 'to' is the token contract with the recipient inside transfer() calldata. What the token adds: picking the token runs through Rabby's servers — token_search, then tapping mUSD opens a detail sheet fed by /v1/token/identity and /v1/token/price_curve, and you must press its Confirm to select the token. Recipient checks seen on this run: /v1/engine/addr/has_transfer, used_chain_list, is_spoofing (address-poisoning check). Real mainnet tx 0xf94d95699365ee5a597af944ccb8520b19cdbbdbed81cece067312a63007cd58.",
+  "prepend_steps": [
+    {
+      "id": "token-sheet",
+      "phase": "discover",
+      "name": "Rabby · token search + identity sheet",
+      "host": "api.rabby.io/v1/user/token_search · /v1/token/identity · /v1/token/price_curve",
+      "actor": "rabby",
+      "purpose": "The token picker searches your tokens on Rabby's server; tapping one opens an identity + price-chart sheet you confirm to select it",
+      "need": "RT",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair"
+      ],
+      "returns": "which token you're sending and whether Rabby says it is the real one",
+      "tx_input": "gate",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong identity verdict makes a look-alike token pass as the real one"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-100425-send-token-rabby · GET api.rabby.io/v1/user/token_search, /v1/token/identity, /v1/token/price_curve"
+      },
+      "notes": "Not seen on the ETH send (R1). Query strings are not logged by the lab, so which fields ride in each GET is inferred from the endpoint, not read.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+<meta charset="utf-8"><title>lab run 20261002-095337-send-token-rainbow</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20261002-095337-send-token-rainbow</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>driver.log</h2>
+<pre>[t=1790956539.129] rainbow:send-token: extension id pkhkkapgbigcelohhfkmkpjcekohieej
+[t=1790956542.661]   fill unlock-pw: password-input
+[t=1790956542.811]   click unlock: unlock-button (click)
+[t=1790956543.417]   unlock (start): submitted
+[t=1790956553.921]   click send: header-link-send (click)
+[t=1790956557.606]   fill recipient: to-address-input
+[t=1790956559.731]   click open-token-picker: token-input (click)
+[t=1790956561.907]   click pick-asset: text:mUSD (click)
+[t=1790956564.137]   fill amount: send-input-mask
+[t=1790956566.402]   click review: send-review-button (click)
+[t=1790956570.673] rainbow:send-token: DRY run — stopped at review, NOT broadcasting (SEND_BROADCAST=1 to submit)
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20261002-095337-send-token-rainbow
+
+action: ? · guest 192.168.64.6 · proxy  · action_rc ?
+
+## decrypted: 104 requests · 18 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| rpc.rainbow.me | 47 | POST | — |
+| rainbowjiumask.dataplane.rudderstack.com | 9 | POST | authorization |
+| o331974.ingest.sentry.io | 7 | POST | — |
+| platform.p.rainbow.me | 6 | GET | authorization |
+| cma.itunes.apple.com | 6 | POST | — |
+| metadata.p.rainbow.me | 5 | GET/POST | authorization |
+| rainbow.imgix.net | 5 | GET | — |
+| android.clients.google.com | 5 | POST | authorization |
+| pancake.apple.com | 4 | GET | — |
+| www.google.com | 2 | GET | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| firebaseinstallations.googleapis.com | 1 | POST | authorization |
+| firebaseremoteconfig.googleapis.com | 1 | POST | — |
+| addys.p.rainbow.me | 1 | POST | authorization |
+| euc.li | 1 | GET | — |
+| rainbowme-res.cloudinary.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 0 proxied pkts · 7 BYPASS dst · 2 QUIC dst · 645 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### BYPASS — guest spoke TLS to these directly, not through the proxy
+- 23.47.200.181 (?) · 50 pkts
+- 23.222.27.138 (?) · 32 pkts
+- 34.216.175.146 (?) · 26 pkts
+- 23.37.97.92 (?) · 22 pkts
+- 199.232.67.6 (?) · 16 pkts
+- 54.69.185.163 (no DNS seen) · 5 pkts
+- 23.64.99.186 (no DNS seen) · 2 pkts
+
+### QUIC LEAK — udp/443 left the guest
+- 199.232.67.6 (?) · 103 pkts
+- 162.159.194.66 (?) · 45 pkts
+
+### other egress (non-443, non-DNS)
+- 192.168.64.1:8081 (no DNS seen) · 1032 pkts
+- 23.11.33.159:80 (no DNS seen) · 19 pkts
+- 192.168.64.255:137 (no DNS seen) · 15 pkts
+- 104.18.38.233:80 (no DNS seen) · 2 pkts
+- 224.0.0.251:5353 (no DNS seen) · 2 pkts
+
+</pre>

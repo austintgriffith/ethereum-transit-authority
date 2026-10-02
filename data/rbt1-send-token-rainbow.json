@@ -1,0 +1,53 @@
+{
+  "id": "rbt1-send-token-rainbow",
+  "title": "The Rainbow Token Send",
+  "extends": "rb1-send-rainbow",
+  "context": {
+    "wallet": "Rainbow extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "1.6.11",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-100525-send-token-rainbow",
+        "tx": "0xb6634fca43338b8fb94d03bc6e0fd3a102047a2064ccd754bfad796fd14c9bf6",
+        "note": "real send: 0.5 mUSD → austingriffith.eth"
+      },
+      {
+        "run": "20261002-095337-send-token-rainbow",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Rainbow sending an ERC-20 (0.5 mUSD). Compared with its ETH send (RB1) the only new request is the token's logo, fetched from Rainbow's image CDN with the token contract address in the URL. No token screening call: unlike MetaMask (Blockaid token scan, MT) and Rabby (token identity, RT), Rainbow sent no request that vouches for the token. Same RPC path as RB1 (rpc.rainbow.me). Real mainnet tx 0xb6634fca43338b8fb94d03bc6e0fd3a102047a2064ccd754bfad796fd14c9bf6.",
+  "prepend_steps": [
+    {
+      "id": "token-logo",
+      "phase": "discover",
+      "name": "Token logo · Rainbow image CDN",
+      "host": "rainbow.imgix.net",
+      "actor": "rainbow-apis",
+      "purpose": "Draws the token's logo; the image URL names the token contract (0xaca92e…35da, mUSD)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "holdings"
+      ],
+      "returns": "the logo you recognise the token by",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a swapped logo dresses a fake token as a known one"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-100525-send-token-rainbow · GET rainbow.imgix.net/…assets%2Fethereum%2F0xaca92e438d…"
+      },
+      "notes": "imgix serves Rainbow's subdomain; it sees your IP and which token you hold."
+    }
+  ]
+}
