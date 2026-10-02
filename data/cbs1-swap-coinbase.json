@@ -1,0 +1,67 @@
+{
+  "id": "cbs1-swap-coinbase",
+  "title": "The Coinbase Wallet Swap",
+  "extends": "cb1-send-coinbase",
+  "context": {
+    "wallet": "Coinbase Wallet extension 3.148.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "3.148.0",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-114212-swap-coinbase",
+        "tx": "0xf0b16da56c5616a70027f0037a551728b5b20f72217746585d572eb345fefdc7",
+        "note": "real swap: 0.0005 ETH → USDC"
+      },
+      {
+        "run": "20261002-112609-swap-coinbase",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Coinbase Wallet's built-in Swap, ETH→USDC. A first-run intro ('price checks on over 75 DEXes'), then Coinbase's server returns the quote and the trade: 'best price out of 28 sources', 1% slippage, Coinbase fee $0.01. The tx went to AllowanceHolder 0x0000…2734 (same contract as Rabby's swap) through Coinbase's RPC, and the login signature fired again. No recipient scan or saved destination (no recipient). Real mainnet tx 0xf0b16da56c5616a70027f0037a551728b5b20f72217746585d572eb345fefdc7.",
+  "prepend_steps": [
+    {
+      "id": "cb-swap-quote",
+      "phase": "discover",
+      "name": "Coinbase swap engine · quote + trade",
+      "host": "api.wallet.coinbase.com/rpc/v1/swap/assets · /rpc/v1/swap/quote · /rpc/v3/swap/trade",
+      "actor": "coinbase-wallet",
+      "purpose": "Token list, then Coinbase's server compares DEX sources ('best price out of 28 sources') and returns the trade you sign, with a Coinbase fee",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "returns": "the price you accept and the bytes you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage (1%)"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-114212-swap-coinbase · GET /rpc/v1/swap/assets, /rpc/v1/swap/quote, /rpc/v3/swap/trade; tx to AllowanceHolder 0xf0b16da56c5616a70027f0037a551728b5b20f72217746585d572eb345fefdc7"
+      },
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "tx_input": "field",
+      "fixed_by": [
+        "open-simulation"
+      ],
+      "notes": "Query strings are not logged, so which fields ride in these GETs is inferred. The trade executed through AllowanceHolder 0x0000…2734 (Sourcify name) — the same contract Rabby's swaps used."
+    }
+  ],
+  "drop_steps": [
+    "cb-recipient-scan",
+    "cb-save-recipient"
+  ]
+}

@@ -1,0 +1,96 @@
+<meta charset="utf-8"><title>lab run 20261002-113932-send-token-phantom</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20261002-113932-send-token-phantom</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20261002-113932-send-token-phantom
+action: run
+guest_ip: 192.168.64.21
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm-phantom
+action_rc: 1
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1790962839.439] phantom:send-token: extension id bfnaelmomeimhlpmgjnjophhpkkoljpa
+[t=1790962842.564]   unlock (start): submitted
+run phantom:send-token failed: locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByRole(&#x27;button&#x27;, { name: /^(Confirm|Swap|Approve)$/ }).filter({ visible: true }).first()[22m
+[2m    - locator resolved to &lt;button type=&quot;button&quot; class=&quot;_1wcex0u7 kch3850 kch385f kch3851 kch3856 kch385e _1wcex0u0 _48j31au8 _48j31av6 _48j31ax2 _48j31aw4 _48j31a21 _48j31a3o _48j31a5f _48j31a72 _48j31a1ka _48j31al0 _48j31a6rg _48j31a1c6 _48j31a1mc _48j31a1mp _48j31a1nb _48j31a1h2 _1wcex0ub _1wcex0u4 _48j31a4rb _48j31a1yx _1wcex0ue _1bgnhl0&quot;&gt;…&lt;/button&gt;[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - &lt;div width=&quot;100%&quot; align=&quot;center&quot; justify=&quot;center&quot; direction=&quot;column&quot; class=&quot;sc-bEjUoa sc-cRQNIr iKmJfe NSpbE&quot;&gt;…&lt;/div&gt; from &lt;div id=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - &lt;div width=&quot;100%&quot; align=&quot;center&quot; justify=&quot;center&quot; direction=&quot;column&quot; class=&quot;sc-bEjUoa sc-cRQNIr iKmJfe NSpbE&quot;&gt;…&lt;/div&gt; from &lt;div id=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    55 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is visible, enabled and stable[22m
+[2m       - scrolling into view if needed[22m
+[2m       - done scrolling[22m
+[2m       - &lt;div width=&quot;100%&quot; align=&quot;center&quot; justify=&quot;center&quot; direction=&quot;column&quot; class=&quot;sc-bEjUoa sc-cRQNIr iKmJfe NSpbE&quot;&gt;…&lt;/div&gt; from &lt;div id=&quot;modal&quot;&gt;…&lt;/div&gt; subtree intercepts pointer events[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20261002-113932-send-token-phantom
+
+action: run · guest 192.168.64.21 · proxy 192.168.64.1:8080 · action_rc 1
+
+## decrypted: 159 requests · 15 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| api.phantom.app | 80 | GET/POST | authorization,cookie |
+| node-proxy.phantom.app | 47 | POST | authorization,cookie |
+| data.phantom.app | 6 | POST | authorization,cookie |
+| time.phantom.app | 6 | GET | cookie |
+| android.clients.google.com | 4 | POST | authorization |
+| eppo-proxy.phantom.app | 3 | GET | cookie |
+| auth.phantom.app | 3 | GET/POST | authorization,cookie |
+| gas-price-oracle.phantom.app | 3 | GET | authorization,cookie |
+| example.com | 1 | GET | — |
+| gsp57-ssl-background.ls.apple.com | 1 | POST | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| sanity-proxy-v2.phantom.app | 1 | GET | cookie |
+| solana-mainnet.phantom.app | 1 | POST | authorization,cookie |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 1141 proxied pkts · 0 BYPASS dst · 0 QUIC dst · 53 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 16 pkts
+- 192.168.64.1:8081 (no DNS seen) · 11 pkts
+- 224.0.0.251:5353 (no DNS seen) · 4 pkts
+
+</pre>

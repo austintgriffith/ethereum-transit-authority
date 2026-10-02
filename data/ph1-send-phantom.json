@@ -1,0 +1,396 @@
+{
+  "id": "ph1-send-phantom",
+  "title": "The Phantom Send",
+  "context": {
+    "wallet": "Phantom extension 26.31.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "26.31.0 (Chrome Web Store CRX, Oct 2 2026)",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-110730-send-eth-phantom",
+        "tx": "0xbd62c7bcde422ae6c83f8aeb07812060709e185252b7478761cde6bc2bfeef7f",
+        "note": "real send: 0.0002 ETH → 0x34aa…fdf3"
+      },
+      {
+        "run": "20261002-110348-send-eth-phantom",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "toggles": [],
+  "_comment": "Phantom extension, plain ETH send. A self-custodial seed import still runs under a server-side Phantom user id (2de026d0…) that most calls are keyed to. Phantom screens YOUR address (wallet_screen/v1), simulates the full tx on its server, reads and broadcasts through its own RPC proxy, and after sending PUTs the recipient into your account's recent addresses. It also reads the Solana account from the same seed. Real mainnet tx 0xbd62c7bcde422ae6c83f8aeb07812060709e185252b7478761cde6bc2bfeef7f.",
+  "steps": [
+    {
+      "id": "ph-flags",
+      "phase": "background",
+      "name": "Phantom · flags, content, clock",
+      "host": "eppo-proxy.phantom.app · sanity-proxy-v2.phantom.app · time.phantom.app",
+      "actor": "phantom-apis",
+      "purpose": "Feature flags and bandit experiments (Eppo), CMS content (Sanity), and server time",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "which features are on for you",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · GET eppo-proxy /api/flag-config/v1/config, /bandits; sanity-proxy-v2 /v1/data/query/production; time.phantom.app /utc"
+      }
+    },
+    {
+      "id": "ph-analytics",
+      "phase": "background",
+      "name": "Phantom · analytics",
+      "host": "data.phantom.app/v1/batch",
+      "actor": "phantom-data",
+      "purpose": "Batched product analytics events",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "nothing the wallet uses",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST data.phantom.app /v1/batch ×6"
+      }
+    },
+    {
+      "id": "ph-account",
+      "phase": "background",
+      "name": "Phantom · your user account",
+      "host": "auth.phantom.app/v1/auth/factor-source · api.phantom.app/user/v1/users/{id}/… · /v1/wallets/kms/rpc",
+      "actor": "phantom-apis",
+      "purpose": "The wallet runs under a server-side Phantom user id: auth factors, wallet storage, profile, wallet-account list, a KMS call, cash-account enrollment",
+      "need": "T",
+      "carries": [
+        "ip",
+        "auth_token",
+        "all_addresses"
+      ],
+      "returns": "your account state",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · GET auth.phantom.app /v1/auth/factor-source; api.phantom.app /user/v1/users/2de026d0…/wallet-storage, /profile, /user/v2/…/wallet-accounts; POST /v1/wallets/kms/rpc getPhantomOrganization"
+      },
+      "notes": "A self-custodial import still gets a Phantom user id that every later call is keyed to. Which addresses the wallet-accounts calls carry is inferred (GETs; query strings not logged)."
+    },
+    {
+      "id": "ph-solana",
+      "phase": "background",
+      "name": "Phantom RPC · your Solana account",
+      "host": "solana-mainnet.phantom.app",
+      "actor": "phantom-rpc",
+      "purpose": "Reads the Solana account derived from the same seed during an Ethereum send",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "Solana balance",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST solana-mainnet.phantom.app getAccountInfo"
+      }
+    },
+    {
+      "id": "ph-portfolio",
+      "phase": "discover",
+      "name": "Phantom · balances + prices",
+      "host": "api.phantom.app/portfolio/v2/fungibles/* · /price/v1/*",
+      "actor": "phantom-apis",
+      "purpose": "Balances, holdings and value for your address; ~50 price calls",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "holdings"
+      ],
+      "returns": "what you own and what it's worth",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · GET /portfolio/v2/fungibles/holdings, balances, value; /price/v1 ×52"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "ph-geo",
+      "phase": "discover",
+      "name": "Phantom · region check",
+      "host": "api.phantom.app/wallet_screen/v1/geo",
+      "actor": "phantom-apis",
+      "purpose": "Region gating from your IP",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "whether your region is allowed",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · GET /wallet_screen/v1/geo"
+      }
+    },
+    {
+      "id": "ph-screen",
+      "phase": "discover",
+      "name": "Phantom · screens YOUR address",
+      "host": "api.phantom.app/wallet_screen/v1",
+      "actor": "phantom-apis",
+      "purpose": "POSTs your own address for screening (not the recipient's)",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "whether you may use the wallet",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong flag locks you out of your own funds' UI"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST /wallet_screen/v1 {addresses:[{chainId: eip155:1, address: yours}]}"
+      },
+      "tx_input": "gate"
+    },
+    {
+      "id": "ph-gas",
+      "phase": "construct",
+      "name": "Phantom · gas oracle",
+      "host": "gas-price-oracle.phantom.app",
+      "actor": "phantom-apis",
+      "purpose": "The fee you sign",
+      "need": "C",
+      "carries": [
+        "ip"
+      ],
+      "returns": "fee",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "funds_stuck"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · gas-price-oracle.phantom.app ×3"
+      },
+      "tx_input": "field"
+    },
+    {
+      "id": "ph-rpc-build",
+      "phase": "construct",
+      "name": "Phantom RPC · estimate, nonce, call",
+      "host": "node-proxy.phantom.app/v1/chain/ethereum/network/mainnet",
+      "actor": "phantom-rpc",
+      "purpose": "eth_estimateGas, eth_getTransactionCount, eth_call, eth_chainId, eth_blockNumber",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx"
+      ],
+      "returns": "gas limit, nonce",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST node-proxy eth_estimateGas ×4, eth_getTransactionCount ×3, eth_call, eth_chainId ×15"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "ph-simulate",
+      "phase": "construct",
+      "name": "Phantom · simulation",
+      "host": "api.phantom.app/simulation/v1",
+      "actor": "phantom-apis",
+      "purpose": "POSTs the whole unsigned tx with your account for a preview",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx"
+      ],
+      "returns": "the balance-change preview you approve",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong preview is what you approve"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST /simulation/v1 {userAccount, transactions:[{from,to,value}], url: https://phantom.com}"
+      },
+      "tx_input": "gate",
+      "fixed_by": [
+        "open-simulation"
+      ]
+    },
+    {
+      "id": "ph-send-raw",
+      "phase": "broadcast",
+      "name": "Phantom RPC · eth_sendRawTransaction",
+      "host": "node-proxy.phantom.app/v1/chain/ethereum/network/mainnet",
+      "actor": "phantom-rpc",
+      "purpose": "The signed tx goes to Phantom's RPC proxy — the only broadcast path",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx; can drop or delay it"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST node-proxy eth_sendRawTransaction"
+      },
+      "fixed_by": [
+        "cr-broadcast",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders · block inclusion",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Your signed tx reaches block builders from the RPC proxy's node",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "inclusion in a block",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "can exclude or reorder, not alter"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "not an HTTP host — capture can't see it"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "ph-recents",
+      "phase": "broadcast",
+      "name": "Phantom · upload recent recipient",
+      "host": "api.phantom.app/user/v1/users/{id}/wallet-storage/userRecentAddresses",
+      "actor": "phantom-apis",
+      "purpose": "PUTs the address you just paid, with a timestamp, into your Phantom account",
+      "need": "T",
+      "carries": [
+        "ip",
+        "recipient",
+        "auth_token"
+      ],
+      "returns": "recents list",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · PUT …/wallet-storage/userRecentAddresses {addresses:[{address: recipient, chainID: eip155:1, timestamp}]}"
+      }
+    },
+    {
+      "id": "ph-receipt",
+      "phase": "confirm",
+      "name": "Phantom RPC · receipt",
+      "host": "node-proxy.phantom.app/v1/chain/ethereum/network/mainnet",
+      "actor": "phantom-rpc",
+      "purpose": "eth_getTransactionReceipt polling",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash"
+      ],
+      "returns": "'confirmed'",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-110730-send-eth-phantom · POST node-proxy eth_getTransactionReceipt ×9"
+      }
+    }
+  ]
+}

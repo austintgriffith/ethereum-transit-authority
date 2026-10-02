@@ -1,0 +1,67 @@
+{
+  "id": "cba1-approve-swap-coinbase",
+  "title": "The Coinbase Wallet Token Approval",
+  "extends": "cb1-send-coinbase",
+  "context": {
+    "wallet": "Coinbase Wallet extension 3.148.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "3.148.0",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-120032-approve-swap-coinbase",
+        "tx": "0xf6e6db78724af41f4f1a6ee32e22e6f1496a6dc9aee8543c7365966f440d3109",
+        "note": "approve exactly 0.5 USDC, then swap tx 0xddc862f3a344d85288a8319a80d9a70594192a85e0fb96a09869b5c0b66374f7"
+      },
+      {
+        "run": "20261002-115835-approve-swap-coinbase",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Selling 0.5 USDC for ETH in Coinbase Wallet's Swap. The review screen showed no approval line at all — only the swap. After one 'Swap' press and the password, TWO txs went out: approve() for EXACTLY 0.5 USDC to AllowanceHolder 0x0000…2734, then the swap through it. Extra RPC reads appear (eth_getCode, eth_getBlockByNumber). Approval tx 0xf6e6db78724af41f4f1a6ee32e22e6f1496a6dc9aee8543c7365966f440d3109, swap tx 0xddc862f3a344d85288a8319a80d9a70594192a85e0fb96a09869b5c0b66374f7.",
+  "prepend_steps": [
+    {
+      "id": "cb-swap-quote",
+      "phase": "discover",
+      "name": "Coinbase swap engine · quote + trade",
+      "host": "api.wallet.coinbase.com/rpc/v1/swap/assets · /rpc/v1/swap/quote · /rpc/v3/swap/trade",
+      "actor": "coinbase-wallet",
+      "purpose": "Token list, then Coinbase's server compares DEX sources ('best price out of 28 sources') and returns the trade you sign, with a Coinbase fee",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "returns": "the price you accept and the bytes you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage (1%)"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-120032-approve-swap-coinbase · GET /rpc/v1/swap/assets, /rpc/v1/swap/quote, /rpc/v3/swap/trade; tx to AllowanceHolder 0xddc862f3a344d85288a8319a80d9a70594192a85e0fb96a09869b5c0b66374f7"
+      },
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "tx_input": "field",
+      "fixed_by": [
+        "open-simulation"
+      ],
+      "notes": "Query strings are not logged, so which fields ride in these GETs is inferred. The trade executed through AllowanceHolder 0x0000…2734 (Sourcify name) — the same contract Rabby's swaps used."
+    }
+  ],
+  "drop_steps": [
+    "cb-recipient-scan",
+    "cb-save-recipient"
+  ]
+}

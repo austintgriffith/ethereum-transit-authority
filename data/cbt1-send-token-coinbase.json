@@ -1,0 +1,25 @@
+{
+  "id": "cbt1-send-token-coinbase",
+  "title": "The Coinbase Wallet Token Send",
+  "extends": "cb1-send-coinbase",
+  "context": {
+    "wallet": "Coinbase Wallet extension 3.148.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "3.148.0",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-113706-send-token-coinbase",
+        "tx": "0x3ba6aa88df5db1a57f25fc916b3aa4bd256c595b10ea30f0cbda6a7e497f4286",
+        "note": "real send: 0.3 mUSD → 0x34aa…fdf3"
+      },
+      {
+        "run": "20261002-112301-send-token-coinbase",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Coinbase Wallet sending an ERC-20 (0.3 mUSD). Same requests as its ETH send (CB1): the recipient scan, the login signature, the saved destination, Coinbase's RPC. The signed tx goes to the mUSD contract with the recipient inside transfer() calldata. No request checked the token itself. Real mainnet tx 0x3ba6aa88df5db1a57f25fc916b3aa4bd256c595b10ea30f0cbda6a7e497f4286."
+}

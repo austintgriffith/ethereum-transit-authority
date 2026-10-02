@@ -1,0 +1,475 @@
+{
+  "id": "cb1-send-coinbase",
+  "title": "The Coinbase Wallet Send",
+  "context": {
+    "wallet": "Coinbase Wallet extension 3.148.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "3.148.0 (Chrome Web Store CRX, Oct 2 2026)",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-111719-send-eth-coinbase",
+        "tx": "0x66e61bb9180358b243000292ccf993a53173f40d5068bda00b04083898044c3d",
+        "note": "real send: 0.0002 ETH → 0x34aa…fdf3"
+      },
+      {
+        "run": "20261002-110308-send-eth-coinbase",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "toggles": [],
+  "_comment": "Coinbase Wallet extension, plain ETH send. One company answers almost everything: balances, prices, history, profiles, recipient screening, gas, the RPC and the broadcast. Pressing Send asks for the password again; right after, the wallet signs a login message with your key (createAccessTokenForPrimaryAddress) and Coinbase stores the recipient as a used destination. During the send it also polls BTC, LTC, DOGE and Solana indexers for addresses from the same seed. The extension shows a '3.148.0 QA' corner banner; it is the Chrome Web Store build. Real mainnet tx 0x66e61bb9180358b243000292ccf993a53173f40d5068bda00b04083898044c3d.",
+  "steps": [
+    {
+      "id": "cb-switches",
+      "phase": "background",
+      "name": "Coinbase · kill switches + experiments",
+      "host": "api.coinbase.com/v3/…KillSwitchService/KillSwitches · ExperimentService/ListSplit · /rpc/v2/getMinimumSupportedBuilds",
+      "actor": "coinbase-wallet",
+      "purpose": "Remote kill switches, A/B experiment splits and a minimum build version, fetched at boot",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "which features are on for you",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a switch can turn features off for you or your region"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET api.coinbase.com …KillSwitches, …ExperimentService/ListSplit; api.wallet.coinbase.com /rpc/v2/getMinimumSupportedBuilds"
+      }
+    },
+    {
+      "id": "cb-geo",
+      "phase": "background",
+      "name": "Coinbase · where are you",
+      "host": "api.wallet.coinbase.com/rpc/v2/checkGeoAvailability · onramp.wallet.coinbase.com/payment-providers/v1/geoLocation",
+      "actor": "coinbase-wallet",
+      "purpose": "Region checks from your IP, before you do anything",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "which features your region gets",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET /rpc/v2/checkGeoAvailability; onramp.wallet.coinbase.com /payment-providers/v1/geoLocation"
+      }
+    },
+    {
+      "id": "cb-other-chains",
+      "phase": "background",
+      "name": "Coinbase · BTC, LTC, DOGE, Solana watchers",
+      "host": "blockchain.wallet.coinbase.com · sol-mainnet.wallet.coinbase.com",
+      "actor": "coinbase-wallet",
+      "purpose": "Polls Bitcoin, Litecoin and Dogecoin indexers and your Solana account (derived from the same seed) during an ETH send",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses"
+      ],
+      "returns": "balances on chains you didn't open",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST blockchain.wallet.coinbase.com /btc|ltc|doge/v2/getTransactions, getBalances; sol-mainnet.wallet.coinbase.com getTokenAccountsByOwner, getAssetsByOwner"
+      },
+      "notes": "The Solana reads put your Solana address next to your Ethereum one on Coinbase's servers. One more Solana call went to atlas-mainnet.helius-rpc.com."
+    },
+    {
+      "id": "cb-sentry",
+      "phase": "background",
+      "name": "Coinbase · error reporting",
+      "host": "exceptions.coinbase.com/sentry/api/…/envelope/",
+      "actor": "coinbase-wallet",
+      "purpose": "Sentry error envelopes through Coinbase's own domain — 37 during one send",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "nothing the wallet uses",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST exceptions.coinbase.com /sentry/api/4509158353731584/envelope/ ×37"
+      }
+    },
+    {
+      "id": "cb-walletlink",
+      "phase": "background",
+      "name": "WalletLink relay",
+      "host": "www.walletlink.org/rpc",
+      "actor": "coinbase-wallet",
+      "purpose": "Coinbase's dapp-connection relay, contacted at boot",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "connection-relay state",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST www.walletlink.org /rpc"
+      }
+    },
+    {
+      "id": "cb-portfolio",
+      "phase": "discover",
+      "name": "Coinbase · balances, history, prices",
+      "host": "api.wallet.coinbase.com/rpc/v2/getAllBalancesForChain · /rpc/v3/txHistory/getForAddress · /rpc/v2/quote/getQuote · collectibles",
+      "actor": "coinbase-wallet",
+      "purpose": "Balances, history, prices and NFTs for your address come from Coinbase, not from the chain",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "holdings"
+      ],
+      "returns": "what you own and what it's worth",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong balance or history is what you see"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET getAllBalancesForChain ×19, txHistory/getForAddress ×12, quote/getQuote ×22"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "cb-profiles",
+      "phase": "discover",
+      "name": "Coinbase · profile lookups",
+      "host": "api.wallet.coinbase.com/rpc/v2/getUserProfile · getProfileByAddress · getPublicProfileByAddress",
+      "actor": "coinbase-wallet",
+      "purpose": "Looks up Coinbase profiles (usernames) for your address and the recipient's",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient"
+      ],
+      "returns": "names shown next to addresses",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong name on the recipient"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET getUserProfile, getProfileByAddress, getPublicProfileByAddress"
+      }
+    },
+    {
+      "id": "cb-recipient-scan",
+      "phase": "discover",
+      "name": "Coinbase · recipient screening + resolve",
+      "host": "api.wallet.coinbase.com/rpc/v2/scanAddress · /rpc/v2/destination/resolve · searchWithSuggestions",
+      "actor": "coinbase-wallet",
+      "purpose": "POSTs the recipient address for a risk scan, and resolves/suggests destinations as you type",
+      "need": "T",
+      "carries": [
+        "ip",
+        "recipient"
+      ],
+      "returns": "a risk verdict on who you're paying",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a bad address waved through, or a good one flagged"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST /rpc/v2/scanAddress {address: recipient, networkName}; GET destination/resolve, searchWithSuggestions"
+      },
+      "tx_input": "gate",
+      "fixed_by": [
+        "local-address-risk"
+      ]
+    },
+    {
+      "id": "cb-gas",
+      "phase": "construct",
+      "name": "Coinbase · gas prices",
+      "host": "api.wallet.coinbase.com/rpc/v2/get1559GasPrices",
+      "actor": "coinbase-wallet",
+      "purpose": "The fee options you sign",
+      "need": "C",
+      "carries": [
+        "ip"
+      ],
+      "returns": "maxFee / priority fee",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "too low and the tx sits"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET /rpc/v2/get1559GasPrices"
+      },
+      "tx_input": "field"
+    },
+    {
+      "id": "cb-estimate",
+      "phase": "construct",
+      "name": "Coinbase RPC · estimate gas",
+      "host": "chain-proxy.wallet.coinbase.com",
+      "actor": "coinbase-rpc",
+      "purpose": "eth_estimateGas with from, to and value",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx"
+      ],
+      "returns": "gas limit",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST chain-proxy.wallet.coinbase.com eth_estimateGas"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "cb-sponsor",
+      "phase": "construct",
+      "name": "Coinbase · sponsored-send check",
+      "host": "api.wallet.coinbase.com/send/v1/sponsoredSend/config",
+      "actor": "coinbase-wallet",
+      "purpose": "Asks whether Coinbase would pay this send's gas",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "whether gas is sponsored",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · GET /send/v1/sponsoredSend/config"
+      }
+    },
+    {
+      "id": "cb-login-sig",
+      "phase": "sign",
+      "name": "Coinbase · login signature",
+      "host": "api.wallet.coinbase.com/rpc/v2/createNonce · /rpc/v2/createAccessTokenForPrimaryAddress",
+      "actor": "coinbase-wallet",
+      "purpose": "The wallet gets a nonce, signs it with your key as a personal message, and trades the signature for a Coinbase access token tied to your address — no prompt",
+      "need": "T",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "a Coinbase session token for your address",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "proves to Coinbase that this install controls the address"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST createNonce; POST createAccessTokenForPrimaryAddress {nonce, address, signature, isPersonalMessage:true}"
+      },
+      "births": [
+        "auth_token"
+      ],
+      "notes": "Happened right after the password re-entry for the send. The signature is made locally; what leaves is proof you hold the key."
+    },
+    {
+      "id": "cb-nonce",
+      "phase": "broadcast",
+      "name": "Coinbase RPC · nonce",
+      "host": "chain-proxy.wallet.coinbase.com",
+      "actor": "coinbase-rpc",
+      "purpose": "eth_getTransactionCount for your address",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "the nonce you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST chain-proxy eth_getTransactionCount"
+      },
+      "tx_input": "field",
+      "fixed_by": [
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "cb-send-raw",
+      "phase": "broadcast",
+      "name": "Coinbase RPC · eth_sendRawTransaction",
+      "host": "chain-proxy.wallet.coinbase.com",
+      "actor": "coinbase-rpc",
+      "purpose": "The signed tx goes to Coinbase's RPC proxy — the only broadcast path",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx; can drop or delay it"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST chain-proxy eth_sendRawTransaction"
+      },
+      "fixed_by": [
+        "cr-broadcast",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders · block inclusion",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Your signed tx reaches block builders from the RPC proxy's node",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "inclusion in a block",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "can exclude or reorder, not alter"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "not an HTTP host — capture can't see it"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "cb-save-recipient",
+      "phase": "broadcast",
+      "name": "Coinbase · save the recipient",
+      "host": "api.wallet.coinbase.com/rpc/v2/destination/saveUsage",
+      "actor": "coinbase-wallet",
+      "purpose": "Stores the address you just paid as a used destination on Coinbase's servers",
+      "need": "T",
+      "carries": [
+        "ip",
+        "recipient",
+        "auth_token"
+      ],
+      "returns": "recents list",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST /rpc/v2/destination/saveUsage {assetCode: eth, walletAddress: recipient, chainId: 1}"
+      }
+    },
+    {
+      "id": "cb-receipt",
+      "phase": "confirm",
+      "name": "Coinbase RPC · receipt",
+      "host": "chain-proxy.wallet.coinbase.com",
+      "actor": "coinbase-rpc",
+      "purpose": "eth_getTransactionReceipt for your tx",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash"
+      ],
+      "returns": "'confirmed'",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-111719-send-eth-coinbase · POST chain-proxy eth_getTransactionReceipt"
+      }
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "id": "pha1-approve-swap-phantom",
+  "title": "The Phantom Token Approval",
+  "extends": "ph1-send-phantom",
+  "context": {
+    "wallet": "Phantom extension 26.31.0",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "26.31.0",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-115244-approve-swap-phantom",
+        "tx": "0xb6d772035eff4f58bc88690ba27634155f179a88c3e7fa52413310457e02b1a0",
+        "note": "approve UNLIMITED USDC, then swap tx 0x1711ba3f67a6345edf6ce73713e825bdf87c81e5bbf8cbc8c511a92e349a13f8"
+      }
+    ]
+  },
+  "_comment": "Selling 0.5 USDC for ETH in Phantom's Swap. Two txs, both through Phantom's submission service: approve() for the MAXIMUM amount (2^256−1, unlimited) of USDC to TokenApprove 0x40aa…cd7f (Sourcify name), then the swap via DexRouter 0x8fea…b4f6. Of the four wallets tested Oct 2 (Rabby, Rainbow, Coinbase, Phantom), Phantom is the only one that granted an unlimited allowance. Approval tx 0xb6d772035eff4f58bc88690ba27634155f179a88c3e7fa52413310457e02b1a0, swap tx 0x1711ba3f67a6345edf6ce73713e825bdf87c81e5bbf8cbc8c511a92e349a13f8.",
+  "prepend_steps": [
+    {
+      "id": "ph-swap-init",
+      "phase": "discover",
+      "name": "Phantom swap · initialize (every address you own)",
+      "host": "api.phantom.app/swap/v2/initialize",
+      "actor": "phantom-apis",
+      "purpose": "Opening Swap POSTs your addresses on every chain from the seed — Solana, Bitcoin (bc1q…), Ethereum, Base, BNB and more — plus the pair you pick",
+      "need": "T",
+      "carries": [
+        "ip",
+        "all_addresses",
+        "token_pair"
+      ],
+      "returns": "swap session setup",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-115244-approve-swap-phantom · POST /swap/v2/initialize {network, sellCaip19, buyCaip19, addresses:{solana:101, bip122 (bc1q…), eip155:1, eip155:8453, eip155:56, eip155:4663, …}}"
+      },
+      "notes": "The swap screen opens on Solana (SOL → USDC) with a trending-memecoin list; the first initialize is for Solana."
+    },
+    {
+      "id": "ph-swap-quote",
+      "phase": "discover",
+      "name": "Phantom swap · streamed quotes",
+      "host": "api.phantom.app/swap/v2/stream/quotes",
+      "actor": "phantom-apis",
+      "purpose": "A server-sent stream of quotes for your address; the chosen one carries the calldata you sign. Same engine as PHS.",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "returns": "the price you accept and the bytes you sign",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-115244-approve-swap-phantom · GET /swap/v2/stream/quotes?taker=eip155:1/address:0xd3fd… (text/event-stream)"
+      },
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "tx_input": "field",
+      "fixed_by": [
+        "open-simulation"
+      ]
+    }
+  ],
+  "insert_steps": [
+    {
+      "after": "ph-simulate",
+      "step": {
+        "id": "ph-submit",
+        "phase": "broadcast",
+        "name": "Phantom submission service",
+        "host": "api.phantom.app/v0/submission/chain/ethereum/network/mainnet/submit",
+        "actor": "phantom-apis",
+        "purpose": "Swaps skip the RPC: the signed tx (base64) is POSTed to Phantom's submission service, then its status is streamed back",
+        "need": "W",
+        "carries": [
+          "ip",
+          "signed_tx",
+          "selected_address",
+          "amount"
+        ],
+        "returns": "submission id + status stream",
+        "can_block": true,
+        "on_failure": "blocks",
+        "worst_lie": {
+          "outcome": "none",
+          "note": "cannot alter a signed tx; decides how and when it reaches builders"
+        },
+        "removable_by": "none",
+        "provenance": {
+          "status": "observed",
+          "ref": "20261002-115244-approve-swap-phantom · POST /v0/submission/chain/ethereum/network/mainnet/submit {kind: transaction, transaction: <signed, base64>}; GET /v0/status/submissions/*/stream"
+        },
+        "fixed_by": [
+          "cr-broadcast"
+        ]
+      }
+    }
+  ],
+  "drop_steps": [
+    "ph-send-raw",
+    "ph-recents",
+    "ph-screen"
+  ]
+}
