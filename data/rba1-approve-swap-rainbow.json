@@ -1,0 +1,62 @@
+{
+  "id": "rba1-approve-swap-rainbow",
+  "title": "The Rainbow Token Approval",
+  "extends": "rb1-send-rainbow",
+  "context": {
+    "wallet": "Rainbow extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "1.6.11",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-102735-approve-swap-rainbow",
+        "tx": "0x0a70ffcdf1d543a3a4d2aa335177e1fef25a12a1334dda2d23bca76627921b83",
+        "note": "approve + swap batched in one tx"
+      },
+      {
+        "run": "20261002-102410-approve-swap-rainbow",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Selling 1 USDC → ETH in Rainbow's Swap, on an account Rainbow had already turned into a smart wallet (RBS delegated it to Calibur). No separate approval screen and no separate approval tx: ONE transaction, a call from the account to itself (Calibur batch-execute 0x99e1d016), that approves EXACTLY 1 USDC to RainbowRouter 0x0000…10e2 (Sourcify: RainbowRouter) and runs the swap in the same tx. You never see 'approve' as its own step. No server call was new compared with the ETH→USDC swap. Tx 0x0a70ffcdf1d543a3a4d2aa335177e1fef25a12a1334dda2d23bca76627921b83.",
+  "prepend_steps": [
+    {
+      "id": "swap-quote",
+      "phase": "discover",
+      "name": "Rainbow swap API · quote + calldata",
+      "host": "swap.p.rainbow.me/v1/quote · /v1/slippage",
+      "actor": "rainbow-apis",
+      "purpose": "Rainbow's server picks the route (Sprinter, 100%), the minimum received, its fee, and the calldata you sign",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you accept and the exact bytes you sign",
+      "tx_input": "field",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-102735-approve-swap-rainbow · GET swap.p.rainbow.me/v1/quote; review screen: Swapping via Sprinter 100%, Rainbow fee 0.0000033 ETH"
+      },
+      "fixed_by": [
+        "open-simulation"
+      ]
+    }
+  ]
+}

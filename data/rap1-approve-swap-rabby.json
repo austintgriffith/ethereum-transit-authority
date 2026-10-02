@@ -1,0 +1,92 @@
+{
+  "id": "rap1-approve-swap-rabby",
+  "title": "The Rabby Token Approval",
+  "extends": "r1-send-rabby",
+  "context": {
+    "wallet": "Rabby extension",
+    "platform": "Chrome extension",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "0.94.6",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-102645-approve-swap-rabby",
+        "tx": "0x56ce0e031a709bea485dbf36d8f4e37ffd359c3f69c1e7c7c8e712ac9e5dbe06",
+        "note": "approve 1 USDC, then swap tx 0x2528dff0b595867d4506d9102d52acc7b55b6be8a6f3e7b2fe4fe2d5e5353ab5"
+      },
+      {
+        "run": "20261002-102320-approve-swap-rabby",
+        "note": "dry: stopped at the confirm screen"
+      }
+    ]
+  },
+  "_comment": "Selling a token (1 USDC → ETH) in Rabby's Swap, which needs an allowance. The button reads 'Approve and Swap'. On chain it is TWO transactions: approve() for EXACTLY 1 USDC (not unlimited) to AllowanceHolder 0x0000…2734 (Sourcify: AllowanceHolder), then the swap through that same contract. Quote screen labelled the route Uniswap. Before quoting, Rabby read the current allowance with eth_call through its own RPC proxy. Both txs went out via Rabby's submit_tx like R1. Approval tx 0x56ce0e031a709bea485dbf36d8f4e37ffd359c3f69c1e7c7c8e712ac9e5dbe06, swap tx 0x2528dff0b595867d4506d9102d52acc7b55b6be8a6f3e7b2fe4fe2d5e5353ab5.",
+  "prepend_steps": [
+    {
+      "id": "allowance-read",
+      "phase": "discover",
+      "name": "Rabby RPC · current allowance",
+      "host": "api.rabby.io/v1/wallet/eth_rpc (eth_call)",
+      "actor": "rabby",
+      "purpose": "Reads how much USDC the swap contract may already spend, to decide whether an approve is needed",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair"
+      ],
+      "returns": "whether to add an approve tx",
+      "tx_input": "gate",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "funds_stuck",
+        "note": "a wrong allowance reading skips the approve and the swap reverts"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-102645-approve-swap-rabby · POST api.rabby.io/v1/wallet/eth_rpc method eth_call (absent from the ETH→USDC swap run)"
+      },
+      "fixed_by": [
+        "verifiable-rpc"
+      ]
+    },
+    {
+      "id": "swap-quote",
+      "phase": "discover",
+      "name": "Rabby swap engine · quote + calldata",
+      "host": "api.rabby.io/v1/wallet/swap_quote",
+      "actor": "rabby",
+      "purpose": "Rabby's server queries DEX aggregators and returns the winner (1inch) with minimum-out and the router calldata the wallet signs",
+      "need": "RC",
+      "carries": [
+        "ip",
+        "selected_address",
+        "token_pair",
+        "amount"
+      ],
+      "births": [
+        "unsigned_tx",
+        "swap_route"
+      ],
+      "returns": "the price you accept and the exact bytes you sign",
+      "tx_input": "field",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "a bad route or minimum-out drains value within slippage; the wallet can't price-check it locally"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-102645-approve-swap-rabby · GET api.rabby.io/v1/wallet/swap_quote; quote screen: Best = Uniswap, Rabby fee 0.25%"
+      },
+      "fixed_by": [
+        "open-simulation"
+      ]
+    }
+  ]
+}

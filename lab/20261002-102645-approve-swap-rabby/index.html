@@ -1,0 +1,77 @@
+<meta charset="utf-8"><title>lab run 20261002-102645-approve-swap-rabby</title>
+<style>body{margin:0 auto;max-width:960px;padding:32px 24px;background:#fff;color:#191A1C;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5}
+@media(prefers-color-scheme:dark){body{background:#0C1620;color:#ECEDEF}}
+h1{font-size:17px}h2{font-size:12px;margin:30px 0 6px;text-transform:uppercase;letter-spacing:.12em}
+pre{white-space:pre-wrap;overflow-x:auto;border:1px solid #88888866;padding:14px;margin:0}a{color:inherit}</style>
+<a href="../../">← Ethereum Transit Authority</a>
+<h1>CROPS Lab run 20261002-102645-approve-swap-rabby</h1>
+<p>A throwaway macOS VM ran the real wallet; every byte was captured and decrypted from the host, outside the guest.
+The full request log (flows.jsonl) holds decrypted bodies and stays private — tooling at
+<a href="https://github.com/austintgriffith/crops-lab">github.com/austintgriffith/crops-lab</a>.</p>
+<h2>meta.txt</h2>
+<pre>run_id: 20261002-102645-approve-swap-rabby
+action: run
+guest_ip: 192.168.64.18
+host_proxy: 192.168.64.1:8080
+base_image: crops-warm-rabby
+action_rc: 0
+gold_baked_at: 2026-08-21T02:54:20Z
+gold_base: ghcr.io/cirruslabs/macos-tahoe-base:latest
+gold_base_row: OCI    ghcr.io/cirruslabs/macos-tahoe-base:latest                                                                  50   33   1 hour ago   stopped
+gold_macos: 26.6.2 (25G83)
+gold_chrome: Google Chrome 151.0.7922.174 
+gold_node: v26.7.0
+gold_playwright: 1.62.1
+gold_quic_allowed: 0
+</pre>
+<h2>driver.log</h2>
+<pre>[t=1790958449.891] rabby:approve-swap: extension id ohalidldpbnnblpakdicpoleffldpmlh
+[t=1790958453.040]   unlock (start): submitted
+[t=1790958467.870]   swap: USDC -&gt; ETH
+[t=1790958486.135]   confirm 1: clicked
+[t=1790958543.588] rabby:approve-swap: submitted
+</pre>
+<h2>summary.md</h2>
+<pre># capture 20261002-102645-approve-swap-rabby
+
+action: run · guest 192.168.64.18 · proxy 192.168.64.1:8080 · action_rc 0
+
+## decrypted: 206 requests · 21 hosts
+
+| host | req | methods | secret headers present |
+|---|---:|---|---|
+| api.rabby.io | 95 | GET/POST | cookie,x-api-key |
+| festats.debank.com | 24 | GET | — |
+| api.hyperliquid.xyz | 18 | GET/POST | — |
+| static.debank.com | 16 | GET | — |
+| www.google-analytics.com | 15 | POST | — |
+| matomo.debank.com | 9 | POST | — |
+| android.clients.google.com | 6 | POST | authorization |
+| sas.pcms.apple.com | 4 | GET | — |
+| ocsp2.apple.com | 4 | GET | — |
+| pancake.apple.com | 3 | GET | — |
+| iadsdk.apple.com | 2 | GET/POST | — |
+| gsp57-ssl-background.ls.apple.com | 1 | POST | — |
+| example.com | 1 | GET | — |
+| clients2.google.com | 1 | GET | — |
+| www.google.com | 1 | GET | — |
+| accounts.google.com | 1 | POST | — |
+| static-assets.rabby.io | 1 | GET | — |
+| stocks-data-service.apple.com | 1 | GET | — |
+| cf.iadsdk.apple.com | 1 | POST | — |
+| device-config.pcms.apple.com | 1 | GET | — |
+| bag.itunes.apple.com | 1 | GET | — |
+
+## opaque: 0 SNIs offered, never decrypted (pinned or handshake failed)
+
+- none
+
+## wire: 2219 proxied pkts · 0 BYPASS dst · 0 QUIC dst · 359 Apple-OS pkts
+
+BYPASS/QUIC below exclude Apple 17.0.0.0/8 (macOS push/OCSP/update — not the browser under test).
+
+### other egress (non-443, non-DNS)
+- 192.168.64.255:137 (no DNS seen) · 21 pkts
+- 224.0.0.251:5353 (no DNS seen) · 5 pkts
+
+</pre>
