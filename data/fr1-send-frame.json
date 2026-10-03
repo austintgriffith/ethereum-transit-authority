@@ -1,0 +1,271 @@
+{
+  "id": "fr1-send-frame",
+  "title": "The Frame Send",
+  "context": {
+    "wallet": "Frame 0.6.11 (desktop app)",
+    "platform": "macOS desktop app (Electron)",
+    "network": "mainnet",
+    "settings": "defaults",
+    "version": "0.6.11 (GitHub release, Feb 3 2025; no repo activity since Mar 2025)",
+    "observed": "2026-10-02",
+    "captures": [
+      {
+        "run": "20261002-193627-send-eth-frame",
+        "tx": "0x9b2302a63fadde94119b687b2fcfb2de16f582381d991caac4369d987ff57f0f",
+        "note": "real send: 0.0002 ETH → austingriffith.eth via send.frame.eth"
+      },
+      {
+        "run": "20261002-131104-send-eth-frame",
+        "note": "dry: stopped at Frame's sign screen"
+      }
+    ]
+  },
+  "toggles": [],
+  "_comment": "Frame, a desktop wallet, plain ETH send. Frame has no send form of its own: its tray button opens send.frame.eth, a dapp it resolves through ENS, fetches over IPFS from Frame's Nebula gateway and serves on 127.0.0.1:8421; signing happens in Frame's own window with a local hot signer. Every chain defaults to Frame's Pylon RPC (wss://evm.pylon.link). Fewest third parties of any wallet mapped: Frame Labs, CoinGecko images, GitHub updates. Frame's main process ignores the system proxy, so its websocket traffic (RPC, rates, inventory) is seen only as TLS to Pylon's IPs in the pcap; what it carries is read from source (floating/frame v0.6.11). Last release Feb 2025. Real mainnet tx 0x9b2302a63fadde94119b687b2fcfb2de16f582381d991caac4369d987ff57f0f.",
+  "steps": [
+    {
+      "id": "fr-update",
+      "phase": "background",
+      "name": "GitHub · update check",
+      "host": "github.com/floating/frame/releases · release-assets.githubusercontent.com",
+      "actor": "github",
+      "purpose": "electron-updater checks the latest release and downloads latest-mac.yml",
+      "need": "T",
+      "carries": [
+        "ip",
+        "wallet_version"
+      ],
+      "returns": "whether to update",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "the update channel decides what code you run next"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-193627-send-eth-frame · GET github.com /floating/frame/releases.atom, /releases/latest, /releases/download/v0.6.11/latest-mac.yml · floating/frame v0.6.11 main/updater/autoUpdater.ts"
+      }
+    },
+    {
+      "id": "fr-data",
+      "phase": "background",
+      "name": "Pylon data · rates + NFT inventory",
+      "host": "data.pylon.link (websocket)",
+      "actor": "frame-labs",
+      "purpose": "One websocket subscribes to token rates for your tokens and NFT inventory for your addresses",
+      "need": "R",
+      "carries": [
+        "ip",
+        "all_addresses",
+        "holdings"
+      ],
+      "returns": "prices and NFT list",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "pcap: TLS to Pylon's Cloudflare IPs from Frame's main process, not decrypted (ignores the proxy) · floating/frame v0.6.11 main/externalData/index.ts:29, inventory/index.ts:28-31, assets/index.ts:68-83"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "fr-rpc-reads",
+      "phase": "discover",
+      "name": "Pylon RPC · balances, gas, nonce",
+      "host": "evm.pylon.link/mainnet (websocket)",
+      "actor": "frame-labs",
+      "purpose": "Frame's default connection for every chain: balances, gas monitor, estimates, nonce — one websocket from the main process",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx"
+      ],
+      "returns": "balances, fees, nonce",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_stuck"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "pcap: 6,238 pkts TLS to 172.67.195.152 (evm.pylon.link), not decrypted · floating/frame v0.6.11 resources/constants/index.ts:12 (pylon: wss://evm.pylon.link/mainnet), main/store/state/index.ts:190 (current: 'pylon')"
+      },
+      "fixed_by": [
+        "private-rpc",
+        "verifiable-rpc"
+      ],
+      "notes": "Changeable per chain in Frame's Chains settings; Pylon is the default."
+    },
+    {
+      "id": "fr-dapp-fetch",
+      "phase": "discover",
+      "name": "Nebula · resolve + fetch send.frame.eth",
+      "host": "ipfs.nebula.land",
+      "actor": "frame-labs",
+      "purpose": "Frame has no send form: it resolves send.frame.eth via ENS, fetches its files over IPFS from Frame's Nebula gateway, and serves them locally at send.frame.eth.localhost:8421",
+      "need": "RT",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the send app's code",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "the gateway serves the code of the app you sign with"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-193627-send-eth-frame · POST ipfs.nebula.land /api/v0/cat; pcap TLS to 159.89.255.214 (nebula.land, DigitalOcean) · floating/frame v0.6.11 main/dapps/index.ts:24,102, main/dapps/server/index.ts:31, main/nebula/index.ts:25"
+      },
+      "notes": "Code is pinned by the ENS content hash, so a gateway can withhold it but not swap it without failing the hash check (not verified here)."
+    },
+    {
+      "id": "fr-icons",
+      "phase": "discover",
+      "name": "Images · CoinGecko + Pylon proxy",
+      "host": "assets.coingecko.com · proxy.pylon.link",
+      "actor": "frame-labs",
+      "purpose": "Token logos from CoinGecko and an image proxy",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "logos",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261002-193627-send-eth-frame · GET assets.coingecko.com /coins/images/279, /6319; GET proxy.pylon.link /"
+      },
+      "via": [
+        "coingecko"
+      ]
+    },
+    {
+      "id": "fr-ens-name",
+      "phase": "construct",
+      "name": "ENS · recipient name",
+      "host": "evm.pylon.link/mainnet (via Nebula ENS)",
+      "actor": "frame-labs",
+      "purpose": "The send app and Frame's review resolve the recipient to austingriffith.eth and flag it as a contract",
+      "need": "R",
+      "carries": [
+        "ip",
+        "recipient"
+      ],
+      "returns": "the name and 'contract' label you see",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "20261002-193627-send-eth-frame · send.frame.eth showed AUSTINGRIFFITH.ETH and RECIPIENT IS A SMART CONTRACT · floating/frame v0.6.11 main/reveal/index.ts:63"
+      },
+      "tx_input": "gate"
+    },
+    {
+      "id": "fr-send-raw",
+      "phase": "broadcast",
+      "name": "Pylon RPC · eth_sendRawTransaction",
+      "host": "evm.pylon.link/mainnet (websocket)",
+      "actor": "frame-labs",
+      "purpose": "Signed locally by Frame's hot signer, broadcast over the same Pylon websocket",
+      "need": "W",
+      "carries": [
+        "ip",
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "cannot alter a signed tx; can drop or delay it"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "pcap only (main process, not decrypted) · real tx 0x9b2302a63fadde94119b687b2fcfb2de16f582381d991caac4369d987ff57f0f · floating/frame v0.6.11 resources/constants/index.ts:12"
+      },
+      "fixed_by": [
+        "cr-broadcast",
+        "private-rpc"
+      ]
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders · block inclusion",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Your signed tx reaches block builders from Pylon's node",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "inclusion",
+      "can_block": true,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "can exclude or reorder, not alter"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "inferred",
+        "ref": "not an HTTP host"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "fr-receipt",
+      "phase": "confirm",
+      "name": "Pylon RPC · receipt",
+      "host": "evm.pylon.link/mainnet (websocket)",
+      "actor": "frame-labs",
+      "purpose": "Watches for the receipt",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash"
+      ],
+      "returns": "'confirmed'",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "pcap only · floating/frame v0.6.11"
+      }
+    }
+  ]
+}
