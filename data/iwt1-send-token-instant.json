@@ -1,0 +1,591 @@
+{
+  "id": "iwt1-send-token-instant",
+  "title": "The Instant Wallet Token Send",
+  "context": {
+    "wallet": "Instant Wallet (instantwallet.io)",
+    "platform": "Web page in Chromium at phone size; passkey = Chromium virtual authenticator",
+    "network": "mainnet",
+    "settings": "defaults; $0.40 of USDC to an address paid before",
+    "version": "build not re-read on 2026-11-12; aea6a61 on 2026-11-11",
+    "observed": "2026-11-12",
+    "captures": [
+      {
+        "run": "20261112-093301-send-token-instant",
+        "tx": "0xf919d4054843e77c2c1b6c74ba810478e9e2a2f1dc334fdaa927833c14d42ef8"
+      },
+      {
+        "run": "20261112-093123-send-token-instant",
+        "note": "dry: $0.50 + 0.54 USDC fee was more than the 1.03 USDC held; review card said Would fail now"
+      }
+    ]
+  },
+  "toggles": [
+    "instant_own_node"
+  ],
+  "_comment": "Same path as IW with the fee in USDC: the batch is two USDC transfers, to the recipient and to the relay. No token check or screening call. Recipient name and avatar came from the wallet's history, not a new lookup. USDC 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48; wallet balance went 1.028191 → 0.117743 USDC.",
+  "steps": [
+    {
+      "id": "app-load",
+      "phase": "background",
+      "name": "Instant Wallet · the page",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET / and 22 script/style files. The wallet is a web page: this is the code that builds and shows every transaction",
+      "need": "T",
+      "carries": [
+        "ip"
+      ],
+      "returns": "the wallet's code",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "wrong_code",
+        "note": "every visit runs whatever the server sends; no pinned version, no hash to check"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET / + /_next/static/*"
+      },
+      "fixed_by": [
+        "indie-frontends"
+      ],
+      "notes": "Every push to main deploys (README.md). No release tags, no IPFS build."
+    },
+    {
+      "id": "wc-pulse",
+      "phase": "background",
+      "name": "WalletConnect · telemetry",
+      "host": "pulse.walletconnect.org",
+      "actor": "walletconnect",
+      "purpose": "POST /batch on every page load: an INIT event with the site, the SDK version and a client_id",
+      "need": "T",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "nothing the wallet uses",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST pulse.walletconnect.org/batch (event INIT, client_id did:key:…)"
+      },
+      "notes": "device_id = client_id. The same did:key was sent in three runs across browser restarts (warm-20261111-123212, 20261111-123340-home-instant, this run). Fires with no dapp connected.",
+      "gadget": "analytics"
+    },
+    {
+      "id": "name-box",
+      "phase": "background",
+      "name": "Instant Wallet · wallet name",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET /api/name?id: the wallet's nickname, stored encrypted under an id made from the passkey's credential id",
+      "need": "R",
+      "carries": [
+        "ip",
+        "device_id"
+      ],
+      "returns": "ciphertext, or nothing",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET /api/name · app/api/name/route.ts:8-12"
+      },
+      "notes": "device_id = the opaque id. The server sees ciphertext only, but the id is the same on every device the passkey syncs to."
+    },
+    {
+      "id": "rpc-reads",
+      "phase": "discover",
+      "name": "Instant Wallet · RPC proxy",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "POST /api/rpc/<chain>: eth_getCode(your wallet) on all 14 networks, and alchemy_getAssetTransfers on 11",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "is the wallet deployed here; its transfer history",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "wrong history, or a deployed wallet shown as not deployed"
+      },
+      "removable_by": "instant_own_node",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST /api/rpc/1 … /api/rpc/42220 · app/api/rpc/[chain]/route.ts"
+      },
+      "repeat": "↻ 12 s",
+      "fixed_by": [
+        "verifiable-rpc",
+        "private-rpc"
+      ],
+      "notes": "eth_getCode on all 14 networks about every 12 s while the page is open. A per-IP counter runs in the server's memory (route.ts:24-37).",
+      "gadget": "rpc"
+    },
+    {
+      "id": "portfolio",
+      "phase": "discover",
+      "name": "Instant Wallet · balances + prices",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET /api/portfolio?address: tokens, balances, logos and prices on every network",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "what the wallet holds and what it's worth",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "wrong balance or price on screen; the amount box is in dollars, so a wrong price changes how much ETH you send"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET /api/portfolio (query not logged; address per SafeWelcome.tsx:24)"
+      },
+      "tx_input": "gate",
+      "births": [
+        "holdings"
+      ],
+      "repeat": "↻ 3 s",
+      "fixed_by": [
+        "local-indexing",
+        "verifiable-rpc"
+      ],
+      "notes": "About 20 a minute idle (20261111-123340-home-instant: 23 in 60 s).",
+      "gadget": "indexer"
+    },
+    {
+      "id": "positions",
+      "phase": "discover",
+      "name": "Instant Wallet · positions + NFTs",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET /api/positions?address and GET /api/nfts?address",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "DeFi positions, NFTs",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a position or NFT shown that isn't there, or hidden"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET /api/positions, GET /api/nfts"
+      },
+      "fixed_by": [
+        "local-indexing"
+      ],
+      "gadget": "indexer"
+    },
+    {
+      "id": "alchemy-reads",
+      "phase": "discover",
+      "name": "Alchemy · behind the server",
+      "host": "eth-mainnet.g.alchemy.com",
+      "actor": "alchemy",
+      "purpose": "The server forwards every /api/rpc body unchanged, and asks Alchemy for token balances, NFTs and prices",
+      "need": "R",
+      "carries": [
+        "selected_address",
+        "chain_id"
+      ],
+      "returns": "chain state, token balances, prices",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the server passes Alchemy's answer through unchecked"
+      },
+      "removable_by": "instant_own_node",
+      "provenance": {
+        "status": "code",
+        "ref": "clawdbotatg/instant-wallet@aea6a61 web/app/api/rpc/[chain]/route.ts:54 · lib/rpcServer.ts:11 · app/api/portfolio/route.ts:126,180 · app/api/nfts"
+      },
+      "fixed_by": [
+        "verifiable-rpc"
+      ],
+      "notes": "Not on the wire: the lab sees the browser, not the server. Alchemy sees the server's IP, not yours. eth-mainnet is one of 14 Alchemy network hosts. The node setting moves /api/rpc only; token list, names and prices still come from here (docs/CROPS.md)."
+    },
+    {
+      "id": "zerion",
+      "phase": "discover",
+      "name": "Zerion · behind the server",
+      "host": "api.zerion.io",
+      "actor": "zerion",
+      "purpose": "The server asks Zerion for the wallet's positions",
+      "need": "R",
+      "carries": [
+        "selected_address"
+      ],
+      "returns": "DeFi positions",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "positions list only"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "clawdbotatg/instant-wallet@aea6a61 web/app/api/positions/route.ts (api.zerion.io/v1/wallets/<address>)"
+      },
+      "notes": "Not on the wire. Whether the production server has a Zerion key set was not checked.",
+      "fixed_by": [
+        "local-indexing"
+      ]
+    },
+    {
+      "id": "history-names",
+      "phase": "discover",
+      "name": "Instant Wallet · names in your history",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET /api/ens?address for your wallet and for addresses in its history",
+      "need": "R",
+      "carries": [
+        "ip",
+        "selected_address"
+      ],
+      "returns": "ENS name + avatar URL",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong name next to an address"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET /api/ens at t+5.8 s and t+7.5 s · app/api/ens/route.ts:26"
+      },
+      "births": [
+        "ens_name"
+      ]
+    },
+    {
+      "id": "history-avatar",
+      "phase": "discover",
+      "name": "euc.li · avatar of a past recipient",
+      "host": "euc.li",
+      "actor": "euc-li",
+      "purpose": "GET /austingriffith.eth: the picture for a name in the wallet's history, loaded by the browser",
+      "need": "R",
+      "carries": [
+        "ip",
+        "ens_name"
+      ],
+      "returns": "an image",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "none"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET euc.li/austingriffith.eth at t+7.9 s"
+      },
+      "notes": "austingriffith.eth was the recipient of this wallet's earlier send, so the name and picture were already loaded when the same address was pasted again: no new lookup on the form."
+    },
+    {
+      "id": "relay-quote",
+      "phase": "construct",
+      "name": "Instant Wallet · relay fee",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "GET /api/safe/relay?chainId&kind: the relay's fee and address",
+      "need": "C",
+      "carries": [
+        "ip",
+        "chain_id"
+      ],
+      "returns": "fee 0.51 USDC, relay address",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "the fee it names is paid from the wallet in the batch you sign. Here it was more than the $0.40 sent. The review card shows it; whether the app caps it was not checked"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET /api/safe/relay at t+15.0 s · app/api/safe/relay/route.ts:47"
+      },
+      "tx_input": "field",
+      "failure_note": "no quote, no review card",
+      "notes": "A token send pays the fee in USDC. The server prices gas through Alchemy and ETH through api.coinbase.com (lib/safe/relayCore.ts:48).",
+      "gadget": "relay-broadcast"
+    },
+    {
+      "id": "eth-price",
+      "phase": "construct",
+      "name": "Coinbase · ETH price",
+      "host": "api.coinbase.com",
+      "actor": "coinbase-prices",
+      "purpose": "GET /v2/prices/ETH-USD/spot, straight from the browser",
+      "need": "R",
+      "carries": [
+        "ip"
+      ],
+      "returns": "ETH price in dollars",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "the dollar figures on the card"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · GET api.coinbase.com/v2/prices/ETH-USD/spot at t+15.1 s"
+      },
+      "gadget": "price-oracle"
+    },
+    {
+      "id": "explain-review",
+      "phase": "construct",
+      "name": "Instant Wallet · plain-words check",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "POST /api/explain {chain, safe, calls}: the two USDC transfers (recipient, relay fee), before you sign",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "unsigned_tx"
+      ],
+      "returns": "the words on the review card",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong description of what you're about to sign"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST /api/explain at t+15.1 s, 4.2 s before the relay POST · app/api/explain/route.ts"
+      },
+      "fixed_by": [
+        "clear-signing"
+      ]
+    },
+    {
+      "id": "explain",
+      "phase": "construct",
+      "name": "Instant Wallet · plain-words check",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "POST /api/explain {chain, safe, calls}: the server describes the transaction's calls",
+      "need": "C",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "a description of each call",
+      "can_block": false,
+      "on_failure": "silent",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "a wrong description on the done screen"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST /api/explain at t+19.0 s (the transfer alone, just before the relay POST) · app/api/explain/route.ts"
+      },
+      "notes": "A second call with the recipient transfer only."
+    },
+    {
+      "id": "passkey-sign",
+      "phase": "sign",
+      "name": "Passkey · you sign",
+      "host": "(local: WebAuthn signature over the Safe transaction hash)",
+      "actor": "self",
+      "purpose": "The passkey signs the hash of a Safe batch: USDC transfer to the recipient, USDC transfer to the relay (the fee)",
+      "need": "W",
+      "carries": [
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "a signature only this passkey can make",
+      "can_block": false,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "funds_lost",
+        "note": "the passkey signs a hash and shows nothing. What you approve is whatever the page built"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · signatures field of POST /api/safe/relay (WebAuthn authenticatorData + clientDataFields) · lib/passkey.ts signDigest"
+      },
+      "tx_input": "field",
+      "births": [
+        "signed_tx"
+      ],
+      "fixed_by": [
+        "clear-signing"
+      ],
+      "notes": "In the lab the passkey is Chromium's virtual authenticator. On a phone it is Face ID with an iCloud- or Google-synced passkey; that sync was not observed."
+    },
+    {
+      "id": "relay-submit",
+      "phase": "broadcast",
+      "name": "Instant Wallet · relay",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "POST /api/safe/relay: the signed Safe transaction. A passkey can't pay gas, so the relay's own key sends it",
+      "need": "W",
+      "carries": [
+        "ip",
+        "selected_address",
+        "recipient",
+        "amount",
+        "signed_tx"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "it can refuse or sit on the transaction; it can't change what the passkey signed"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST /api/safe/relay {chainId, kind, safe, tx, signatures} nonce 2 · tx 0xf919d405…2ef8 from 0x4cFaB321…8A2f"
+      },
+      "failure_note": "with only a passkey there is no other way to send",
+      "fallback": {
+        "desc": "a second owner key that holds gas can execute the same signed transaction (sendSelf in TxPage.tsx, or any Safe tool)",
+        "independent": true,
+        "note": "needs a browser-wallet owner; a passkey-only wallet has none"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ],
+      "notes": "Limited to 240 sends an hour per IP; the counter is kept in the server's key-value store (lib/limit.ts:12).",
+      "gadget": "relay-broadcast"
+    },
+    {
+      "id": "relay-send",
+      "phase": "broadcast",
+      "name": "Alchemy · relay's broadcast",
+      "host": "eth-mainnet.g.alchemy.com",
+      "actor": "alchemy",
+      "purpose": "The relay wraps your Safe transaction in its own and sends it with eth_sendRawTransaction",
+      "need": "W",
+      "carries": [
+        "signed_tx",
+        "selected_address",
+        "recipient",
+        "amount"
+      ],
+      "returns": "tx hash",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "can drop it and return a hash anyway"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "clawdbotatg/instant-wallet@aea6a61 web/app/api/safe/relay/route.ts:175,208 (estimateGas, sendTransaction through lib/rpcServer.ts)"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ],
+      "notes": "Not on the wire. On chain the sender is the relay 0x4cFaB32186e65E2A39EC0e882e11380cbf2f8A2f and the target is the wallet itself.",
+      "gadget": "relay-broadcast"
+    },
+    {
+      "id": "inclusion",
+      "phase": "broadcast",
+      "name": "Builders + relays",
+      "host": "(builder network)",
+      "actor": "builders",
+      "purpose": "Build + propose the block",
+      "need": "W",
+      "carries": [
+        "signed_tx"
+      ],
+      "returns": "finality",
+      "can_block": true,
+      "on_failure": "blocks",
+      "worst_lie": {
+        "outcome": "none",
+        "note": "consensus checks the block; they can only exclude or reorder"
+      },
+      "removable_by": "none",
+      "provenance": {
+        "status": "code",
+        "ref": "MEV-Boost relays · block 26400088"
+      },
+      "fixed_by": [
+        "cr-broadcast"
+      ]
+    },
+    {
+      "id": "receipt",
+      "phase": "confirm",
+      "name": "Instant Wallet · RPC proxy, receipt",
+      "host": "instantwallet.io",
+      "actor": "instant-wallet",
+      "purpose": "POST /api/rpc/1: eth_getTransactionReceipt, eth_getTransactionByHash, eth_blockNumber, eth_getBlockByNumber, eth_getLogs",
+      "need": "R",
+      "carries": [
+        "ip",
+        "tx_hash",
+        "selected_address"
+      ],
+      "returns": "Executed",
+      "can_block": false,
+      "on_failure": "degrade",
+      "worst_lie": {
+        "outcome": "false_belief",
+        "note": "can show Executed for a transaction that failed, or the reverse"
+      },
+      "removable_by": "instant_own_node",
+      "provenance": {
+        "status": "observed",
+        "ref": "20261112-093301-send-token-instant · POST /api/rpc/1 from t+19.4 s"
+      },
+      "fixed_by": [
+        "verifiable-rpc"
+      ],
+      "notes": "Forwarded to Alchemy like every /api/rpc call.",
+      "gadget": "rpc"
+    }
+  ]
+}
