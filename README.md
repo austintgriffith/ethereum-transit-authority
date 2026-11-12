@@ -29,3 +29,7 @@ Wrong? Open an issue with the receipt (file + line of the client that makes the 
 ## How it's built
 
 One file: `index.html`, generated from a route data model — one JSON step per network request, carrying what it sends, who receives it, what a lie there costs, and which fix retires it. A build script compiles the steps into the maps, the Interchanges and Fixes rankings, and the CROPS scores; a ~200-line renderer draws each city from the compiled data, no dependencies, no framework. See [AGENTS.md](AGENTS.md) for the data model.
+
+## License
+
+GPL-3.0. See [LICENSE](LICENSE).
